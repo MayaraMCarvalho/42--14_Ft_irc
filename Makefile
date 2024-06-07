@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/07 11:56:15 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/07 12:01:38 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,19 +69,19 @@ re:			fclean all
 
 comp:
 			clear
-			@make -s re
+			@make --no-print-directory -s re
 			@./$(NAME)
 
 val:
 			clear
-			@make -s re
+			@make --no-print-directory -s re
 			@valgrind ./$(NAME)
 
 git:
 			clear
-			@make fclean
-			git add .
-			git status
+			@make --no-print-directory fclean
+			@git add .
+			@git status
 			@echo "$(BPURPLE)Choose the commit type:"; \
 			echo "$(BYELLOW)1. feat: $(WHITE)Adds a new feature to your codebase"; \
 			echo "$(BYELLOW)2. fix: $(WHITE)Solves a problem in your codebase"; \

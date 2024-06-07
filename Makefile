@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/07 11:54:24 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/07 11:56:15 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -106,7 +106,7 @@ git:
 			read msg; \
 			echo -n "\n"; \
 			echo "$(BBLUE)"; \
-			git commit -m "[ft_irc] type: $$msg"
+			git commit -m "[ft_irc] $$type: $$msg"
 			git push
 
 .PHONY:		all re clean fclean comp val git

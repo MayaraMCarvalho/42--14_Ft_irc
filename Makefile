@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/07 11:53:08 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/07 11:54:24 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -99,7 +99,7 @@ git:
 						5) type="refactor" ;; \
 						6) type="test" ;; \
 						7) type="chore" ;; \
-						*) echo "Escolha inválida"; exit 1 ;; \
+						*) echo "$(BRED)Escolha inválida"; exit 1 ;; \
 			esac; \
 			echo -n "\n"; \
 			echo "$(BGREEN)Enter the commit message:"; \

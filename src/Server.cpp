@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/07 17:04:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/11 09:08:35 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,12 @@ Server::~Server( void ) {}
 // Setters ====================================================================
 
 // Methods ====================================================================
-void	Server::test( void )
+void	Server::test( char const *argv[] )
 {
-	std::cout << YELLOW << "Funcionou\n" << std::endl;
+	std::cout << YELLOW << "OK" << std::endl;
+	std::cout << BLUE << argv[0] << std::endl;
+	std::cout << argv[1] << std::endl;
+	std::cout << argv[2] << std::endl;
 }
 // Exceptions =================================================================
 

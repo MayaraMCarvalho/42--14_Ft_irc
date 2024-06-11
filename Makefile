@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/07 17:03:17 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/11 11:29:18 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,9 @@ BBLUE		= \033[1;34m
 BPURPLE		= \033[1;35m
 BCYAN		= \033[1;36m
 BWHITE		= \033[1;37m
+
+BRANCH_FILE = .branch_name
+MAIN_BRANCH = master
 
 OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
 
@@ -77,6 +80,13 @@ val:
 			@make --no-print-directory -s re
 			@valgrind ./$(NAME)
 
+new-branch:
+			@echo "$(BGREEN)Enter the name of the new branch: "; \
+			read branch_name; \
+			echo $$branch_name > $(BRANCH_FILE); \
+			echo "Branch $$branch_name created."; \
+			git checkout -b $$(cat $(BRANCH_FILE))
+
 git:
 			clear
 			@make --no-print-directory fclean
@@ -107,7 +117,16 @@ git:
 			echo -n "\n"; \
 			echo "$(BBLUE)"; \
 			git commit -m "[ft_irc] $$type: $$msg"
-			git push
+			git checkout $(MAIN_BRANCH)
+			git pull origin $(MAIN_BRANCH)
+			git checkout $(shell cat $(BRANCH_FILE))
+			git merge $(MAIN_BRANCH)
+			git push origin $(shell cat $(BRANCH_FILE))
+
+delete-branch:
+			git checkout $(MAIN_BRANCH)
+			git branch -d $(shell cat $(BRANCH_FILE))
+			git push origin --delete $(shell cat $(BRANCH_FILE))
 
 lazy:
 			@clear

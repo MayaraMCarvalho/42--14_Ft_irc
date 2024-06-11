@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/11 11:29:18 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/11 16:07:48 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,8 @@ val:
 			@valgrind ./$(NAME)
 
 new-branch:
+			git checkout $(MAIN_BRANCH)
+			git pull origin $(MAIN_BRANCH)
 			@echo "$(BGREEN)Enter the name of the new branch: "; \
 			read branch_name; \
 			echo $$branch_name > $(BRANCH_FILE); \

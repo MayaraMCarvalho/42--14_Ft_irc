@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/11 16:07:48 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/12 15:27:39 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -92,7 +92,7 @@ new-branch:
 git:
 			clear
 			@make --no-print-directory fclean
-			@git add .
+			@git add . :!*$(BRANCH_FILE)
 			@git status
 			@echo "$(BPURPLE)Choose the commit type:"; \
 			echo "$(BYELLOW)1. feat: $(WHITE)Adds a new feature to your codebase"; \

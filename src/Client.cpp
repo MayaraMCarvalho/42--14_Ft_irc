@@ -18,33 +18,33 @@ Client::Client(void) : _fd(-1), _authenticated(false) {}
 Client::Client(int fd) : _fd(fd), _authenticated(false) {}
 
 // Getters ====================================================================
-int Client::get_fd(void) const
+int Client::getFd(void) const
 {
 	return (_fd);
 }
 
-std::string Client::get_nickname(void) const
+std::string Client::getNickname(void) const
 {
 	return (_nickname);
 }
 
-std::string Client::get_username(void) const
+std::string Client::getUsername(void) const
 {
 	return (_username);
 }
 
 // Setters ====================================================================
-void Client::set_nickname(const std::string &nickname)
+void Client::setNickname(const std::string &nickname)
 {
 	this->_nickname = nickname;
 }
 
-void Client::set_username(const std::string &username)
+void Client::setUsername(const std::string &username)
 {
 	this->_username = username;
 }
 
-bool Client::is_authenticated(void) const
+bool Client::isAuthenticated(void) const
 {
 	return (_authenticated);
 }

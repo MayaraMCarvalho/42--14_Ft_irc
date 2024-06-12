@@ -16,25 +16,25 @@
 FileTransfer::FileTransfer(void) {}
 
 // Methods ====================================================================
-void FileTransfer::request_transfer(int sender_fd, int receiver_fd, const std::string &file_name)
+void FileTransfer::requestTransfer(int sender_fd, int receiver_fd, const std::string &file_name)
 {
 	std::vector<char>	file_data;
 
-	file_data = read_file(file_name);
+	file_data = readFile(file_name);
 	if (!file_data.empty())
 	{
 		_transfers[sender_fd] = TransferInfo(sender_fd, receiver_fd, file_name, file_data);
-		send_file_chunk(sender_fd);
+		sendFileChunk(sender_fd);
 	}
 }
 
-void FileTransfer::handle_transfer (int client_fd)
+void FileTransfer::handleTransfer (int client_fd)
 {
 	if (_transfers.find(client_fd) != _transfers.end())
-		send_file_chunk(client_fd);
+		sendFileChunk(client_fd);
 }
 
-void FileTransfer::send_file_chunk(int client_fd)
+void FileTransfer::sendFileChunk(int client_fd)
 {
 	TransferInfo	&transfer = _transfers[client_fd];
 	size_t			chunk_size;
@@ -53,7 +53,7 @@ void FileTransfer::send_file_chunk(int client_fd)
 		_transfers.erase(client_fd);
 }
 
-std::vector<char> FileTransfer::read_file(const std::string &file_name)
+std::vector<char> FileTransfer::readFile(const std::string &file_name)
 {
 	std::ifstream	file(file_name.c_str(), std::ios::binary);
 

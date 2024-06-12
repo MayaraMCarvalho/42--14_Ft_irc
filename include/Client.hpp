@@ -29,16 +29,16 @@ class Client
 		Client(int fd);
 
 	// Getters ================================================================
-		int			get_fd(void) const;
-		std::string	get_nickname(void) const;
-		std::string	get_username(void) const;
+		int			getFd(void) const;
+		std::string	getNickname(void) const;
+		std::string	getUsername(void) const;
 
 	// Setters ================================================================
-		void		set_nickname(const std::string &nickname);
-		void		set_username(const std::string &username);
+		void		setNickname(const std::string &nickname);
+		void		setUsername(const std::string &username);
 
 	// Methods ================================================================
-		bool		is_authenticated(void) const;
+		bool		isAuthenticated(void) const;
 		void		authenticate(void);
 };
 

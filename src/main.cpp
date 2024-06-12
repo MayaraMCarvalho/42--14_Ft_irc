@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/12 16:12:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/12 19:24:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,26 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 		port = argv[1];
 		int portNum = std::atoi(port.c_str());
 		// Ports 0 to 1024 are typically reserved for specific services
-		//  of the operating system and above 65535 are invalid, as they are outside
-		//  the valid range of TCP and UDP ports.
-		//  Helps ensure that the server functions correctly and prevents possible
-		//  problems arising from the use of invalid ports.
+		//  of the operating system and above 65535 are invalid, as they
+		//  are outside the valid range of TCP and UDP ports.
+		//  Helps ensure that the server functions correctly and
+		//  prevents possibleproblems arising from the use of invalid ports.
 		if (portNum <= 1024 || portNum > 65535)
 			throw std::invalid_argument("Port number out of range");
 	}
 	catch (const std::invalid_argument &e)
 	{
-		std::cerr << "Invalid port number: " << argv[1] << std::endl;
+		std::cerr << RED;
+		std::cerr << "Invalid port number: " << YELLOW << argv[1] << std::endl;
+		std::cout << RESET << std::endl;
 		return (false);
 	}
 	catch (const std::out_of_range &e)
 	{
-		std::cerr << "Port number out of range: " << argv[1] << std::endl;
+		std::cerr << RED;
+		std::cerr << "Port number out of range: ";
+		std::cout << YELLOW << argv[1] << std::endl;
+		std::cout << RESET << std::endl;
 		return (false);
 	}
 
@@ -50,7 +55,9 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 	password = argv[2];
 	if (password.empty())
 	{
-		std::cerr << "Invalid password: " << argv[2] << std::endl;
+		std::cerr << RED;
+		std::cerr << "Invalid password! "<< YELLOW << argv[2] << std::endl;
+		std::cout << RESET << std::endl;
 		return (false);
 	}
 
@@ -72,7 +79,9 @@ int main(int argc, char *argv[])
 	}
 	catch (const std::exception &e)
 	{
+		std::cerr << RED;
 		std::cerr << "Error: " << e.what() << std::endl;
+		std::cout << RESET << std::endl;
 		return (1);
 	}
 	return (0);

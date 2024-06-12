@@ -32,10 +32,10 @@ class	Channel
 		Channel(const std::string &name);
 
 	// Methods ================================================================
-		void	add_client(int client_fd);
-		void	remove_client(int client_fd);
-		bool	is_client_in_channel(int client_fd) const;
-		void	send_to_all(IRCServer *server, const std::string &message);
+		void	addClient(int client_fd);
+		void	removeClient(int client_fd);
+		bool	isClientInChannel(int client_fd) const;
+		void	sendToAll(IRCServer *server, const std::string &message);
 };
 
 #endif

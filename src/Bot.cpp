@@ -12,14 +12,19 @@
 
 #include "../include/Bot.hpp"
 
+// Constructor ================================================================
+Bot::Bot() {}//
 Bot::Bot(const std::string &name) : _name(name) {}
 
-void	Bot::respond_to_message(int client_fd, const std::string &message) {
+// Methods ====================================================================
+void Bot::respond_to_message(int client_fd, const std::string &message)
+{
 	std::string response = _name + ": I received your message: " + message;
 	send_message(client_fd, response);
 }
 
-void	Bot::send_message(int client_fd, const std::string &message) {
-    //std::cout << "Bot sending message to client " << client_fd << ": " << message << std::endl; // Adicionando log de depuração
-    write(client_fd, message.c_str(), message.length());
+void Bot::send_message(int client_fd, const std::string &message)
+{
+	// std::cout << "Bot sending message to client " << client_fd << ": " << message << std::endl; // Adicionando log de depuraï¿½ï¿½o
+	write(client_fd, message.c_str(), message.length());
 }

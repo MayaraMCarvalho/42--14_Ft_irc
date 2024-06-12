@@ -18,14 +18,21 @@
 #include <cstring>
 #include <iostream>
 
-class	Bot {
-	public:
-		Bot(const std::string &name);
-		void	respond_to_message(int client_fd, const std::string &message);
-
+class	Bot
+{
 	private:
 		std::string	_name;
+
 		void	send_message(int client_fd, const std::string &message);
+
+	public:
+	// Constructor ============================================================
+		Bot(void);//
+		Bot(const std::string &name);
+
+	// Methods ================================================================
+		void	respond_to_message(int client_fd, const std::string &message);
+
 };
 
 #endif

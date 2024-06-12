@@ -20,18 +20,22 @@
 
 class	IRCServer;
 
-class	Channel {
-	public:
-		Channel(void);
-		Channel(const std::string &name);
-		void	add_client(int client_fd);
-		void	remove_client(int client_fd);
-		bool	is_client_in_channel(int client_fd) const;
-        void	send_to_all(IRCServer *server, const std::string &message);
-
+class	Channel
+{
 	private:
 		std::string		_name;
 		std::set<int>	_clients;
+
+	public:
+	// Constructor & Destructor ===============================================
+		Channel(void);
+		Channel(const std::string &name);
+
+	// Methods ================================================================
+		void	add_client(int client_fd);
+		void	remove_client(int client_fd);
+		bool	is_client_in_channel(int client_fd) const;
+		void	send_to_all(IRCServer *server, const std::string &message);
 };
 
 #endif

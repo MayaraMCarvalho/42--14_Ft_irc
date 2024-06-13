@@ -6,13 +6,14 @@
 #    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/13 01:54:41 by gmachado         ###   ########.fr        #
+#    Updated: 2024/06/13 02:32:51 by gmachado         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 
-SRCS		= main.cpp Server.cpp Channel.cpp ChannelMap.cpp Client.cpp ClientMap.cpp
+SRCS		= main.cpp Bot.cpp Channel.cpp Client.cpp FileTransfer.cpp \
+			IrcServer.cpp ChannelMap.cpp Client.cpp ClientMap.cpp
 
 VPATH		= src/
 OBJS_PATH	= obj
@@ -92,7 +93,7 @@ new-branch:
 git:
 			clear
 			@make --no-print-directory fclean
-			@git add .
+			@git add . :!*$(BRANCH_FILE)
 			@git status
 			@echo "$(BPURPLE)Choose the commit type:"; \
 			echo "$(BYELLOW)1. feat: $(WHITE)Adds a new feature to your codebase"; \

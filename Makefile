@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/12 15:36:29 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/13 08:52:01 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -112,22 +112,25 @@ git:
 						5) type="refactor" ;; \
 						6) type="test" ;; \
 						7) type="chore" ;; \
-						*) echo "$(BRED)Escolha inválida"; exit 1 ;; \
+						*) echo "$(BRED)Invalid choice"; exit 1 ;; \
 			esac; \
 			echo -n "\n"; \
 			echo "$(BGREEN)Enter the commit message:"; \
 			read msg; \
 			echo -n "\n"; \
 			echo "$(BBLUE)"; \
-			git commit -m "[ft_irc] $$type: $$msg"
+			git commit -m "[ft_irc] $$type: $$msg"; \
+			git checkout $(MAIN_BRANCH); \
+			git pull origin $(MAIN_BRANCH); \
+			git checkout $(shell cat $(BRANCH_FILE)); \
+			git merge $(MAIN_BRANCH); \
+			git push origin $(shell cat $(BRANCH_FILE)); \
+
+delete-branch:
 			git checkout $(MAIN_BRANCH)
 			git pull origin $(MAIN_BRANCH)
 			git checkout $(shell cat $(BRANCH_FILE))
 			git merge $(MAIN_BRANCH)
-			git push origin $(shell cat $(BRANCH_FILE))
-
-delete-branch:
-			git checkout $(MAIN_BRANCH)
 			git branch -d $(shell cat $(BRANCH_FILE))
 			git push origin --delete $(shell cat $(BRANCH_FILE))
 

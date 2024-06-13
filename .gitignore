@@ -1,0 +1,10 @@
+*
+!Makefile
+!include/
+!src/
+include/*
+src/*
+!include/*.hpp
+!src/*.cpp
+!.gitignore
+**/test/

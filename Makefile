@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/13 08:52:01 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/13 09:17:48 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -131,6 +131,9 @@ delete-branch:
 			git pull origin $(MAIN_BRANCH)
 			git checkout $(shell cat $(BRANCH_FILE))
 			git merge $(MAIN_BRANCH)
+			git checkout $(MAIN_BRANCH)
+			git merge $(shell cat $(BRANCH_FILE))
+			git push origin $(MAIN_BRANCH)
 			git branch -d $(shell cat $(BRANCH_FILE))
 			git push origin --delete $(shell cat $(BRANCH_FILE))
 

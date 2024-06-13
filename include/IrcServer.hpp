@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/12 15:39:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/13 03:04:19 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #include <poll.h>
 #include <map>
 #include "../include/Client.hpp"
-// #include "../include/Channel.hpp"
+#include "../include/Channel.hpp"
 #include "../include/FileTransfer.hpp"
 #include "../include/Bot.hpp"
 
@@ -80,7 +80,5 @@ class IRCServer
 		static void	signalHandler(int signal);
 		static void	setupSignalHandlers(void);
 };
-
-#include "Channel.hpp"
 
 #endif

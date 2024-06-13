@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/12 16:07:41 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/13 04:24:16 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,15 +98,13 @@ void IRCServer::run(void)
 		if (poll_count < 0)
 			throw std::runtime_error("Poll error");
 
-		for (size_t i = 0; i < _poll_fds.size(); ++i)
+		if (_poll_fds[0].revents & POLLIN)
+			acceptNewClient();
+
+		for (size_t i = 1; i < _poll_fds.size(); ++i)
 		{
 			if (_poll_fds[i].revents & POLLIN)
-			{
-				if (_poll_fds[i].fd == _server_fd)
-					acceptNewClient();
-				else
-					handleClientMessage(_poll_fds[i].fd);
-			}
+				handleClientMessage(_poll_fds[i].fd);
 		}
 	}
 }

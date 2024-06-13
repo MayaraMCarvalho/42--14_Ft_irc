@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/13 09:30:57 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/13 09:34:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,5 +206,6 @@ void IRCServer::handleFileTransfer(int client_fd, const std::string &command)
 	iss >> cmd >> receiver_fd >> file_name;
 	_file_transfer.requestTransfer(client_fd, receiver_fd, file_name); // starts file transfer
 }
+
 
 // Exceptions =================================================================

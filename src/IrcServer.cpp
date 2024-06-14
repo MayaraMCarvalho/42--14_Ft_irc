@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/13 09:34:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/14 16:51:18 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,16 @@ void IRCServer::handleClientMessage(int client_fd)
 	std::string message(buffer);
 	std::cout << "Received message from client " << client_fd << ": " << message << std::endl;
 	// Channel channel;
-	if (message.substr(0, 5) == "/file")
+
+	//
+	Commands commands;
+	if (commands.isCommand(message))
+	{
+		std::cout << PURPLE << "this command\n" << RESET << std::endl;//deletar
+	}
+
+	//
+	else if (message.substr(0, 5) == "/file")
 		handleFileTransfer(client_fd, message);
 	else
 		_bot.respondToMessage(client_fd, message); // call for the bot to respond
@@ -206,6 +215,5 @@ void IRCServer::handleFileTransfer(int client_fd, const std::string &command)
 	iss >> cmd >> receiver_fd >> file_name;
 	_file_transfer.requestTransfer(client_fd, receiver_fd, file_name); // starts file transfer
 }
-
 
 // Exceptions =================================================================

@@ -14,6 +14,7 @@
 #define CLIENT_HPP
 
 #include <string>
+#include <sys/socket.h> //
 
 class Client
 {

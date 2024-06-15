@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/13 04:47:33 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/15 05:25:09 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@
 class Channel;
 class ChannelList;
 
-class Client
-{
+class Client {
 	public:
 		typedef enum {
 			NO_MODE = 0,
@@ -45,9 +44,8 @@ class Client
 		} t_status;
 
 		// Constructors
-		Client(void);
 		Client(int fd);
-		Client(Client &client);
+		Client(Client &src);
 
 		~Client(void);
 
@@ -62,30 +60,34 @@ class Client
 		std::map<std::string, Channel*> &getChannelList(void);
 		t_status getStatus(void);
 		bool getMode(t_mode mode);
+		int getModeFlags();
 
 		// Setters
 		void setNick(std::string nick);
 		void setUser(std::string user);
 		void setHost(std::string host);
 		void setFD(int fd);
+		void setModeFlags(int modeFlags);
 		void setMode(std::string modeStr);
 		void setStatus(t_status status);
 
 		// Channel functions
 		bool isInChannel(std::string channelStr);
-		void add_channel(Channel &Channel);
-		void remove_channel(Channel &Channel);
-		void join_channel(ChannelList &channels, std::string channelStr);
-		void part_channel(ChannelList &channels, std::string channelStr);
+		void addChannel(Channel &Channel);
+		void removeChannel(std::string channelStr);
 
 	private:
 		std::string _nick;
 		std::string _user;
 		std::string _host;
 		int _fd;
-		std::map<std::string, Channel*> _channels;
-		t_mode _mode;
+		std::map<std::string, Channel *> _channels;
+		int _modeFlags;
 		t_status _status;
+
+		// Private default constructor to prevent empty initialization
+		Client(void);
+
 };
 
 #endif

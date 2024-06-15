@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/13 04:17:05 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/14 10:28:16 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Channel
 		} t_umode;
 
 		typedef struct {
-			t_umode userMode;
+			int userModeFlags;
 			Client* client;
 		} t_client_with_mode;
 
@@ -55,10 +55,15 @@ class Channel
 
 		Channel &operator=(Channel &src);
 
+		std::string getName(void);
+
+		void addClient(Client &client, int userModeFlags);
+		void removeClient(int fd);
+
 	private:
 		std::string name;
 		std::map<int, t_client_with_mode> _users;
-		t_cmode _channelMode;
+		t_cmode _channelModeFlags;
 		int _limit;
 };
 

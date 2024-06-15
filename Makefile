@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/13 09:17:48 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/14 08:41:48 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,8 +86,10 @@ new-branch:
 			git pull origin $(MAIN_BRANCH)
 			@echo "$(BGREEN)Enter the name of the new branch: "; \
 			read branch_name; \
-			echo $$branch_name > $(BRANCH_FILE); \
-			echo "Branch $$branch_name created."; \
+			feature_branch="feature/$$branch_name"; \
+			echo $$feature_branch; \
+			echo $$feature_branch > $(BRANCH_FILE); \
+			echo "Branch $$feature_branch created."; \
 			git checkout -b $$(cat $(BRANCH_FILE))
 
 git:

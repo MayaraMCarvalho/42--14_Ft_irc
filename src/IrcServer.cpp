@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/13 04:24:16 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:40:33 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ IRCServer::~IRCServer(void) {}
 IRCServer::IRCServer(const std::string &port, const std::string &password)
 	: _port(port), _password(password), _server_fd(-1), _bot("ChatBot") {}
 
-void IRCServer::setup_server(void)
+void IRCServer::setupServer(void)
 {
 	// struct	pollfd pfd;
 	int	opt;
@@ -88,7 +88,7 @@ void IRCServer::run(void)
 {
 	int	poll_count;
 
-	setup_server();
+	setupServer();
 	setupSignalHandlers();
 	std::cout << "Server running on port " << _port << std::endl;
 
@@ -147,7 +147,7 @@ void IRCServer::handleClientMessage(int client_fd)
 			std::cerr << "Read error on client " << client_fd << std::endl;
 		else if (nbytes == 0)
 			std::cout << "Client disconnected: " << client_fd << std::endl;
-		remove_client(client_fd);
+		removeClient(client_fd);
 		return;
 	}
 
@@ -156,16 +156,16 @@ void IRCServer::handleClientMessage(int client_fd)
 	std::cout << "Received message from client " << client_fd << ": " << message << std::endl;
 	// Channel channel;
 	if (message.substr(0, 5) == "/file")
-		handle_file_transfer(client_fd, message);
+		handleFileTransfer(client_fd, message);
 	else
-		_bot.respond_to_message(client_fd, message); // call for the bot to respond
-	// channel.send_to_all(message);
-	//  send_message(client_fd, message);
+		_bot.respondToMessage(client_fd, message); // call for the bot to respond
+	// channel.sendToAll(message);
+	//  sendMessage(client_fd, message);
 	if (_channels.find("default") != _channels.end())
-		_channels["default"].send_to_all(this, message);
+		_channels["default"].sendToAll(this, message);
 }
 
-void IRCServer::remove_client(int client_fd)
+void IRCServer::removeClient(int client_fd)
 {
 	close(client_fd);
 	_clients.erase(client_fd);
@@ -182,10 +182,10 @@ void IRCServer::remove_client(int client_fd)
 	std::map<std::string, Channel>::iterator it;
 
 	for (it = _channels.begin(); it != _channels.end(); ++it)
-		it->second.remove_client(client_fd);
+		it->second.removeClient(client_fd);
 }
 
-void IRCServer::send_message(int client_fd, const std::string &message)
+void IRCServer::sendMessage(int client_fd, const std::string &message)
 {
 	ssize_t	nbytes;
 
@@ -195,14 +195,15 @@ void IRCServer::send_message(int client_fd, const std::string &message)
 		std::cerr << "Write error on client " << client_fd << std::endl;
 }
 
-void IRCServer::handle_file_transfer(int client_fd, const std::string &command)
+void IRCServer::handleFileTransfer(int client_fd, const std::string &command)
 {
 	std::istringstream	iss(command);
 	std::string			cmd, file_name;
 	int					receiver_fd;
 
 	iss >> cmd >> receiver_fd >> file_name;
-	_file_transfer.request_transfer(client_fd, receiver_fd, file_name); // inicia a transferencia do arquivo
+	_file_transfer.requestTransfer(client_fd, receiver_fd, file_name); // starts file transfer
 }
+
 
 // Exceptions =================================================================

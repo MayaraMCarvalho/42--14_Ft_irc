@@ -41,14 +41,14 @@ class FileTransfer
 		FileTransfer(void);
 
 	// Methods ================================================================
-		void	request_transfer(int sender_fd, int receiver_fd, const std::string &file_name);
-		void	handle_transfer(int client_fd);
-		// void	send_file_chunk(int client_fd);
+		void	requestTransfer(int sender_fd, int receiver_fd, const std::string &file_name);
+		void	handleTransfer(int client_fd);
+		// void	sendFileChunk(int client_fd);
 
 		std::map<int, TransferInfo>	_transfers;
 
-		void	send_file_chunk(int client_fd);
-		std::vector<char> read_file(const std::string &file_name);
+		void				sendFileChunk(int client_fd);
+		std::vector<char>	readFile(const std::string &file_name);
 };
 
 #endif

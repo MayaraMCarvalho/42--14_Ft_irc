@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/13 03:04:19 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 00:39:42 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,12 @@ class IRCServer
 		std::string						_password;
 		int 							_server_fd;
 		std::map<int, Client>			_clients;
-		std::map<std::string, Channel> _channels;
+		std::map<std::string, Channel>	_channels;
 		std::vector<struct pollfd>		_poll_fds;
 		FileTransfer 					_file_transfer;
 		Bot 							_bot;
-		void handle_file_transfer(int client_fd, const std::string &command);
+
+		void handleFileTransfer(int client_fd, const std::string &command);
 
 	public:
 	// Constructor & Destructor ===============================================
@@ -71,12 +72,12 @@ class IRCServer
 
 	// Methods ================================================================
 		IRCServer(const std::string &port, const std::string &password);
-		void		setup_server(void);
+		void		setupServer(void);
 		void		run(void);
 		void		acceptNewClient(void);
 		void		handleClientMessage(int client_fd);
-		void		remove_client(int client_fd);
-		void		send_message(int client_fd, const std::string &message);
+		void		removeClient(int client_fd);
+		void		sendMessage(int client_fd, const std::string &message);
 		static void	signalHandler(int signal);
 		static void	setupSignalHandlers(void);
 };

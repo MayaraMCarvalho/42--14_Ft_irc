@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 00:38:31 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 17:57:23 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 #include <string>
 #include <map>
-
 
 class Channel;
 class ChannelList;
@@ -43,7 +42,7 @@ class Client {
 			DISCONNECTED
 		} t_status;
 
-		// Constructors
+		// ructors
 		Client(int fd);
 		Client(Client &src);
 
@@ -59,7 +58,7 @@ class Client {
 		int getFD(void);
 		std::map<std::string, Channel*> &getChannelList(void);
 		t_status getStatus(void);
-		bool getMode(t_mode mode);
+		bool getMode( t_mode mode) ;
 		int getModeFlags();
 
 		// Setters
@@ -72,9 +71,10 @@ class Client {
 		void setStatus(t_status status);
 
 		// Channel functions
-		bool isInChannel(std::string channelStr);
-		void addChannel(Channel &Channel);
+		bool isInChannel(std::string channelStr) ;
+		void addChannel(Channel Channel);
 		void removeChannel(std::string channelStr);
+		void sendMessage(std::string &msg);
 
 	private:
 		std::string _nick;
@@ -85,7 +85,7 @@ class Client {
 		int _modeFlags;
 		t_status _status;
 
-		// Private default constructor to prevent empty initialization
+		// Private default ructor to prevent empty initialization
 		Client(void);
 
 };

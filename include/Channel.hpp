@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 00:39:20 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:31:14 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,10 @@ class Channel
 		void setChannelModeFlags(int modeFlags);
 		void setUserMode(int userFD, std::string modeStr);
 
+		// Channel functions
 		void addUser(int fd, int userModeFlags);
 		void removeUser(int fd);
+		void sendToAll(std::string &message);
 
 	private:
 		std::string _name;

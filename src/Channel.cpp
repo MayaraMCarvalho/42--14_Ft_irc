@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+#include "IrcServer.hpp"
 
 Channel::Channel(void) : _name("#default"), _topic(""), _users(),
 	_channelModeFlags(NO_CMODE), _limit(-1) { }
@@ -155,4 +156,12 @@ void Channel::addUser(int fd, int userModeFlags) {
 
 void Channel::removeUser(int fd) {
 	_users.erase(fd);
+}
+
+void Channel::sendToAll(std::string &message)
+{
+	for (std::map<int, int>::iterator it = _users.begin(); it != _users.end(); ++it)
+	{
+		IRCServer::sendMessage(it->first, message);
+	}
 }

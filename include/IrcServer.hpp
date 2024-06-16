@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/16 00:39:42 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 17:21:51 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,13 @@
 #include <cstring>
 #include <cstdlib>
 #include <csignal>
-
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <poll.h>
-#include <map>
-#include "../include/Client.hpp"
-#include "../include/Channel.hpp"
+#include "../include/ClientList.hpp"
+#include "../include/ChannelList.hpp"
 #include "../include/FileTransfer.hpp"
 #include "../include/Bot.hpp"
 
@@ -51,11 +49,12 @@ class IRCServer
 		std::string						_port;
 		std::string						_password;
 		int 							_server_fd;
-		std::map<int, Client>			_clients;
-		std::map<std::string, Channel>	_channels;
 		std::vector<struct pollfd>		_poll_fds;
 		FileTransfer 					_file_transfer;
 		Bot 							_bot;
+
+		ClientList						_clients;
+		ChannelList						_channels;
 
 		void handleFileTransfer(int client_fd, const std::string &command);
 
@@ -77,7 +76,7 @@ class IRCServer
 		void		acceptNewClient(void);
 		void		handleClientMessage(int client_fd);
 		void		removeClient(int client_fd);
-		void		sendMessage(int client_fd, const std::string &message);
+		static void	sendMessage(int client_fd, const std::string &message);
 		static void	signalHandler(int signal);
 		static void	setupSignalHandlers(void);
 };

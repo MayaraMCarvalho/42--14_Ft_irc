@@ -6,10 +6,13 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/15 05:59:28 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:32:51 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include "ClientList.hpp"
 
 ClientList::ClientList(void) : _clients(), _userToClient(), _nickToClient() { }
@@ -74,7 +77,7 @@ std::string ClientList::getUser(int fd) {
 	return it->second.getUser();
 }
 
-int ClientList::getFDByNick(std::string nick) {
+int ClientList::getFDByNick(std::string &nick) {
 	std::map<int, Client>::iterator it = getClientByNick(nick);
 
 	if (it == end())
@@ -83,7 +86,7 @@ int ClientList::getFDByNick(std::string nick) {
 	return it->second.getFD();
 }
 
-int ClientList::getFDByUser(std::string user) {
+int ClientList::getFDByUser(std::string &user) {
 	std::map<int, Client>::iterator it = getClientByUser(user);
 
 	if (it == end())
@@ -95,7 +98,7 @@ int ClientList::getFDByUser(std::string user) {
 std::map<int, Client>::iterator ClientList::end(void) { return _clients.end(); }
 
 // Setters
-void ClientList::setNick(int fd, std::string nick) {
+void ClientList::setNick(int fd, std::string &nick) {
 	std::map<int, Client>::iterator it = getClient(fd);
 
 	if (it == end())
@@ -104,7 +107,7 @@ void ClientList::setNick(int fd, std::string nick) {
 	it->second.setNick(nick);
 }
 
-void ClientList::setUser(int fd, std::string user) {
+void ClientList::setUser(int fd, std::string &user) {
 	std::map<int, Client>::iterator it = getClient(fd);
 
 	if (it == end())
@@ -158,7 +161,14 @@ void ClientList::add(Client &client) {
 	}
 }
 
-void ClientList::add(int fd, std::string host) {
+void ClientList::add(int fd, struct in_addr *address) {
+	std::string hostname = inet_ntoa(*address);
+
+
+	add(fd, hostname);
+}
+
+void ClientList::add(int fd, std::string &host) {
 	Client newClient(fd);
 
 	newClient.setHost(host);
@@ -176,7 +186,7 @@ void ClientList::remove(int fd) {
 	_userToClient.erase(fdIt->second.getUser());
 }
 
-void ClientList::removeByNick(std::string nick) {
+void ClientList::removeByNick(std::string &nick) {
 	std::map<int, Client>::iterator fdIt = getClientByNick(nick);
 
 	if (fdIt == end())
@@ -186,7 +196,7 @@ void ClientList::removeByNick(std::string nick) {
 	_nickToClient.erase(fdIt->second.getNick());
 	_userToClient.erase(fdIt->second.getUser());
 }
-void ClientList::removeByUser(std::string user) {
+void ClientList::removeByUser(std::string &user) {
 	std::map<int, Client>::iterator fdIt = getClientByUser(user);
 
 	if (fdIt == end())
@@ -197,7 +207,7 @@ void ClientList::removeByUser(std::string user) {
 	_userToClient.erase(fdIt->second.getUser());
 }
 
-void ClientList::updateNick(int fd, std::string newNick) {
+void ClientList::updateNick(int fd, std::string &newNick) {
 	std::map<int, Client>::iterator it = getClient(fd);
 
 	if (it == end())
@@ -211,7 +221,7 @@ void ClientList::updateNick(int fd, std::string newNick) {
 			std::map<int, Client>::iterator>(newNick, it));
 }
 
-void ClientList::updateUser(int fd, std::string newUser) {
+void ClientList::updateUser(int fd, std::string &newUser) {
 	std::map<int, Client>::iterator it = getClient(fd);
 
 	if (it == end())

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 00:33:22 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/16 18:34:34 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ std::map<std::string, Channel>::iterator ChannelList::end(void) {
 	return _channels.end();
 }
 
-void ChannelList::add(Channel &channel) {
+void ChannelList::add(Channel channel) {
 	_channels.insert(
-		std::pair<std::string, Channel>(channel.getName(), channel));
+		std::pair<const std::string, Channel>(channel.getName(), channel));
 }
 
 void ChannelList::remove(std::string name)

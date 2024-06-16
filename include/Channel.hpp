@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/14 10:28:16 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:56:06 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,9 @@ class Channel
 			NO_UMODE = 0,
 			CREATOR = 1,
 			CHANOP = 2,
-			VOICE = 4,
-			BANNED = 8
+			VOICE = 4
 		} t_umode;
 
-		typedef struct {
-			int userModeFlags;
-			Client* client;
-		} t_client_with_mode;
-
-		Channel(void);
 		Channel(std::string name);
 		Channel(Channel &src);
 
@@ -55,16 +48,35 @@ class Channel
 
 		Channel &operator=(Channel &src);
 
+		// Getters
 		std::string getName(void);
+		std::string getTopic(void);
+		int	getUserLimit(void);
+		bool getChannelMode(t_cmode mode);
+		int getChannelModeFlags(void);
+		bool getUserMode(int userFD, t_umode mode);
+		int getUserModeFlags(int userFD);
+		bool isUserInChannel(int userFD);
+		bool userCanJoin(int userFD);
 
-		void addClient(Client &client, int userModeFlags);
-		void removeClient(int fd);
+		// Setters
+		void setTopic(std::string topic);
+		void setUserLimit(int limit);
+		void setChannelMode(std::string modeStr);
+		void setChannelModeFlags(int modeFlags);
+		void setUserMode(int userFD, std::string modeStr);
+
+		void addUser(int fd, int userModeFlags);
+		void removeUser(int fd);
 
 	private:
-		std::string name;
-		std::map<int, t_client_with_mode> _users;
-		t_cmode _channelModeFlags;
+		std::string _name;
+		std::string _topic;
+		std::map<int, int> _users;
+		int _channelModeFlags;
 		int _limit;
+
+		Channel(void);
 };
 
 #endif

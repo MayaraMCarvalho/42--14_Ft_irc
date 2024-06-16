@@ -26,7 +26,7 @@ Client::Client(Client &src) : _nick(src._nick), _user(src._user),
 Client::~Client(void) {
 	std::map<std::string, Channel*>::iterator it;
 	for(it = _channels.begin(); it != _channels.end(); ++it)
-		it->second->removeClient(_fd);
+		it->second->removeUser(_fd);
 }
 
 Client &Client::operator=(Client &src) {

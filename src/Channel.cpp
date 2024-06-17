@@ -19,13 +19,13 @@ Channel::Channel(void) : _name("#default"), _topic(""), _users(),
 Channel::Channel(std::string name) : _name(name), _topic(""), _users(),
 	_channelModeFlags(NO_CMODE), _limit(-1) { }
 
-Channel::Channel(Channel &src) : _name(src._name), _topic(src._topic),
+Channel::Channel(const Channel &src) : _name(src._name), _topic(src._topic),
 	_users(src._users), _channelModeFlags(src._channelModeFlags),
 	_limit(src._limit) { }
 
 Channel::~Channel(void) { }
 
-Channel &Channel::operator=(Channel &src) {
+Channel &Channel::operator=(const Channel &src) {
 	if (this == &src)
 		return *this;
 

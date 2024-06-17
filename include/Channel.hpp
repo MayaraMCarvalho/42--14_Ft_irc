@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 18:31:14 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/17 03:08:31 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ class Channel
 		} t_umode;
 
 		Channel(std::string name);
-		Channel(Channel &src);
+		Channel(const Channel &src);
 
 		~Channel(void);
 
-		Channel &operator=(Channel &src);
+		Channel &operator=(const Channel &src);
 
 		// Getters
 		std::string getName(void);

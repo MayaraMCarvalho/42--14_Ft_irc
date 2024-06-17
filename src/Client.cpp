@@ -20,17 +20,14 @@ Client::Client() : _nick(""), _user(""), _host(""), _fd(-1), _channels(),
 Client::Client(int fd) : _nick(""), _user(""), _host(""), _fd(fd),
 	_channels(), _modeFlags(Client::NO_MODE), _status(Client::UNKNOWN) { }
 
-Client::Client(Client &src) : _nick(src._nick), _user(src._user),
+Client::Client(const Client &src) : _nick(src._nick), _user(src._user),
 	_host(src._host), _fd(src._fd), _channels(src._channels),
 	_modeFlags(src._modeFlags), _status(src._status) { }
 
-Client::~Client(void) {
-	std::map<std::string, Channel*>::iterator it;
-	for(it = _channels.begin(); it != _channels.end(); ++it)
-		it->second->removeUser(_fd);
-}
 
-Client &Client::operator=(Client &src) {
+Client::~Client(void) { }
+
+Client &Client::operator=(const Client &src) {
 	if (this == &src)
 		return *this;
 
@@ -56,9 +53,9 @@ std::string Client::getFullId(void) {
 	return _nick + '!' + _user + '@' + _host;
 }
 
-int Client::getFD(void)  {  { return _fd; }}
+int Client::getFD(void) { return _fd; }
 
-std::map<std::string, Channel*> &Client::getChannelList(void) {
+std::set<std::string> &Client::getChannelList(void) {
 	return _channels;
 }
 
@@ -114,8 +111,7 @@ bool Client::isInChannel(std::string channelStr) {
 }
 void Client::addChannel(Channel channel)
 {
-	_channels.insert(
-		std::pair<std::string, Channel>(channel.getName(), channel));
+	_channels.insert(channel.getName());
 }
 void Client::removeChannel(std::string channelStr) {
 	_channels.erase(channelStr);

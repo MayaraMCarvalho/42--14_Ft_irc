@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 17:57:23 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/17 03:09:42 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define CLIENT_HPP
 
 #include <string>
-#include <map>
+#include <set>
 
 class Channel;
 class ChannelList;
@@ -42,13 +42,13 @@ class Client {
 			DISCONNECTED
 		} t_status;
 
-		// ructors
+		// Constructors
 		Client(int fd);
-		Client(Client &src);
+		Client(const Client &src);
 
 		~Client(void);
 
-		Client &operator=(Client &src);
+		Client &operator=(const Client &src);
 
 		// Getters
 		std::string getNick(void);
@@ -56,7 +56,7 @@ class Client {
 		std::string getHost(void);
 		std::string getFullId(void);
 		int getFD(void);
-		std::map<std::string, Channel*> &getChannelList(void);
+		std::set<std::string> &getChannelList(void);
 		t_status getStatus(void);
 		bool getMode( t_mode mode) ;
 		int getModeFlags();
@@ -72,7 +72,7 @@ class Client {
 
 		// Channel functions
 		bool isInChannel(std::string channelStr) ;
-		void addChannel(Channel Channel);
+		void addChannel(Channel channel);
 		void removeChannel(std::string channelStr);
 		void sendMessage(std::string &msg);
 
@@ -81,11 +81,11 @@ class Client {
 		std::string _user;
 		std::string _host;
 		int _fd;
-		std::map<std::string, Channel *> _channels;
+		std::set<std::string> _channels;
 		int _modeFlags;
 		t_status _status;
 
-		// Private default ructor to prevent empty initialization
+		// Private default constructor to prevent empty initialization
 		Client(void);
 
 };

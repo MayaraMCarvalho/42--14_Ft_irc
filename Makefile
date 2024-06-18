@@ -6,14 +6,14 @@
 #    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/16 00:36:06 by gmachado         ###   ########.fr        #
+#    Updated: 2024/06/18 11:12:49 by gmachado         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 
 SRCS		= main.cpp Bot.cpp Channel.cpp ChannelList.cpp Client.cpp \
-			ClientList.cpp FileTransfer.cpp IrcServer.cpp
+			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp
 
 VPATH		= src/
 OBJS_PATH	= obj

@@ -52,5 +52,5 @@ bool Client::isAuthenticated(void) const
 // Methods ====================================================================
 void Client::authenticate(void)
 {
-	_authenticated = true;
+	this->_authenticated = true;
 }

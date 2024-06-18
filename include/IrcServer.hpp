@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/16 17:21:51 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/18 03:07:31 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,7 @@
 #include "../include/ChannelList.hpp"
 #include "../include/FileTransfer.hpp"
 #include "../include/Bot.hpp"
-
-// Color codes as global variables
-const std::string RESET = "\033[0m";
-const std::string RED = "\033[31;1m";
-const std::string GREEN = "\033[32;1m";
-const std::string YELLOW = "\033[33;1m";
-const std::string BLUE = "\033[34;1m";
-const std::string PURPLE = "\033[35;1m";
-const std::string CYAN = "\033[36;1m";
-const std::string GRAY = "\033[37;1m";
+#include "../include/colors.hpp"
 
 class	Channel;
 

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 18:32:51 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/18 02:19:21 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,9 +181,9 @@ void ClientList::remove(int fd) {
 	if (fdIt == end())
 		return;
 
-	_clients.erase(fdIt);
 	_nickToClient.erase(fdIt->second.getNick());
 	_userToClient.erase(fdIt->second.getUser());
+	_clients.erase(fdIt);
 }
 
 void ClientList::removeByNick(std::string &nick) {
@@ -192,9 +192,9 @@ void ClientList::removeByNick(std::string &nick) {
 	if (fdIt == end())
 		return;
 
-	_clients.erase(fdIt);
 	_nickToClient.erase(fdIt->second.getNick());
 	_userToClient.erase(fdIt->second.getUser());
+	_clients.erase(fdIt);
 }
 void ClientList::removeByUser(std::string &user) {
 	std::map<int, Client>::iterator fdIt = getClientByUser(user);
@@ -202,9 +202,9 @@ void ClientList::removeByUser(std::string &user) {
 	if (fdIt == end())
 		return;
 
-	_clients.erase(fdIt);
 	_nickToClient.erase(fdIt->second.getNick());
 	_userToClient.erase(fdIt->second.getUser());
+	_clients.erase(fdIt);
 }
 
 void ClientList::updateNick(int fd, std::string &newNick) {

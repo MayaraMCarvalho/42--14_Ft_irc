@@ -77,6 +77,8 @@ bool Channel::userCanJoin(int userFD) {
 	return true;
 }
 
+bool Channel::empty() { return _users.empty(); }
+
 // Setters
 void Channel::setTopic(std::string topic) { _topic = topic; }
 
@@ -162,6 +164,8 @@ void Channel::sendToAll(std::string &message)
 {
 	for (std::map<int, int>::iterator it = _users.begin(); it != _users.end(); ++it)
 	{
+		std::cerr << "Sending message " << message << " to "
+			<< it->first << std::endl;
 		IRCServer::sendMessage(it->first, message);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/17 03:09:42 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/18 10:54:30 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class Client {
 		bool getMode( t_mode mode) ;
 		int getModeFlags();
 
+
 		// Setters
 		void setNick(std::string nick);
 		void setUser(std::string user);
@@ -72,7 +73,7 @@ class Client {
 
 		// Channel functions
 		bool isInChannel(std::string channelStr) ;
-		void addChannel(Channel channel);
+		void addChannel(std::string channelStr);
 		void removeChannel(std::string channelStr);
 		void sendMessage(std::string &msg);
 

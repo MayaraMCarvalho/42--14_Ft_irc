@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include "Channel.hpp"
 #include "IrcServer.hpp"
 
 Client::Client() : _nick(""), _user(""), _host(""), _fd(-1), _channels(),
@@ -109,9 +108,9 @@ void Client::setStatus(t_status status) { _status = status; }
 bool Client::isInChannel(std::string channelStr) {
 	return _channels.find(channelStr) != _channels.end();
 }
-void Client::addChannel(Channel channel)
+void Client::addChannel(std::string channelStr)
 {
-	_channels.insert(channel.getName());
+	_channels.insert(channelStr);
 }
 void Client::removeChannel(std::string channelStr) {
 	_channels.erase(channelStr);

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/16 18:46:41 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:00:43 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ IRCServer::IRCServer(void) {}
 
 IRCServer::~IRCServer(void) {}
 
+IRCServer::IRCServer(const std::string &port, const std::string &password)
+	: _port(port), _password(password), _server_fd(-1), _bot("ChatBot"),
+	_clients(), _channels(&_clients) {}
+
 // Getters ====================================================================
 
 // Setters ====================================================================
 
 // Methods ====================================================================
-IRCServer::IRCServer(const std::string &port, const std::string &password)
-	: _port(port), _password(password), _server_fd(-1), _bot("ChatBot") {}
 
 void IRCServer::setupServer(void)
 {
@@ -123,6 +125,8 @@ void IRCServer::acceptNewClient(void)
 
 
 	_clients.add(client_fd, &client_address.sin_addr);
+
+	_channels.join(client_fd, "default");
 	struct pollfd pfd = {client_fd, POLLIN, 0};
 	_poll_fds.push_back(pfd);
 
@@ -158,24 +162,29 @@ void IRCServer::handleClientMessage(int client_fd)
 
 	std::map<std::string, Channel>::iterator it = _channels.get("default");
 
-	it->second.sendToAll(message);
+	if (it != _channels.end())
+		it->second.sendToAll(message);
+	else
+		std::cerr << "Failed to send message to channel default" << std::endl;
 }
 
 void IRCServer::removeClient(int client_fd)
 {
 	close(client_fd);
-	_clients.remove(client_fd);
+
+	_channels.partDisconnectedClient(client_fd);
 
 	for (std::vector<struct pollfd>::iterator it = _poll_fds.begin(); it != _poll_fds.end(); ++it)
 	{
 		if (it->fd == client_fd)
 		{
 			_poll_fds.erase(it);
+
 			break;
 		}
 	}
 
-	std::map<std::string, Channel>::iterator it;
+	_clients.remove(client_fd);
 }
 
 void IRCServer::sendMessage(int client_fd, const std::string &message)

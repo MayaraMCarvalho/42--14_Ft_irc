@@ -70,6 +70,7 @@ std::vector<char> FileTransfer::readFile(const std::string &file_name)
 	std::vector<char> file_data;
 	file_data.resize(static_cast<size_t>(file_size));
 	file.read(&file_data[0], file_size);
+	file.close();
 
 	return (file_data);
 

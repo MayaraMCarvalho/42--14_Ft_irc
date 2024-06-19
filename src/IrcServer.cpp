@@ -3,32 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/14 16:51:18 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/18 11:14:58 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/IrcServer.hpp"
 #include "../include/Channel.hpp"
+#include "../include/Commands.hpp"
 
 // Constructor & Destructor ===================================================
 IRCServer::IRCServer(void) {}
 
 IRCServer::~IRCServer(void) {}
 
+IRCServer::IRCServer(const std::string &port, const std::string &password)
+	: _port(port), _password(password), _server_fd(-1), _bot("ChatBot"),
+	_clients(), _channels(&_clients) {}
+
 // Getters ====================================================================
 
 // Setters ====================================================================
 
 // Methods ====================================================================
-IRCServer::IRCServer(const std::string &port, const std::string &password)
-	: _port(port), _password(password), _server_fd(-1), _bot("ChatBot") {}
 
 void IRCServer::setupServer(void)
 {
-	// struct	pollfd pfd;
 	int	opt;
 
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -52,10 +54,6 @@ void IRCServer::setupServer(void)
 		throw std::runtime_error("Failed to listen on socket");
 
 	fcntl(_server_fd, F_SETFL, O_NONBLOCK);
-
-	// std::memset(pdf, 0, sizeof(pdf));
-	// pdf.fd = _server_fd;
-	// pdf.events = POLLIN;
 	struct pollfd pfd = {_server_fd, POLLIN, STDIN_FILENO};
 	_poll_fds.push_back(pfd);
 }
@@ -98,15 +96,13 @@ void IRCServer::run(void)
 		if (poll_count < 0)
 			throw std::runtime_error("Poll error");
 
-		for (size_t i = 0; i < _poll_fds.size(); ++i)
+		if (_poll_fds[0].revents & POLLIN)
+			acceptNewClient();
+
+		for (size_t i = 1; i < _poll_fds.size(); ++i)
 		{
 			if (_poll_fds[i].revents & POLLIN)
-			{
-				if (_poll_fds[i].fd == _server_fd)
-					acceptNewClient();
-				else
-					handleClientMessage(_poll_fds[i].fd);
-			}
+				handleClientMessage(_poll_fds[i].fd);
 		}
 	}
 }
@@ -128,7 +124,10 @@ void IRCServer::acceptNewClient(void)
 
 	fcntl(client_fd, F_SETFL, O_NONBLOCK);
 
-	_clients[client_fd] = Client(client_fd);
+
+	_clients.add(client_fd, &client_address.sin_addr);
+
+	_channels.join(client_fd, "default");
 	struct pollfd pfd = {client_fd, POLLIN, 0};
 	_poll_fds.push_back(pfd);
 
@@ -156,7 +155,7 @@ void IRCServer::handleClientMessage(int client_fd)
 	buffer[nbytes] = '\0';
 	std::string message(buffer);
 	std::cout << "Received message from client " << client_fd << ": " << message << std::endl;
-	// Channel channel;
+
 
 	//
 	Commands commands;
@@ -170,30 +169,32 @@ void IRCServer::handleClientMessage(int client_fd)
 		handleFileTransfer(client_fd, message);
 	else
 		_bot.respondToMessage(client_fd, message); // call for the bot to respond
-	// channel.sendToAll(message);
-	//  sendMessage(client_fd, message);
-	if (_channels.find("default") != _channels.end())
-		_channels["default"].sendToAll(this, message);
+
+	std::map<std::string, Channel>::iterator it = _channels.get("default");
+
+	if (it != _channels.end())
+		it->second.sendToAll(message);
+	else
+		std::cerr << "Failed to send message to channel default" << std::endl;
 }
 
 void IRCServer::removeClient(int client_fd)
 {
 	close(client_fd);
-	_clients.erase(client_fd);
+
+	_channels.partDisconnectedClient(client_fd);
 
 	for (std::vector<struct pollfd>::iterator it = _poll_fds.begin(); it != _poll_fds.end(); ++it)
 	{
 		if (it->fd == client_fd)
 		{
 			_poll_fds.erase(it);
+
 			break;
 		}
 	}
 
-	std::map<std::string, Channel>::iterator it;
-
-	for (it = _channels.begin(); it != _channels.end(); ++it)
-		it->second.removeClient(client_fd);
+	_clients.remove(client_fd);
 }
 
 void IRCServer::sendMessage(int client_fd, const std::string &message)

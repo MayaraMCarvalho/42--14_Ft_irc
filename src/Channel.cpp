@@ -3,59 +3,169 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/23 18:17:28 by lucperei          #+#    #+#             */
-/*   Updated: 2024/05/25 21:20:27 by lucperei         ###   ########.fr       */
+/*   Created: 2024/06/12 03:47:00 by gmachado          #+#    #+#             */
+/*   Updated: 2024/06/12 03:53:35 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/Channel.hpp"
-#include "../include/IrcServer.hpp"
+#include "Channel.hpp"
+#include "IrcServer.hpp"
 
-// Constructor & Destructor ===================================================
-Channel::Channel(void) {}
+Channel::Channel(void) : _name("#default"), _topic(""), _users(),
+	_channelModeFlags(NO_CMODE), _limit(-1) { }
 
-Channel::Channel(const std::string &name) : _name(name) {}
+Channel::Channel(std::string name) : _name(name), _topic(""), _users(),
+	_channelModeFlags(NO_CMODE), _limit(-1) { }
 
-// Methods ====================================================================
-void Channel::addClient(int client_fd)
-{
-	_clients.insert(client_fd);
+Channel::Channel(const Channel &src) : _name(src._name), _topic(src._topic),
+	_users(src._users), _channelModeFlags(src._channelModeFlags),
+	_limit(src._limit) { }
+
+Channel::~Channel(void) { }
+
+Channel &Channel::operator=(const Channel &src) {
+	if (this == &src)
+		return *this;
+
+	_name = src._name;
+	_topic = src._topic;
+	_users = src._users;
+	_channelModeFlags = src._channelModeFlags;
+	_limit = src._limit;
+
+	return *this;
 }
 
-void Channel::removeClient(int client_fd)
-{
-	_clients.erase(client_fd);
+// Getters
+std::string Channel::getName(void) { return _name; }
+
+std::string Channel::getTopic(void) { return _topic; }
+
+int	Channel::getUserLimit(void) { return _limit; }
+
+bool Channel::getChannelMode(t_cmode mode) {
+	return (_channelModeFlags & mode) != 0;
 }
 
-bool Channel::isClientInChannel(int client_fd) const
-{
-	return (_clients.find(client_fd) != _clients.end());
+int Channel::getChannelModeFlags(void) { return _channelModeFlags; }
+
+bool Channel::getUserMode(int userFD, t_umode mode) {
+	return (getUserModeFlags(userFD) & mode) != 0;
 }
 
-// void	Channel::sendToAll(int except_fd) {
-/*void	Channel::sendToAll(int except_fd, const std::string &message) {
-	IRCServer *server = new IRCServer("port", "password");
-	int	client_fd;
-	for (std::set<int>::const_iterator it = _clients.begin(); it != _clients.end(); ++it) {
-		client_fd = *it;
-		if (client_fd != except_fd) {
+int Channel::getUserModeFlags(int userFD) {
+	std::map<int, int>::iterator it = _users.find(userFD);
 
-			//sendMessage(client_fd, message);
-			server->sendMessage(client_fd, message);
-		}
-	}
-	delete server;
-}*/
+	// TODO: add exception
+	if (it == _users.end())
+		return NO_UMODE;
 
-// I need to check why it is not forwarding the messages to all clients since I am specifying
-void Channel::sendToAll(IRCServer *server, const std::string &message)
+	return it->second;
+}
+
+bool Channel::isUserInChannel(int userFD) {
+	std::map<int, int>::iterator it = _users.find(userFD);
+
+	return (it != _users.end());
+}
+
+bool Channel::userCanJoin(int userFD) {
+	// TODO: mask checks
+	(void)userFD;
+	return true;
+}
+
+bool Channel::empty() { return _users.empty(); }
+
+// Setters
+void Channel::setTopic(std::string topic) { _topic = topic; }
+
+void Channel::setUserLimit(int limit) {_limit = limit; }
+
+void Channel::setChannelMode(std::string modeStr) {
+	int newModeFlags;
+
+	if (modeStr.length() != 2)
+		return;
+
+	if (modeStr[1] == 'a')
+		newModeFlags = ANONYMOUS;
+	else if (modeStr[1] == 'i')
+		newModeFlags = INVITEONLY;
+	else if (modeStr[1] == 'm')
+		newModeFlags = MODERATED;
+	else if (modeStr[1] == 'n')
+		newModeFlags = NO_OUT_MSG;
+	else if (modeStr[1] == 'q')
+		newModeFlags = QUIET;
+	else if (modeStr[1] == 'p')
+		newModeFlags = PRIVATE;
+	else if (modeStr[1] == 's')
+		newModeFlags = SECRET;
+	else if (modeStr[1] == 'r')
+		newModeFlags = SERV_REOP;
+	else if (modeStr[1] == 't')
+		newModeFlags = OP_TOPIC;
+	else
+		return;
+
+	if (modeStr[0] == '+')
+		_channelModeFlags |= newModeFlags;
+	else if (modeStr[0] == '-')
+		_channelModeFlags &= (~newModeFlags);
+}
+
+void Channel::setChannelModeFlags(int modeFlags) {
+	_channelModeFlags = modeFlags;
+}
+
+void Channel::setUserMode(int userFD, std::string modeStr) {
+	std::map<int, int>::iterator it = _users.find(userFD);
+
+	// TODO: add exception
+	if (it == _users.end())
+		return;
+
+	int newModeFlags;
+
+	if (modeStr.length() != 2)
+		return;
+
+	if (modeStr[1] == 'O')
+		newModeFlags = CREATOR;
+	else if (modeStr[1] == 'o')
+		newModeFlags = CHANOP;
+	else if (modeStr[1] == 'v')
+		newModeFlags = VOICE;
+	else
+		return;
+
+	if (modeStr[0] == '+')
+		(it->second) |= newModeFlags;
+	else if (modeStr[0] == '-')
+		(it->second) &= (~newModeFlags);
+}
+
+void Channel::addUser(int fd, int userModeFlags) {
+	// TODO: add exception
+	if (!userCanJoin(fd))
+		return;
+
+	_users.insert(std::pair<int, int>(fd, userModeFlags));
+}
+
+void Channel::removeUser(int fd) {
+	_users.erase(fd);
+}
+
+void Channel::sendToAll(std::string &message)
 {
-	for (std::set<int>::const_iterator it = _clients.begin(); it != _clients.end(); ++it)
+	for (std::map<int, int>::iterator it = _users.begin(); it != _users.end(); ++it)
 	{
-		int	client_fd = *it;
-
-		server->sendMessage(client_fd, message);
+		std::cerr << "Sending message " << message << " to "
+			<< it->first << std::endl;
+		IRCServer::sendMessage(it->first, message);
 	}
 }

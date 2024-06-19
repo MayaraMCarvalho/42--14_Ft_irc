@@ -6,7 +6,7 @@
 #    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/18 11:12:49 by gmachado         ###   ########.fr        #
+#    Updated: 2024/06/18 09:06:05 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,6 +42,7 @@ BCYAN		= \033[1;36m
 BWHITE		= \033[1;37m
 
 BRANCH_FILE = .branch_name
+DEVELOP_BRANCH = develop
 MAIN_BRANCH = master
 
 OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
@@ -82,15 +83,16 @@ val:
 			@valgrind ./$(NAME)
 
 new-branch:
-			git checkout $(MAIN_BRANCH)
-			git pull origin $(MAIN_BRANCH)
+			git checkout $(DEVELOP_BRANCH)
+			git pull origin $(DEVELOP_BRANCH)
 			@echo "$(BGREEN)Enter the name of the new branch: "; \
 			read branch_name; \
 			feature_branch="feature/$$branch_name"; \
 			echo $$feature_branch; \
 			echo $$feature_branch > $(BRANCH_FILE); \
 			echo "Branch $$feature_branch created."; \
-			git checkout -b $$(cat $(BRANCH_FILE))
+			git checkout -b $$(cat $(BRANCH_FILE)); \
+			git push --set-upstream origin $$(cat $(BRANCH_FILE))
 
 git:
 			clear
@@ -122,22 +124,28 @@ git:
 			echo -n "\n"; \
 			echo "$(BBLUE)"; \
 			git commit -m "[ft_irc] $$type: $$msg"; \
-			git checkout $(MAIN_BRANCH); \
-			git pull origin $(MAIN_BRANCH); \
+			git checkout $(DEVELOP_BRANCH); \
+			git pull origin $(DEVELOP_BRANCH); \
 			git checkout $(shell cat $(BRANCH_FILE)); \
-			git merge $(MAIN_BRANCH); \
+			git merge $(DEVELOP_BRANCH); \
 			git push origin $(shell cat $(BRANCH_FILE)); \
 
 delete-branch:
-			git checkout $(MAIN_BRANCH)
-			git pull origin $(MAIN_BRANCH)
+			git checkout $(DEVELOP_BRANCH)
+			git pull origin $(DEVELOP_BRANCH)
 			git checkout $(shell cat $(BRANCH_FILE))
-			git merge $(MAIN_BRANCH)
-			git checkout $(MAIN_BRANCH)
+			git merge $(DEVELOP_BRANCH)
+			git checkout $(DEVELOP_BRANCH)
 			git merge $(shell cat $(BRANCH_FILE))
-			git push origin $(MAIN_BRANCH)
+			git push origin $(DEVELOP_BRANCH)
 			git branch -d $(shell cat $(BRANCH_FILE))
 			git push origin --delete $(shell cat $(BRANCH_FILE))
+
+merge-to-master:
+			git checkout $(MASTER_BRANCH)
+			git pull origin $(MASTER_BRANCH)
+			git merge $(DEVELOP_BRANCH)
+			git push origin $(MASTER_BRANCH)
 
 lazy:
 			@clear

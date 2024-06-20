@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 17:30:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 17:37:29 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ class Commands
 
 		bool		validationsArg(std::string &arg);
 
-		void		saveNick(std::string &nick);
-		void		saveUser(std::string &user, std::string &host);
+		void		save(std::string &nick);
+		void		save(std::string &user, std::string &host);
 };
 
 #endif

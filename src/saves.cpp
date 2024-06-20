@@ -6,13 +6,13 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 17:34:47 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 17:37:12 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
 
-void Commands::saveNick(std::string &nick)
+void Commands::save(std::string &nick)
 {
 	std::string message;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
@@ -26,7 +26,7 @@ void Commands::saveNick(std::string &nick)
 	std::cout << message << std::endl;
 }
 
-void Commands::saveUser(std::string &user, std::string &host)
+void Commands::save(std::string &user, std::string &host)
 {
 	std::string message;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);

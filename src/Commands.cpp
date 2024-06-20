@@ -59,7 +59,7 @@ void Commands::commandNick( void )
 		if (!validationsArg(nick))
 			return ;
 		else
-			saveNick(nick);
+			save(nick);
 		return ;
 	}
 	it->second.sendMessage(message);
@@ -85,7 +85,7 @@ void Commands::commandUser( void )
 		if (!validationsArg(user) || !validationsArg(host))
 			return ;
 		else
-			saveUser(user, host);
+			save(user, host);
 		return ;
 	}
 	it->second.sendMessage(message);

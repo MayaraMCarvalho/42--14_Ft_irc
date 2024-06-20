@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 09:44:26 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 15:30:07 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,12 @@ void IRCServer::acceptNewClient(void)
 
 	std::cout << BLUE << "New client connected: ";
 	std::cout << BYELLOW << client_fd << RESET << std::endl;
+
+	std::map<int, Client>::iterator it = _clients.getClient(client_fd);
+	std::string message = BPURPLE + "-------------------------------\n" +
+		"------ Welcome to ft_IRC ------\n" +
+		"-------------------------------\n" + RESET;
+	it->second.sendMessage(message);
 }
 
 void IRCServer::handleClientMessage(int client_fd)
@@ -150,7 +156,7 @@ void IRCServer::handleClientMessage(int client_fd)
 		if (nbytes < 0 && errno != EWOULDBLOCK)
 			std::cerr << "Read error on client " << client_fd << std::endl;
 		else if (nbytes == 0)
-			std::cout << "Client disconnected: " << client_fd << std::endl;
+			std::cout << "Client disconnected: " << BYELLOW << client_fd << std::endl;
 		std::cout << RESET;
 		removeClient(client_fd);
 		return;
@@ -170,9 +176,9 @@ void IRCServer::handleClientMessage(int client_fd)
 
 	//
 	Commands commands;
-	if (commands.isCommand(message))
+	if (!message.empty() && commands.isCommand(message, client_fd, _clients))
 	{
-		std::cout << PURPLE << "this command\n" << RESET << std::endl;//alterar
+		//
 	}
 	//
 

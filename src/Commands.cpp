@@ -12,11 +12,7 @@ Commands::~Commands(void) {}
 // Methods ====================================================================
 bool Commands::isCommand(const std::string &message)
 {
-	std::string command = message;
-	if (!command.empty() && command[command.length() - 1] == '\n')
-		command.erase(command.length() - 1);
-
-	// std::string commands[4] = { "NICK", "JOIN", "PART", "PRIVMSG" };
+	std::string command = message; // Parsing da mensagem
 
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 	cmdFuncs["NICK"] = &Commands::commandNick;

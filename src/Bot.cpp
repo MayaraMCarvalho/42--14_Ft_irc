@@ -27,5 +27,6 @@ void Bot::respondToMessage(int client_fd, const std::string &message)
 void Bot::sendMessage(int client_fd, const std::string &message)
 {
 	// std::cout << "Bot sending message to client " << client_fd << ": " << message << std::endl; // Adicionando log de depura��o
-	write(client_fd, message.c_str(), message.length());
+	std::string full_message = message + "\n";
+	write(client_fd, full_message.c_str(), full_message.length());
 }

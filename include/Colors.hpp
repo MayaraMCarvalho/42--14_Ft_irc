@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:45:45 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/14 16:45:59 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 09:00:13 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,13 @@ const std::string PURPLE = "\033[35;1m";
 const std::string CYAN = "\033[36;1m";
 const std::string GRAY = "\033[37;1m";
 
+// Bold Colors
+const std::string BRED = "\033[1;31m";
+const std::string BGREEN = "\033[1;32m";
+const std::string BYELLOW = "\033[1;33m";
+const std::string BBLUE = "\033[1;34m";
+const std::string BPURPLE = "\033[1;35m";
+const std::string BCYAN = "\033[1;36m";
+const std::string BWHITE = "\033[1;37m";
 
 #endif

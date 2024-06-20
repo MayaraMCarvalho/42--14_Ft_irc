@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/18 11:14:58 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 09:44:26 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,8 @@ void IRCServer::run(void)
 
 	setupServer();
 	setupSignalHandlers();
-	std::cout << "Server running on port " << _port << std::endl;
+	std::cout << GREEN << "Server running on port ";
+	std::cout << BYELLOW << _port << RESET << std::endl;
 
 	while (true)
 	{
@@ -131,7 +132,8 @@ void IRCServer::acceptNewClient(void)
 	struct pollfd pfd = {client_fd, POLLIN, 0};
 	_poll_fds.push_back(pfd);
 
-	std::cout << "New client connected: " << client_fd << std::endl;
+	std::cout << BLUE << "New client connected: ";
+	std::cout << BYELLOW << client_fd << RESET << std::endl;
 }
 
 void IRCServer::handleClientMessage(int client_fd)
@@ -144,27 +146,36 @@ void IRCServer::handleClientMessage(int client_fd)
 
 	if (nbytes <= 0)
 	{
+		std::cout << RED;
 		if (nbytes < 0 && errno != EWOULDBLOCK)
 			std::cerr << "Read error on client " << client_fd << std::endl;
 		else if (nbytes == 0)
 			std::cout << "Client disconnected: " << client_fd << std::endl;
+		std::cout << RESET;
 		removeClient(client_fd);
 		return;
 	}
 
 	buffer[nbytes] = '\0';
 	std::string message(buffer);
-	std::cout << "Received message from client " << client_fd << ": " << message << std::endl;
 
+	//
+	if (!message.empty() && message[message.length() - 1] == '\n')
+		message.erase(message.length() - 1);
+	//
+
+	std::cout << CYAN;
+	std::cout << "Received message from client " << client_fd;
+	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
 	Commands commands;
 	if (commands.isCommand(message))
 	{
-		std::cout << PURPLE << "this command\n" << RESET << std::endl;//deletar
+		std::cout << PURPLE << "this command\n" << RESET << std::endl;//alterar
 	}
-
 	//
+
 	else if (message.substr(0, 5) == "/file")
 		handleFileTransfer(client_fd, message);
 	else
@@ -189,7 +200,6 @@ void IRCServer::removeClient(int client_fd)
 		if (it->fd == client_fd)
 		{
 			_poll_fds.erase(it);
-
 			break;
 		}
 	}
@@ -204,7 +214,10 @@ void IRCServer::sendMessage(int client_fd, const std::string &message)
 	std::string full_message = message + "\n";
 	nbytes = write(client_fd, full_message.c_str(), full_message.length());
 	if (nbytes < 0)
-		std::cerr << "Write error on client " << client_fd << std::endl;
+	{
+		std::cerr << RED << "Write error on client " << client_fd << std::endl;
+		std::cout << RESET;
+	}
 }
 
 void IRCServer::handleFileTransfer(int client_fd, const std::string &command)

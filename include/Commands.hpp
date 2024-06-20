@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 16:23:23 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 17:30:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,17 @@
 # include "../include/ClientList.hpp"
 # include "../include/Client.hpp"
 
-# define NICKNAME_MAX_LENGTH 20
+# define MAX_LENGTH 30
+
 # define ALPHA_SET "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-# define NUM_SET "0123456789"
+# define NUM_SET "0123456789_"
 # define ALPHA_NUM_SET ALPHA_SET NUM_SET
+
+# define NICK "NICK"
+# define USER "USER"
+# define JOIN "JOIN"
+# define PART "PART"
+# define PRIVMSG "PRIVMSG"
 
 class Commands
 {
@@ -48,12 +55,17 @@ class Commands
 	// Methods ================================================================
 		bool		isCommand(const std::string &message);
 		void		parsingArgs(const std::string &message);
+
 		void		commandNick( void );
-		bool		validationsNick(std::string &nick);
 		void		commandUser( void );
 		void		commandJoin( void );
 		void		commandPart( void );
 		void		commandPrivMsg( void );
+
+		bool		validationsArg(std::string &arg);
+
+		void		saveNick(std::string &nick);
+		void		saveUser(std::string &user, std::string &host);
 };
 
 #endif

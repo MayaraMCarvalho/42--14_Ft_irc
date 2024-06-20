@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 15:14:53 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 16:23:23 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,14 @@ class Commands
 {
 	private:
 		std::vector<std::string>	_args;
+		ClientList					&_clients;
+		int							_fd;
 
 	public:
 	// Constructor & Destructor ===============================================
-		Commands( void );
+		Commands( ClientList &clients, int fd );
 		~Commands( void );
+
 	// Exceptions =============================================================
 
 	// Getters ================================================================
@@ -43,14 +46,14 @@ class Commands
 	// Setters ================================================================
 
 	// Methods ================================================================
-		bool		isCommand(const std::string &message, int client_fd, ClientList &_clients);
+		bool		isCommand(const std::string &message);
 		void		parsingArgs(const std::string &message);
-		void		commandNick(int client_fd, ClientList &_clients);
-		bool		validationsNick(std::string nick, int client_fd, ClientList &_clients);
-		void		commandUser(int client_fd, ClientList &_clients);
-		void		commandJoin(int client_fd, ClientList &_clients);
-		void		commandPart(int client_fd, ClientList &_clients);
-		void		commandPrivMsg(int client_fd, ClientList &_clients);
+		void		commandNick( void );
+		bool		validationsNick(std::string &nick);
+		void		commandUser( void );
+		void		commandJoin( void );
+		void		commandPart( void );
+		void		commandPrivMsg( void );
 };
 
 #endif

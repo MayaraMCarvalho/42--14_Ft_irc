@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 15:30:07 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 16:19:22 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,8 +175,8 @@ void IRCServer::handleClientMessage(int client_fd)
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
-	Commands commands;
-	if (!message.empty() && commands.isCommand(message, client_fd, _clients))
+	Commands commands(this->_clients, client_fd);
+	if (!message.empty() && commands.isCommand(message))
 	{
 		//
 	}

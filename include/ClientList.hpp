@@ -6,15 +6,20 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/16 18:30:34 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 04:02:40 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_LIST_HPP
 # define CLIENT_LIST_HPP
 
-#include <map>
-#include "Client.hpp"
+# include <map>
+# include "Client.hpp"
+# include <stdexcept>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include "numCode.hpp"
 
 class ClientList {
 	public:
@@ -45,8 +50,12 @@ class ClientList {
 		void remove(int fd);
 		void removeByNick(std::string &nick);
 		void removeByUser(std::string &user);
-		void updateNick(int fd, std::string &newNick);
-		void updateUser(int fd, std::string &newUser);
+		t_numCode updateNick(int fd, std::string &newNick);
+		t_numCode updateUser(int fd, std::string &newUser);
+
+		static bool isValidNick(std::string nick);
+		static bool isValidUser(std::string user);
+		static bool isSpecialChar(char ch);
 
 	private:
 		std::map<int, Client> _clients;

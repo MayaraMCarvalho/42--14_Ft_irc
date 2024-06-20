@@ -6,13 +6,10 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/18 02:19:21 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 04:16:52 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include "ClientList.hpp"
 
 ClientList::ClientList(void) : _clients(), _userToClient(), _nickToClient() { }
@@ -207,30 +204,121 @@ void ClientList::removeByUser(std::string &user) {
 	_clients.erase(fdIt);
 }
 
-void ClientList::updateNick(int fd, std::string &newNick) {
+t_numCode ClientList::updateNick(int fd, std::string &newNick) {
+
+	if (newNick.empty())
+		return ERR_NONICKNAMEGIVEN;
+
+	if (!isValidNick(newNick))
+		return ERR_ERRONEUSNICKNAME;
+
 	std::map<int, Client>::iterator it = getClient(fd);
 
 	if (it == end())
-		return;
+		throw std::invalid_argument("Unknown user");
+
+	Client::t_status status = it->second.getStatus();
+
+	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
+		throw std::invalid_argument("Invalid user status");
+
+	if (status == Client::CONNECTED)
+		throw std::invalid_argument("User must be authenticated first");
+
+	if (_nickToClient.find(newNick) != _nickToClient.end())
+		return ERR_NICKNAMEINUSE;
+
+	else if (status == Client::AUTHENTICATED)
+		it->second.setStatus(Client::GOT_NICK);
+
+	else if (status == Client::GOT_USER)
+		it->second.setStatus(Client::REGISTERED);
 
 	if (!it->second.getNick().empty())
 		_nickToClient.erase(it->second.getNick());
 
-	if (!newNick.empty())
-		_nickToClient.insert(std::pair<std::string,
-			std::map<int, Client>::iterator>(newNick, it));
+	_nickToClient.insert(std::pair<std::string,
+		std::map<int, Client>::iterator>(newNick, it));
+	return NO_CODE;
 }
 
-void ClientList::updateUser(int fd, std::string &newUser) {
+t_numCode ClientList::updateUser(int fd, std::string &newUser) {
+
+	if (newUser.empty())
+		return ERR_NEEDMOREPARAMS;
+
+	if (!isValidUser(newUser))
+		throw std::invalid_argument("Invalid user format");
+
 	std::map<int, Client>::iterator it = getClient(fd);
 
 	if (it == end())
-		return;
+		throw std::invalid_argument("Unknown user");
 
-	if (!it->second.getNick().empty())
-		_nickToClient.erase(it->second.getUser());
+	Client::t_status status = it->second.getStatus();
 
-	if (!newUser.empty())
-		_nickToClient.insert(std::pair<std::string,
-			std::map<int, Client>::iterator>(newUser, it));
+	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
+		throw std::invalid_argument("Invalid user status");
+
+	if (status == Client::CONNECTED)
+		throw std::invalid_argument("User must be authenticated first");
+
+	if (status == Client::REGISTERED)
+		return ERR_ALREADYREGISTERED;
+
+	else if (status == Client::AUTHENTICATED)
+		it->second.setStatus(Client::GOT_USER);
+
+	else if (status == Client::GOT_USER)
+		it->second.setStatus(Client::REGISTERED);
+
+	if (!it->second.getUser().empty())
+		_userToClient.erase(it->second.getUser());
+
+	_userToClient.insert(std::pair<std::string,
+		std::map<int, Client>::iterator>(newUser, it));
+	return NO_CODE;
+}
+
+bool ClientList::isValidNick(std::string nick) {
+	if (nick.empty() || nick.length() > 9)
+		return false;
+
+	std::string::iterator charIt = nick.begin();
+
+	if (!(std::isalpha(*charIt) || isSpecialChar(*charIt)))
+		return false;
+
+	for(++charIt; charIt != nick.end(); ++charIt)
+	{
+		if (!(std::isalnum(*charIt) || isSpecialChar(*charIt) || *charIt == '-'))
+			return false;
+	}
+
+	return true;
+}
+
+bool ClientList::isValidUser(std::string user) {
+	if (user.empty())
+		return false;
+
+	std::string::iterator charIt = user.begin();
+
+	for(; charIt != user.end(); ++charIt)
+	{
+		if (!((*charIt >= 0x01 && *charIt <= 0x09)
+			|| (*charIt >= 0x0B && *charIt <= 0x0C)
+			|| (*charIt >= 0x0E && *charIt <= 0x1F)
+			|| (*charIt >= 0x21 && *charIt <= 0x3F)
+			|| (*charIt >= 0x41)))
+			return false;
+	}
+
+	return true;
+}
+
+
+
+bool ClientList::isSpecialChar(char ch) {
+	return (ch >= 0x5B && ch <= 0x60) || (ch >= 0x7B && ch <= 0x7D);
 }

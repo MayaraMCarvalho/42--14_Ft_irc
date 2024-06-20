@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/18 11:10:03 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/19 03:19:05 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 #include "../include/FileTransfer.hpp"
 #include "../include/Bot.hpp"
 #include "../include/colors.hpp"
+#include "../include/numCode.hpp"
 
 class	Channel;
 
@@ -43,7 +44,6 @@ class IRCServer
 		std::vector<struct pollfd>		_poll_fds;
 		FileTransfer 					_file_transfer;
 		Bot 							_bot;
-
 		ClientList						_clients;
 		ChannelList						_channels;
 
@@ -64,6 +64,7 @@ class IRCServer
 		IRCServer(const std::string &port, const std::string &password);
 		void		setupServer(void);
 		void		run(void);
+		t_numCode	authenticate(int userFD, std::string password);
 		void		acceptNewClient(void);
 		void		handleClientMessage(int client_fd);
 		void		removeClient(int client_fd);

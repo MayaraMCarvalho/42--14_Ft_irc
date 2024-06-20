@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/18 11:14:58 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 02:35:55 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void IRCServer::signalHandler(int signal)
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
 		std::cout << "\nExiting gracefully." << std::endl;
-		exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS); // <-memory leak
 	}
 }
 
@@ -123,8 +123,6 @@ void IRCServer::acceptNewClient(void)
 	}
 
 	fcntl(client_fd, F_SETFL, O_NONBLOCK);
-
-
 	_clients.add(client_fd, &client_address.sin_addr);
 
 	_channels.join(client_fd, "default");
@@ -132,6 +130,27 @@ void IRCServer::acceptNewClient(void)
 	_poll_fds.push_back(pfd);
 
 	std::cout << "New client connected: " << client_fd << std::endl;
+}
+
+t_numCode IRCServer::authenticate(int userFD, std::string password) {
+	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
+
+	if (userIt == _clients.end())
+		throw std::invalid_argument("Unknown user");
+
+	Client::t_status status = userIt->second.getStatus();
+
+	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
+		throw std::invalid_argument("Invalid user status");
+
+	if (status != Client::CONNECTED)
+		throw std::invalid_argument("Already authenticated");
+
+	if (password != _password)
+		return ERR_PASSWDMISMATCH;
+
+	userIt->second.setStatus(Client::AUTHENTICATED);
+	return NO_CODE;
 }
 
 void IRCServer::handleClientMessage(int client_fd)

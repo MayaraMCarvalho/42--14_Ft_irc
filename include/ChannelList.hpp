@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/18 10:54:57 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:24:38 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <iostream>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "colors.hpp"
+# include "Colors.hpp"
 
 class ChannelList
 {

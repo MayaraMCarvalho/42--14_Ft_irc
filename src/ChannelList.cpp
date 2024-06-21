@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/18 11:04:01 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 19:24:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void ChannelList::join(int userFD, std::string chanName) {
 
 	chanIt->second.addUser(userFD, _DEFAULT_FLAGS);
 	userIt->second.addChannel(chanName);
+
 }
 
 void ChannelList::part(int userFD, std::string chanName) {

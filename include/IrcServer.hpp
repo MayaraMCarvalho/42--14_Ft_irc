@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/18 11:10:03 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/21 09:06:34 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 #include "../include/ChannelList.hpp"
 #include "../include/FileTransfer.hpp"
 #include "../include/Bot.hpp"
-#include "../include/colors.hpp"
+#include "../include/Colors.hpp"
 
 class	Channel;
 
@@ -39,15 +39,15 @@ class IRCServer
 	private:
 		std::string						_port;
 		std::string						_password;
-		int 							_server_fd;
-		std::vector<struct pollfd>		_poll_fds;
-		FileTransfer 					_file_transfer;
+		int 							_serverFd;
+		std::vector<struct pollfd>		_pollFds;
+		FileTransfer 					_fileTransfer;
 		Bot 							_bot;
 
 		ClientList						_clients;
 		ChannelList						_channels;
 
-		void handleFileTransfer(int client_fd, const std::string &command);
+		void handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
 	// Constructor & Destructor ===============================================
@@ -65,9 +65,9 @@ class IRCServer
 		void		setupServer(void);
 		void		run(void);
 		void		acceptNewClient(void);
-		void		handleClientMessage(int client_fd);
-		void		removeClient(int client_fd);
-		static void	sendMessage(int client_fd, const std::string &message);
+		void		handleClientMessage(int clientFd);
+		void		removeClient(int clientFd);
+		static void	sendMessage(int clientFd, const std::string &message);
 		static void	signalHandler(int signal);
 		static void	setupSignalHandlers(void);
 };

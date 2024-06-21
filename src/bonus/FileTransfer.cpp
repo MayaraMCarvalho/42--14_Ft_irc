@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/FileTransfer.hpp"
+#include "FileTransfer.hpp"
 
 // Constructor ================================================================
 FileTransfer::FileTransfer(void) {}

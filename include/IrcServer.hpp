@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/21 09:06:34 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:03:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@
 #include <string>
 #include <vector>
 #include <poll.h>
-#include "../include/ClientList.hpp"
-#include "../include/ChannelList.hpp"
-#include "../include/FileTransfer.hpp"
-#include "../include/Bot.hpp"
-#include "../include/Colors.hpp"
+#include "ClientList.hpp"
+#include "ChannelList.hpp"
+#include "FileTransfer.hpp"
+#include "Bot.hpp"
+#include "Colors.hpp"
 
 class	Channel;
 

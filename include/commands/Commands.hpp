@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/21 09:03:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/21 11:03:55 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # include <vector>
 # include <unistd.h>
 
-# include "../include/Colors.hpp"
-# include "../include/ClientList.hpp"
-# include "../include/ChannelList.hpp"
-# include "../include/Client.hpp"
+# include "Colors.hpp"
+# include "ClientList.hpp"
+# include "ChannelList.hpp"
+# include "Client.hpp"
 
 # define MAX_LENGTH 30
 

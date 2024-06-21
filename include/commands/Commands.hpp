@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 14:37:06 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:43:26 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,17 @@ class	Channel;
 # define NUM_SET "0123456789_"
 # define ALPHA_NUM_SET ALPHA_SET NUM_SET
 
+# define PASS "PASS"
 # define NICK "NICK"
 # define USER "USER"
 # define JOIN "JOIN"
 # define PART "PART"
 # define PRIVMSG "PRIVMSG"
+# define KICK "KICK"
+# define INVITE "INVITE"
+# define TOPIC "TOPIC"
+# define MODE "MODE"
+# define QUIT "QUIT"
 
 class Commands
 {
@@ -52,11 +58,13 @@ class Commands
 		std::vector<std::string>	_args;
 		ClientList					&_clients;
 		ChannelList					&_channels;
-		int							_fd;
+		const int					_fd;
+		const std::string			&_serverPass;
 
 	public:
 	// Constructor & Destructor ===============================================
-		Commands( ClientList &clients, ChannelList &channels, int fd );
+		Commands( ClientList &clients, ChannelList &channels,
+			int fd, const std::string &pass);
 		~Commands( void );
 
 	// Exceptions =============================================================
@@ -67,14 +75,26 @@ class Commands
 
 	// Methods ================================================================
 		bool		isCommand(const std::string &message);
-		void		parsingArgs(const std::string &message);
+
 
 		// Commands.cpp
+		void		commandPass( void );
 		void		commandNick( void );
 		void		commandUser( void );
+
+		void		commandKick( void );
+		void		commandInvite( void );
+		void		commandTopic( void );
+		void		commandMode( void );
+		void		commandQuit( void );
+
+		// messages.cpp
 		void		commandJoin( void );
 		void		commandPart( void );
 		void		commandPrivMsg( void );
+		bool		sendMessage(int clientFd, const std::string &message);
+		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
+		std::string	getMessage( void );
 
 		// validations.cpp
 		bool		initialVerify(std::string &error, size_t num, std::string usage);
@@ -83,11 +103,10 @@ class Commands
 		bool		validMessage(std::string &message);
 
 		// utils.cpp
-		std::string	getMessage( void );
+		void		parsingArgs(const std::string &message);
 		void		save(std::string &nick);
 		void		save(std::string &user, std::string &host);
-		bool		sendMessage(int clientFd, const std::string &message);
-		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
+
 };
 
 #endif

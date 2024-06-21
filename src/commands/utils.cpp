@@ -3,27 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:11:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:45:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
-
-std::string Commands::getMessage( void )
+void Commands::parsingArgs(const std::string &message)
 {
-	std::string result;
+	std::string token;
+	std::istringstream tokenStream(message);
 
-	for (std::vector<std::string>::const_iterator it = _args.begin() + 2;
-			it != _args.end(); ++it)
-	{
-		if (it != _args.begin() + 2)
-			result.append(" ");
-		result.append(*it);
-	}
-	return result;
+	while (std::getline(tokenStream, token, ' '))
+		_args.push_back(token);
 }
 
 void Commands::save(std::string &nick)
@@ -52,36 +46,4 @@ void Commands::save(std::string &user, std::string &host)
 	message = GREEN + "User update successfully!\n" + RESET;
 	it->second.sendMessage(message);
 	std::cout << message << std::endl;
-}
-
-bool Commands::sendMessage(int clientFd, const std::string &message)
-{
-	ssize_t	nbytes;
-
-	if (clientFd == -1)
-		return false;
-
-	std::string fullMessage = BBLUE + "Message received from " +
-		BYELLOW + _clients.getNick(_fd) + BPURPLE +
-		"\n" + message + "\n" + RESET;
-
-	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
-	if (nbytes < 0)
-	{
-		std::cerr << RED << "Write error on client " << clientFd << std::endl;
-		std::cout << RESET;
-	}
-	return true;
-}
-
-bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message)
-{
-	if (channel == _channels.end())
-		return false;
-
-	std::string fullMessage = BBLUE + "Message received from " +
-		BYELLOW + _clients.getNick(_fd) + BPURPLE +
-		"\n" + message + "\n" + RESET;
-	channel->second.sendToAll(fullMessage);
-	return true;
 }

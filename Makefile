@@ -6,15 +6,25 @@
 #    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2024/06/25 04:56:09 by gmachado         ###   ########.fr        #
+=======
+#    Updated: 2024/06/21 11:43:51 by macarval         ###   ########.fr        #
+>>>>>>> [ft_irc] feat: Command PASS
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 
-SRCS		= main.cpp Bot.cpp Channel.cpp ChannelList.cpp Client.cpp \
-			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp \
-			utils.cpp validations.cpp
+SRCS		= main.cpp IrcServer.cpp \
+			\
+			Bot.cpp FileTransfer.cpp \
+			\
+			Channel.cpp ChannelList.cpp \
+			\
+			Client.cpp ClientList.cpp \
+			\
+			Commands.cpp messages.cpp utils.cpp validations.cpp
 
 VPATH		= src/ src/bonus src/channel src/client src/commands
 OBJS_PATH	= obj

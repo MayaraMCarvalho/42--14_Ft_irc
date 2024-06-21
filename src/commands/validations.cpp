@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 20:37:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/21 16:34:38 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 bool Commands::initialVerify(std::string &message, size_t num, std::string usage)
 {
-	if (_args.size() < num) // verificar se melhor usar =!
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+
+	if (_args.size() < num) // verificar se melhor usar !=
 	{
 		message = RED + "Error: Number of invalid arguments\n" +
 			usage + RESET;
 	}
-	// else if (it->second.getStatus() != 2)
-	// 	message = RED + "Error: Unauthenticated clients\n" + RESET;
+	else if (it->second.getStatus() != Client::AUTHENTICATED)
+		message = RED + "Error: Unauthenticated clients\n" + RESET;
 	else
 		return true;
 	return false;

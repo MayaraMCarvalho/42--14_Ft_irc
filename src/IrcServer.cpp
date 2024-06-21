@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:12:51 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:44:06 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,9 +135,9 @@ void IRCServer::acceptNewClient(void)
 	std::cout << BYELLOW << clientFd << RESET << std::endl;
 
 	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
-	std::string message = BPURPLE + "-------------------------------\n" +
-		"------ Welcome to ft_IRC ------\n" +
-		"-------------------------------\n" + RESET;
+	std::string message = BPURPLE + "-----------------------------------\n" +
+		"------ Welcome to IRC server ------\n" +
+		"-----------------------------------\n" + RESET;
 	it->second.sendMessage(message);
 }
 
@@ -185,24 +185,19 @@ void IRCServer::handleClientMessage(int clientFd)
 	buffer[nbytes] = '\0';
 	std::string message(buffer);
 
-	//
 	if (!message.empty() && message[message.length() - 1] == '\n')
 		message.erase(message.length() - 1);
-	//
 
 	std::cout << CYAN;
 	std::cout << "Received message from client " << clientFd;
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
-	//
-	//
-	Commands commands(this->_clients, this->_channels, clientFd);
+	Commands commands(this->_clients, this->_channels, clientFd, this->_password);
 	bool isCommand = false;
+
 	if (!message.empty() && commands.isCommand(message))
-	{
 		isCommand = true;
-	}
 	//
 	else if (message.substr(0, 5) == "/file")
 		handleFileTransfer(clientFd, message);
@@ -242,7 +237,7 @@ void IRCServer::sendMessage(int clientFd, const std::string &message)
 {
 	ssize_t	nbytes;
 
-	std::string fullMessage = message + "\n";
+	std::string fullMessage = message + "\r\n";
 	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
 	if (nbytes < 0)
 	{

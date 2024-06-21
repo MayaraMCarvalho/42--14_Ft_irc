@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/18 11:10:03 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:55:06 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 #include "../include/ChannelList.hpp"
 #include "../include/FileTransfer.hpp"
 #include "../include/Bot.hpp"
-#include "../include/colors.hpp"
+#include "../include/Colors.hpp"
 
 class	Channel;
 

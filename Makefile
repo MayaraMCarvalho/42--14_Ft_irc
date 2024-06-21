@@ -3,17 +3,18 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/18 09:06:05 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/20 20:26:55 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 
 SRCS		= main.cpp Bot.cpp Channel.cpp ChannelList.cpp Client.cpp \
-			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp
+			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp \
+			utils.cpp validations.cpp
 
 VPATH		= src/
 OBJS_PATH	= obj

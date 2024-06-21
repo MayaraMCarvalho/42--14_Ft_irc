@@ -23,7 +23,7 @@ class	Bot
 	private:
 		std::string	_name;
 
-		void	sendMessage(int client_fd, const std::string &message);
+		void	sendMessage(int clientFd, const std::string &message);
 
 	public:
 	// Constructor ============================================================
@@ -31,7 +31,7 @@ class	Bot
 		Bot(const std::string &name);
 
 	// Methods ================================================================
-		void	respondToMessage(int client_fd, const std::string &message);
+		void	respondToMessage(int clientFd, const std::string &message);
 
 };
 

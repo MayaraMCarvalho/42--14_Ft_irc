@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 21:40:48 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/21 09:03:20 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ class Commands
 		std::string	getMessage( void );
 		void		save(std::string &nick);
 		void		save(std::string &user, std::string &host);
-		bool		sendMessage(int client_fd, const std::string &message);
+		bool		sendMessage(int clientFd, const std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
 };
 

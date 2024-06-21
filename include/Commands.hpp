@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 17:37:29 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 21:40:48 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@
 # include <sstream>
 # include <map>
 # include <vector>
+# include <unistd.h>
 
 # include "../include/Colors.hpp"
 # include "../include/ClientList.hpp"
+# include "../include/ChannelList.hpp"
 # include "../include/Client.hpp"
 
 # define MAX_LENGTH 30
@@ -39,11 +41,12 @@ class Commands
 	private:
 		std::vector<std::string>	_args;
 		ClientList					&_clients;
+		ChannelList					&_channels;
 		int							_fd;
 
 	public:
 	// Constructor & Destructor ===============================================
-		Commands( ClientList &clients, int fd );
+		Commands( ClientList &clients, ChannelList &channels, int fd );
 		~Commands( void );
 
 	// Exceptions =============================================================
@@ -56,16 +59,25 @@ class Commands
 		bool		isCommand(const std::string &message);
 		void		parsingArgs(const std::string &message);
 
+		// Commands.cpp
 		void		commandNick( void );
 		void		commandUser( void );
 		void		commandJoin( void );
 		void		commandPart( void );
 		void		commandPrivMsg( void );
 
-		bool		validationsArg(std::string &arg);
+		// validations.cpp
+		bool		initialVerify(std::string &error, size_t num, std::string usage);
+		bool		validArg(std::string &arg);
+		bool		validChannel(std::string &channel, std::string &error);
+		bool		validMessage(std::string &message);
 
+		// utils.cpp
+		std::string	getMessage( void );
 		void		save(std::string &nick);
 		void		save(std::string &user, std::string &host);
+		bool		sendMessage(int client_fd, const std::string &message);
+		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
 };
 
 #endif

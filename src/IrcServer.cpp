@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 16:19:22 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/20 20:45:01 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,13 +175,15 @@ void IRCServer::handleClientMessage(int client_fd)
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
-	Commands commands(this->_clients, client_fd);
+	//
+	//
+	Commands commands(this->_clients, this->_channels, client_fd);
+	bool isCommand = false;
 	if (!message.empty() && commands.isCommand(message))
 	{
-		//
+		isCommand = true;
 	}
 	//
-
 	else if (message.substr(0, 5) == "/file")
 		handleFileTransfer(client_fd, message);
 	else
@@ -189,10 +191,13 @@ void IRCServer::handleClientMessage(int client_fd)
 
 	std::map<std::string, Channel>::iterator it = _channels.get("default");
 
-	if (it != _channels.end())
-		it->second.sendToAll(message);
-	else
-		std::cerr << "Failed to send message to channel default" << std::endl;
+	if (!isCommand)
+	{
+		if (it != _channels.end())
+			it->second.sendToAll(message);
+		else
+			std::cerr << "Failed to send message to channel default" << std::endl;
+	}
 }
 
 void IRCServer::removeClient(int client_fd)

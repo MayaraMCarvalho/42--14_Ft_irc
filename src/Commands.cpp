@@ -1,7 +1,8 @@
 #include "Commands.hpp"
 
 // Constructor & Destructor ===================================================
-Commands::Commands(ClientList &clients, int fd) : _clients(clients), _fd(fd) {}
+Commands::Commands(ClientList &clients, ChannelList &channels, int fd) :
+		_clients(clients), _channels(channels), _fd(fd) {}
 
 Commands::~Commands(void) {}
 
@@ -43,68 +44,122 @@ void Commands::parsingArgs(const std::string &message)
 
 void Commands::commandNick( void )
 {
-	std::string message;
+	std::string error;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
-	if (_args.size() != 2)
-	{
-		message = RED + "Error: Number of invalid arguments\n" +
-			"NICK <new_nickname>\n" + RESET;
-	}
-	// else if (it->second.getStatus() != 2)
-	// 	message = RED + "Error: Unauthenticated clients\n" + RESET;
-	else
+	if (initialVerify(error, 2, "NICK <new_nickname>\n"))
 	{
 		std::string nick = _args[1];
-		if (!validationsArg(nick))
+		if (!validArg(nick))
 			return ;
 		else
 			save(nick);
 		return ;
 	}
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
+	it->second.sendMessage(error);
+	std::cout << error << std::endl;
 }
 
 void Commands::commandUser( void )
 {
-	std::string message;
+	std::string error;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
-	if (_args.size() != 3)
-	{
-		message = RED + "Error: Number of invalid arguments\n" +
-			"USER <user> <host>\n" + RESET;
-	}
-	// else if (it->second.getStatus() != 2)
-	// 	message = RED + "Error: Unauthenticated clients\n" + RESET;
-	else
+	if (initialVerify(error, 3, "USER <user> <host>\n"))
 	{
 		std::string user = _args[1];
 		std::string host = _args[2];
-		if (!validationsArg(user) || !validationsArg(host))
+		if (!validArg(user) || !validArg(host))
 			return ;
 		else
 			save(user, host);
 		return ;
 	}
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
+	it->second.sendMessage(error);
+	std::cout << error << std::endl;
 }
 
 void Commands::commandJoin( void )
 {
-	std::cout << GREEN << "Command Join: " << _clients.getNick(_fd) << std::endl;
+	std::string error;
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+
+	if (initialVerify(error, 2, "JOIN <#channel_name>\n"))
+	{
+		std::string channel = _args[1];
+
+		if (validChannel(channel, error))
+		{
+			if (!validArg(channel))
+				return ;
+			else
+			{
+				_channels.join(_fd, channel);
+				error = GREEN + "User successfully join the channel " +
+					channel + "!\n" + RESET;
+			}
+		}
+	}
+	it->second.sendMessage(error);
+	std::cout << error << std::endl;
 }
 
 void Commands::commandPart( void )
 {
-	std::cout << GREEN << "Command Part: " << _clients.getNick(_fd) << std::endl;
+	std::string error;
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+
+	if (initialVerify(error, 2, "PART <#channel_name>\n"))
+	{
+		std::string channel = _args[1];
+
+		if (validChannel(channel, error))
+		{
+			if (!validArg(channel))
+				return ;
+			else
+			{
+				_channels.part(_fd, channel);
+				error = GREEN + "User successfully part the channel " +
+					channel + "!\n" + RESET;
+			}
+		}
+	}
+	it->second.sendMessage(error);
+	std::cout << error << std::endl;
 }
 
 void Commands::commandPrivMsg( void )
 {
-	std::cout << GREEN << "Command PrivMsg: " << _clients.getNick(_fd) << std::endl;
+	std::string error;
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+
+	if (initialVerify(error, 3, "PRIVMSG <recipient> :<message>\n"))
+	{
+		std::string recipient = _args[1];
+		std::string message = getMessage();
+		bool isChannel = validChannel(recipient, error);
+
+		if (!validArg(recipient) || !validMessage(message))
+			return ;
+		else
+		{
+			if (!isChannel)
+			{
+				if (sendMessage(_clients.getFDByNick(recipient), message))
+					return ;
+				error = RED + "Error: User not found\n" + RESET;
+			}
+			else
+			{
+				if (sendMessage( _channels.get(recipient), message))
+					return ;
+				error = RED + "Error: channel not found\n" + RESET;
+			}
+		}
+	}
+	it->second.sendMessage(error);
+	std::cout << error << std::endl;
 }
 
 // Exceptions =================================================================

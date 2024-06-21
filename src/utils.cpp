@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 21:44:26 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/21 08:57:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,21 +54,21 @@ void Commands::save(std::string &user, std::string &host)
 	std::cout << message << std::endl;
 }
 
-bool Commands::sendMessage(int client_fd, const std::string &message)
+bool Commands::sendMessage(int clientFd, const std::string &message)
 {
 	ssize_t	nbytes;
 
-	if (client_fd == -1)
+	if (clientFd == -1)
 		return false;
 
-	std::string full_message = BBLUE + "Message received from " +
+	std::string fullMessage = BBLUE + "Message received from " +
 		BYELLOW + _clients.getNick(_fd) + BPURPLE +
 		"\n" + message + "\n" + RESET;
 
-	nbytes = write(client_fd, full_message.c_str(), full_message.length());
+	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
 	if (nbytes < 0)
 	{
-		std::cerr << RED << "Write error on client " << client_fd << std::endl;
+		std::cerr << RED << "Write error on client " << clientFd << std::endl;
 		std::cout << RESET;
 	}
 	return true;
@@ -79,9 +79,9 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel, std
 	if (channel == _channels.end())
 		return false;
 
-	std::string full_message = BBLUE + "Message received from " +
+	std::string fullMessage = BBLUE + "Message received from " +
 		BYELLOW + _clients.getNick(_fd) + BPURPLE +
 		"\n" + message + "\n" + RESET;
-	channel->second.sendToAll(message);
+	channel->second.sendToAll(fullMessage);
 	return true;
 }

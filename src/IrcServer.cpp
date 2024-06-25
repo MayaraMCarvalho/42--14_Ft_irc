@@ -6,13 +6,13 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 03:34:37 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 04:49:20 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/IrcServer.hpp"
-#include "../include/Channel.hpp"
-#include "../include/Commands.hpp"
+#include "IrcServer.hpp"
+#include "Channel.hpp"
+#include "Commands.hpp"
 
 // Constructor & Destructor ===================================================
 IRCServer::IRCServer(void) {}

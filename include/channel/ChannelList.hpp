@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/24 05:09:40 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 04:45:12 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <iostream>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "colors.hpp"
+# include "Colors.hpp"
 
 class ChannelList
 {

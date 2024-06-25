@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 05:06:28 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:12:51 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void IRCServer::acceptNewClient(void)
 
 	_clients.add(clientFd, &clientAddress.sin_addr);
 
-	_channels.join(clientFd, "default");
+	_channels.join(clientFd, "default", "");
 	struct pollfd pfd = {clientFd, POLLIN, 0};
 	_pollFds.push_back(pfd);
 
@@ -162,7 +162,7 @@ t_numCode IRCServer::authenticate(int userFD, std::string password) {
 	return NO_CODE;
 }
 
-void IRCServer::handleClientMessage(int client_fd)
+void IRCServer::handleClientMessage(int clientFd)
 {
 	char	buffer[512];
 	ssize_t	nbytes;
@@ -214,7 +214,7 @@ void IRCServer::handleClientMessage(int client_fd)
 	if (!isCommand)
 	{
 		if (it != _channels.end())
-			sendToChannel(it->second.getName(), message);
+			it->second.sendToAll(message);
 		else
 			std::cerr << "Failed to send message to channel default" << std::endl;
 	}
@@ -251,25 +251,7 @@ void IRCServer::sendMessage(int clientFd, const std::string &message)
 	}
 }
 
-void IRCServer::sendToChannel(const std::string &chanStr,
-						const std::string &message)
-{
-	std::map<std::string, Channel>::iterator chanIt = _channels.get(chanStr);
-
-	// TODO: Add exception
-	if (chanIt == _channels.end())
-		return;
-
-	for (std::map<int, int>::iterator it = chanIt->second.usersBegin();
-		it != chanIt->second.usersEnd(); ++it)
-	{
-		std::cerr << "Sending message " << message << " to "
-			<< it->first << std::endl;
-		sendMessage(it->first, message);
-	}
-}
-
-void IRCServer::handleFileTransfer(int client_fd, const std::string &command)
+void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
 {
 	std::istringstream	iss(command);
 	std::string			cmd, fileName;

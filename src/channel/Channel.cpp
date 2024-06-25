@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+#include "IrcServer.hpp"
 
 Channel::Channel(void) : _name("#default"), _topic(""), _key(""),
 	_users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
@@ -190,3 +191,15 @@ bool Channel::userHasInvite(const std::string &nick) {
 void Channel::addInvite(const std::string &nick) { _invites.insert(nick); }
 
 void Channel::removeInvite(const std::string &nick) { _invites.erase(nick); }
+
+
+void Channel::sendToAll(const std::string &message)
+{
+	for (std::map<int, int>::iterator it = usersBegin();
+		it != usersEnd(); ++it)
+	{
+		std::cerr << "Sending message " << message << " to "
+			<< it->first << std::endl;
+		IRCServer::sendMessage(it->first, message);
+	}
+}

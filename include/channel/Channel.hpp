@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 03:52:18 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:07:54 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include <string>
 # include <map>
-# include <iostream>
 # include "Client.hpp"
 
 class Channel
@@ -80,6 +79,7 @@ class Channel
 		void removeUser(const int fd);
 		void addInvite(const std::string &nick);
 		void removeInvite(const std::string &nick);
+		void sendToAll(const std::string &message);
 
 	private:
 		std::string _name;

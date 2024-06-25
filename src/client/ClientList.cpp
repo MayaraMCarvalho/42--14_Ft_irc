@@ -6,10 +6,13 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/20 04:16:52 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include "ClientList.hpp"
 
 ClientList::ClientList(void) : _clients(), _userToClient(), _nickToClient() { }

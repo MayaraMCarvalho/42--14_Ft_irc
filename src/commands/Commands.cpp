@@ -94,7 +94,7 @@ void Commands::commandJoin( void )
 				return ;
 			else
 			{
-				_channels.join(_fd, channel);
+				_channels.join(_fd, channel, ""); // TODO: handle key
 				error = GREEN + "User successfully join the channel " +
 					channel + "!\n" + RESET;
 			}

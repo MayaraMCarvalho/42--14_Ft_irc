@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/20 19:24:38 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ class ChannelList
 		std::map<std::string, Channel>::iterator get(std::string name);
 		std::map<std::string, Channel>::iterator end(void);
 
-		void join(int userFD, std::string chanName);
+		void join(int userFD, const std::string &chanName, const std::string &key);
 		void part(int userFD, std::string chanName);
 		void partDisconnectedClient(int userFD);
+		bool userCanJoin(int userFD, Channel &chan, const std::string &key);
 };
 
 #endif

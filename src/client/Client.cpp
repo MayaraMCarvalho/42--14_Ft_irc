@@ -65,6 +65,7 @@ bool Client::getMode(t_mode mode) { return (_modeFlags & mode) != 0; }
 int Client::getModeFlags(void) { return _modeFlags; }
 
 // Setters
+
 void Client::setNick(std::string nick) { _nick = nick; }
 
 void Client::setUser(std::string user) { _user = user; }

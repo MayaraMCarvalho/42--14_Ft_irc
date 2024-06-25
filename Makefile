@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/21 11:03:18 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/25 04:56:09 by gmachado         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

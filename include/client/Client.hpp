@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/18 10:54:30 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/20 04:02:06 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ class Client {
 		typedef enum {
 			NO_MODE = 0,
 			AWAY = 1,
-			INVISIBLE = 2,
-			WALLOPS = 4,
+			WALLOPS = 2,
+			INVISIBLE = 4,
 			RESTRICTED = 8,
 			OPERATOR = 16,
 			LOCAL_OP = 32,

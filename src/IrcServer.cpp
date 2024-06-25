@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/21 11:04:13 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:12:51 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void IRCServer::signalHandler(int signal)
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
 		std::cout << "\nExiting gracefully." << std::endl;
-		exit(EXIT_SUCCESS);
+		exit(EXIT_SUCCESS); // <-memory leak
 	}
 }
 
@@ -111,7 +111,6 @@ void IRCServer::run(void)
 void IRCServer::acceptNewClient(void)
 {
 	int	clientFd;
-
 	struct sockaddr_in clientAddress;
 	socklen_t clientLen = sizeof(clientAddress);
 	clientFd = accept(_serverFd, (struct sockaddr *)&clientAddress, &clientLen);
@@ -128,7 +127,7 @@ void IRCServer::acceptNewClient(void)
 
 	_clients.add(clientFd, &clientAddress.sin_addr);
 
-	_channels.join(clientFd, "default");
+	_channels.join(clientFd, "default", "");
 	struct pollfd pfd = {clientFd, POLLIN, 0};
 	_pollFds.push_back(pfd);
 
@@ -140,6 +139,27 @@ void IRCServer::acceptNewClient(void)
 		"------ Welcome to ft_IRC ------\n" +
 		"-------------------------------\n" + RESET;
 	it->second.sendMessage(message);
+}
+
+t_numCode IRCServer::authenticate(int userFD, std::string password) {
+	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
+
+	if (userIt == _clients.end())
+		throw std::invalid_argument("Unknown user");
+
+	Client::t_status status = userIt->second.getStatus();
+
+	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
+		throw std::invalid_argument("Invalid user status");
+
+	if (status != Client::CONNECTED)
+		throw std::invalid_argument("Already authenticated");
+
+	if (password != _password)
+		return ERR_PASSWDMISMATCH;
+
+	userIt->second.setStatus(Client::AUTHENTICATED);
+	return NO_CODE;
 }
 
 void IRCServer::handleClientMessage(int clientFd)

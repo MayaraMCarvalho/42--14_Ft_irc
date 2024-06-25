@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/18 10:01:41 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 03:52:18 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <string>
 # include <map>
+# include <iostream>
 # include "Client.hpp"
 
 class Channel
@@ -41,7 +42,7 @@ class Channel
 			VOICE = 4
 		} t_umode;
 
-		Channel(std::string name);
+		Channel(const std::string &name);
 		Channel(const Channel &src);
 
 		~Channel(void);
@@ -49,33 +50,43 @@ class Channel
 		Channel &operator=(const Channel &src);
 
 		// Getters
-		std::string getName(void);
-		std::string getTopic(void);
+		const std::string &getName(void);
+		const std::string &getTopic(void);
+		const std::string &getKey(void);
 		int	getUserLimit(void);
-		bool getChannelMode(t_cmode mode);
+		int	getNumUsers(void);
+		bool getChannelMode(const t_cmode mode);
 		int getChannelModeFlags(void);
-		bool getUserMode(int userFD, t_umode mode);
-		int getUserModeFlags(int userFD);
-		bool isUserInChannel(int userFD);
-		bool userCanJoin(int userFD);
-		bool empty();
+		bool getUserMode(const int userFD, const t_umode mode);
+		int getUserModeFlags(const int userFD);
+		bool userIsInChannel(const int userFD);
+		bool userCanJoin(const int userFD);
+		bool userHasInvite(const std::string &nick);
+		bool empty(void);
+		std::map<int, int>::iterator usersBegin(void);
+		std::map<int, int>::iterator usersEnd(void);
 
 		// Setters
-		void setTopic(std::string topic);
-		void setUserLimit(int limit);
-		void setChannelMode(std::string modeStr);
-		void setChannelModeFlags(int modeFlags);
-		void setUserMode(int userFD, std::string modeStr);
+		void setTopic(const std::string &topic);
+		void setKey(const std::string &key);
+		void setUserLimit(const int limit);
+		void setChannelMode(const std::string &modeStr);
+		void setChannelModeFlags(const int modeFlags);
+		void setUserMode(const int userFD, const std::string &modeStr);
+		void setUserModeFlags(const int userFD, const int modeFlags);
 
 		// Channel functions
-		void addUser(int fd, int userModeFlags);
-		void removeUser(int fd);
-		void sendToAll(std::string &message);
+		void addUser(const int fd, const int userModeFlags);
+		void removeUser(const int fd);
+		void addInvite(const std::string &nick);
+		void removeInvite(const std::string &nick);
 
 	private:
 		std::string _name;
 		std::string _topic;
+		std::string _key;
 		std::map<int, int> _users;
+		std::set<std::string> _invites;
 		int _channelModeFlags;
 		int _limit;
 

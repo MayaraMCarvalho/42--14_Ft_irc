@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 02:35:55 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 03:34:37 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,8 @@ void IRCServer::acceptNewClient(void)
 
 	struct sockaddr_in client_address;
 	socklen_t client_len = sizeof(client_address);
-	client_fd = accept(_server_fd, (struct sockaddr *)&client_address, &client_len);
+	client_fd = accept(_server_fd, (struct sockaddr *)&client_address,
+		&client_len);
 
 	if (client_fd < 0)
 	{
@@ -125,7 +126,7 @@ void IRCServer::acceptNewClient(void)
 	fcntl(client_fd, F_SETFL, O_NONBLOCK);
 	_clients.add(client_fd, &client_address.sin_addr);
 
-	_channels.join(client_fd, "default");
+	_channels.join(client_fd, "default", "");
 	struct pollfd pfd = {client_fd, POLLIN, 0};
 	_poll_fds.push_back(pfd);
 
@@ -192,7 +193,7 @@ void IRCServer::handleClientMessage(int client_fd)
 	std::map<std::string, Channel>::iterator it = _channels.get("default");
 
 	if (it != _channels.end())
-		it->second.sendToAll(message);
+		sendToChannel(it->second.getName(), message);
 	else
 		std::cerr << "Failed to send message to channel default" << std::endl;
 }
@@ -203,7 +204,8 @@ void IRCServer::removeClient(int client_fd)
 
 	_channels.partDisconnectedClient(client_fd);
 
-	for (std::vector<struct pollfd>::iterator it = _poll_fds.begin(); it != _poll_fds.end(); ++it)
+	for (std::vector<struct pollfd>::iterator it = _poll_fds.begin();
+		it != _poll_fds.end(); ++it)
 	{
 		if (it->fd == client_fd)
 		{
@@ -224,6 +226,24 @@ void IRCServer::sendMessage(int client_fd, const std::string &message)
 	nbytes = write(client_fd, full_message.c_str(), full_message.length());
 	if (nbytes < 0)
 		std::cerr << "Write error on client " << client_fd << std::endl;
+}
+
+void IRCServer::sendToChannel(const std::string &chanStr,
+						const std::string &message)
+{
+	std::map<std::string, Channel>::iterator chanIt = _channels.get(chanStr);
+
+	// TODO: Add exception
+	if (chanIt == _channels.end())
+		return;
+
+	for (std::map<int, int>::iterator it = chanIt->second.usersBegin();
+		it != chanIt->second.usersEnd(); ++it)
+	{
+		std::cerr << "Sending message " << message << " to "
+			<< it->first << std::endl;
+		sendMessage(it->first, message);
+	}
 }
 
 void IRCServer::handleFileTransfer(int client_fd, const std::string &command)

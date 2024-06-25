@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/19 03:19:05 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 03:33:49 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ class IRCServer
 		void		handleClientMessage(int client_fd);
 		void		removeClient(int client_fd);
 		static void	sendMessage(int client_fd, const std::string &message);
+		void		sendToChannel(const std::string &chanStr,
+						const std::string &message);
 		static void	signalHandler(int signal);
 		static void	setupSignalHandlers(void);
 };

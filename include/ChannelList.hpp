@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/18 10:54:57 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/24 05:09:40 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ class ChannelList
 		std::map<std::string, Channel>::iterator get(std::string name);
 		std::map<std::string, Channel>::iterator end(void);
 
-		void join(int userFD, std::string chanName);
+		void join(int userFD, const std::string &chanName, const std::string &key);
 		void part(int userFD, std::string chanName);
 		void partDisconnectedClient(int userFD);
+		bool userCanJoin(int userFD, Channel &chan, const std::string &key);
 };
 
 #endif

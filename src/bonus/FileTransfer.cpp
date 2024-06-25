@@ -16,63 +16,63 @@
 FileTransfer::FileTransfer(void) {}
 
 // Methods ====================================================================
-void FileTransfer::requestTransfer(int sender_fd, int receiver_fd, const std::string &file_name)
+void FileTransfer::requestTransfer(int senderFd, int receiverFd, const std::string &fileName)
 {
-	std::vector<char>	file_data;
+	std::vector<char>	fileData;
 
-	file_data = readFile(file_name);
-	if (!file_data.empty())
+	fileData = readFile(fileName);
+	if (!fileData.empty())
 	{
-		_transfers[sender_fd] = TransferInfo(sender_fd, receiver_fd, file_name, file_data);
-		sendFileChunk(sender_fd);
+		_transfers[senderFd] = TransferInfo(senderFd, receiverFd, fileName, fileData);
+		sendFileChunk(senderFd);
 	}
 }
 
-void FileTransfer::handleTransfer (int client_fd)
+void FileTransfer::handleTransfer (int clientFd)
 {
-	if (_transfers.find(client_fd) != _transfers.end())
-		sendFileChunk(client_fd);
+	if (_transfers.find(clientFd) != _transfers.end())
+		sendFileChunk(clientFd);
 }
 
-void FileTransfer::sendFileChunk(int client_fd)
+void FileTransfer::sendFileChunk(int clientFd)
 {
-	TransferInfo	&transfer = _transfers[client_fd];
-	size_t			chunk_size;
+	TransferInfo	&transfer = _transfers[clientFd];
+	size_t			chunkSize;
 	size_t			remaining;
-	size_t			to_send;
+	size_t			toSend;
 	ssize_t			sent;
 
-	chunk_size = 512;
-	remaining = transfer._file_data.size() - transfer._bytes_sent;
-	to_send = std::min(chunk_size, remaining);
-	sent = send(client_fd, &transfer._file_data[transfer._bytes_sent], to_send, 0);
+	chunkSize = 512;
+	remaining = transfer._fileData.size() - transfer._bytesSent;
+	toSend = std::min(chunkSize, remaining);
+	sent = send(clientFd, &transfer._fileData[transfer._bytesSent], toSend, 0);
 	if (sent > 0)
-		transfer._bytes_sent += sent;
+		transfer._bytesSent += sent;
 
-	if (transfer._bytes_sent >= transfer._file_data.size())
-		_transfers.erase(client_fd);
+	if (transfer._bytesSent >= transfer._fileData.size())
+		_transfers.erase(clientFd);
 }
 
-std::vector<char> FileTransfer::readFile(const std::string &file_name)
+std::vector<char> FileTransfer::readFile(const std::string &fileName)
 {
-	std::ifstream	file(file_name.c_str(), std::ios::binary);
+	std::ifstream	file(fileName.c_str(), std::ios::binary);
 
 	if (!file.is_open())
 	{
-		std::cerr << "Failed to open file: " << file_name << std::endl;
+		std::cerr << "Failed to open file: " << fileName << std::endl;
 		return std::vector<char>();
 	}
 
 	file.seekg(0, std::ios::end);
-	std::streampos file_size = file.tellg();
+	std::streampos fileSize = file.tellg();
 	file.seekg(0, std::ios::beg);
 
-	std::vector<char> file_data;
-	file_data.resize(static_cast<size_t>(file_size));
-	file.read(&file_data[0], file_size);
+	std::vector<char> fileData;
+	fileData.resize(static_cast<size_t>(fileSize));
+	file.read(&fileData[0], fileSize);
 	file.close();
 
-	return (file_data);
+	return (fileData);
 
 	// return std::vector<char>((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 }

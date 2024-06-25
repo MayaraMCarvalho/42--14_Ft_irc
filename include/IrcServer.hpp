@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 04:48:21 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/25 04:57:07 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@ class IRCServer
 	private:
 		std::string						_port;
 		std::string						_password;
-		int 							_server_fd;
-		std::vector<struct pollfd>		_poll_fds;
-		FileTransfer 					_file_transfer;
+		int 							_serverFd;
+		std::vector<struct pollfd>		_pollFds;
+		FileTransfer 					_fileTransfer;
 		Bot 							_bot;
 		ClientList						_clients;
 		ChannelList						_channels;
 
-		void handleFileTransfer(int client_fd, const std::string &command);
+		void handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
 	// Constructor & Destructor ===============================================

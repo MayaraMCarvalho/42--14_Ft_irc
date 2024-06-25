@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:45:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/25 15:47:35 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void Commands::save(std::string &user, std::string &host)
 
 	_clients.setUser(_fd, user);
 	_clients.updateUser(_fd, user);
-	it->second.setHost(host);
+	it->second.setHost(host);//VERIFICAR
 
 	message = GREEN + "User update successfully!\n" + RESET;
 	it->second.sendMessage(message);

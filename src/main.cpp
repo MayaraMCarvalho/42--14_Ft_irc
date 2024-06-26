@@ -3,17 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/21 09:07:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:47:00 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/IrcServer.hpp"
 
+bool containsOnlyDigits(const std::string& str)
+{
+    for (size_t i = 0; i < str.length(); ++i)
+    {
+        if (!std::isdigit(str[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool validateArguments(int argc, char *argv[], std::string &port, std::string &password)
 {
+	int portNum;
+	std::string portStr;
+
 	if (argc != 3)
 	{
 		std::cerr << RED;
@@ -22,33 +37,23 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 		return (false);
 	}
 
+	port = argv[1];
+    portStr = argv[1];
 	// Checks if the port is a valid integer
-	try
+    if (!containsOnlyDigits(portStr))
 	{
-		port = argv[1];
-		int portNum = std::atoi(port.c_str());
-		// Ports 0 to 1024 are typically reserved for specific services
-		//  of the operating system and above 65535 are invalid, as they
-		//  are outside the valid range of TCP and UDP ports.
-		//  Helps ensure that the server functions correctly and
-		//  prevents possibleproblems arising from the use of invalid ports.
+
+		std::cerr << "Error: Invalid port number: " << argv[1] << std::endl;
+		return (false);
+	} else {
+		std::istringstream iss(portStr);
+		iss >> portNum;
+		// Additional range check for port number
 		if (portNum <= 1024 || portNum > 65535)
-			throw std::invalid_argument("Port number out of range");
-	}
-	catch (const std::invalid_argument &e)
-	{
-		std::cerr << RED;
-		std::cerr << "Invalid port number: " << YELLOW << argv[1] << std::endl;
-		std::cout << RESET << std::endl;
-		return (false);
-	}
-	catch (const std::out_of_range &e)
-	{
-		std::cerr << RED;
-		std::cerr << "Port number out of range: ";
-		std::cout << YELLOW << argv[1] << std::endl;
-		std::cout << RESET << std::endl;
-		return (false);
+		{
+			std::cerr << "Error: Port number out of range" << std::endl;
+			return (false);
+		}
 	}
 
 	// The password is valid if it is not an empty string

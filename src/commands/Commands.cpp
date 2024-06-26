@@ -1,4 +1,5 @@
 #include "Commands.hpp"
+#include "IrcServer.hpp"
 
 // Constructor & Destructor ===================================================
 Commands::Commands(ClientList &clients, ChannelList &channels,
@@ -50,8 +51,11 @@ void Commands::commandPass( void )
 		message = RED + "Error: Number of invalid arguments\n" +
 			"PASS <password>\n" + RESET;
 	}
-	else if (it->second.getStatus() == Client::AUTHENTICATED)
-		message = RED + "Error: Client has already been authenticated\n" + RESET;
+	else if (it->second.getStatus() == Client::REGISTERED)
+	{
+		message = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
+			": Client has already been registered\n" + RESET;
+	}
 	else
 	{
 		std::string pass = _args[1];
@@ -96,6 +100,11 @@ void Commands::commandUser( void )
 		std::string host = _args[2];
 		if (!validArg(user) || !validArg(host))
 			return ;
+		else if (it->second.getStatus() == Client::REGISTERED)
+		{
+			error = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
+				": Client has already been registered\n" + RESET;
+		}
 		else
 			save(user, host);
 		return ;
@@ -126,5 +135,20 @@ void Commands::commandMode( void )
 
 void Commands::commandQuit( void )
 {
-	std::cout << "Command Quit" << std::endl;
+	std::string error;
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+
+	if (initialVerify(error, 1, "QUIT <message(optional)>\n"))
+	{
+		std::string message = "";
+		if (_args.size() > 1)
+		{
+			message = getMessage(1);
+			if (!validMessage(message)) {}
+				// Envia a mensagem para todos os canal em que o cliente estiver incrito
+		}
+		IRCServer::removeClient(_fd);
+	}
+	it->second.sendMessage(error);
+	std::cout << error << std::endl;
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:47:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:53:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void IRCServer::signalHandler(int signal)
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
 		std::cout << "\nExiting gracefully." << std::endl;
-		exit(EXIT_SUCCESS); // <-memory leak
+		_shouldExit = true;
 	}
 }
 
@@ -91,7 +91,7 @@ void IRCServer::run(void)
 	std::cout << GREEN << "Server running on port ";
 	std::cout << BYELLOW << _port << RESET << std::endl;
 
-	while (true)
+	while (!_shouldExit)
 	{
 		pollCount = poll(_pollFds.data(), _pollFds.size(), -1);
 		if (pollCount < 0)

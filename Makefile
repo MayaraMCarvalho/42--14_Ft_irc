@@ -3,14 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-<<<<<<< HEAD
-#    Updated: 2024/06/25 04:56:09 by gmachado         ###   ########.fr        #
-=======
-#    Updated: 2024/06/21 11:43:51 by macarval         ###   ########.fr        #
->>>>>>> [ft_irc] feat: Command PASS
+#    Updated: 2024/06/26 14:41:27 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

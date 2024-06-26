@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:08:05 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:40:17 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class IRCServer
 		Bot 							_bot;
 		ClientList						_clients;
 		ChannelList						_channels;
+		static bool						_shouldExit;
 
 		void handleFileTransfer(int clientFd, const std::string &command);
 

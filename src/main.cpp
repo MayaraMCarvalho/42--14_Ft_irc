@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/21 09:07:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:42:08 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 
 	return (true);
 }
+
+bool IRCServer::_shouldExit = false;
 
 int main(int argc, char *argv[])
 {

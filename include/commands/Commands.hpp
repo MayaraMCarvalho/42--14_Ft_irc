@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:43:26 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:22:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@
 #include <string>
 #include <vector>
 #include <poll.h>
+
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
 #include "Colors.hpp"
+#include "numCode.hpp"
 
 class	Channel;
 
@@ -76,7 +78,6 @@ class Commands
 	// Methods ================================================================
 		bool		isCommand(const std::string &message);
 
-
 		// Commands.cpp
 		void		commandPass( void );
 		void		commandNick( void );
@@ -94,7 +95,7 @@ class Commands
 		void		commandPrivMsg( void );
 		bool		sendMessage(int clientFd, const std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
-		std::string	getMessage( void );
+		std::string	getMessage( int index );
 
 		// validations.cpp
 		bool		initialVerify(std::string &error, size_t num, std::string usage);
@@ -106,6 +107,7 @@ class Commands
 		void		parsingArgs(const std::string &message);
 		void		save(std::string &nick);
 		void		save(std::string &user, std::string &host);
+		std::string	codeToString(t_numCode code);
 
 };
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:24:17 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ t_numCode ClientList::updateUser(int fd, std::string &newUser) {
 	else if (status == Client::AUTHENTICATED)
 		it->second.setStatus(Client::GOT_USER);
 
-	else if (status == Client::GOT_USER)
+	else if (status == Client::GOT_NICK)
 		it->second.setStatus(Client::REGISTERED);
 
 	if (!it->second.getUser().empty())

@@ -6,28 +6,32 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/21 16:21:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/26 17:25:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+#include "IrcServer.hpp"
 
 void Commands::commandJoin( void )
 {
 	std::string error;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
-	if (initialVerify(error, 2, "JOIN <#channel_name>\n"))
+	if (initialVerify(error, 2, "JOIN <#channel_name> <key (optional)>\n"))
 	{
 		std::string channel = _args[1];
+		std::string key = "";
 
+		if (_args.size() > 2)
+			key = _args[2];
 		if (validChannel(channel, error))
 		{
 			if (!validArg(channel))
 				return ;
 			else
 			{
-				_channels.join(_fd, channel);
+				_channels.join(_fd, channel, key);
 				error = GREEN + "User successfully join the channel " +
 					channel + "!\n" + RESET;
 			}
@@ -70,7 +74,7 @@ void Commands::commandPrivMsg( void )
 	if (initialVerify(error, 3, "PRIVMSG <recipient> :<message>\n"))
 	{
 		std::string recipient = _args[1];
-		std::string message = getMessage();
+		std::string message = getMessage(2);
 		bool isChannel = validChannel(recipient, error);
 
 		if (!validArg(recipient) || !validMessage(message))
@@ -97,21 +101,14 @@ void Commands::commandPrivMsg( void )
 
 bool Commands::sendMessage(int clientFd, const std::string &message)
 {
-	ssize_t	nbytes;
-
 	if (clientFd == -1)
 		return false;
 
 	std::string fullMessage = BBLUE + "Message received from " +
 		BYELLOW + _clients.getNick(_fd) + BPURPLE +
-		"\n" + message + RESET + "\r\n";
+		"\n" + message + RESET;
 
-	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
-	if (nbytes < 0)
-	{
-		std::cerr << RED << "Write error on client " << clientFd << std::endl;
-		std::cout << RESET;
-	}
+	IRCServer::sendMessage(clientFd, fullMessage);
 	return true;
 }
 
@@ -127,11 +124,11 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel, std
 	return true;
 }
 
-std::string Commands::getMessage( void )
+std::string Commands::getMessage( int index )
 {
 	std::string result;
 
-	for (std::vector<std::string>::const_iterator it = _args.begin() + 2;
+	for (std::vector<std::string>::const_iterator it = _args.begin() + index;
 			it != _args.end(); ++it)
 	{
 		if (it != _args.begin() + 2)

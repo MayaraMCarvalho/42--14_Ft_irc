@@ -17,7 +17,7 @@ Client::Client() : _nick(""), _user(""), _host(""), _fd(-1), _channels(),
 	_modeFlags(Client::NO_MODE), _status(Client::UNKNOWN) { }
 
 Client::Client(int fd) : _nick(""), _user(""), _host(""), _fd(fd),
-	_channels(), _modeFlags(Client::NO_MODE), _status(Client::UNKNOWN) { }
+	_channels(), _modeFlags(Client::NO_MODE), _status(Client::CONNECTED) { }
 
 Client::Client(const Client &src) : _nick(src._nick), _user(src._user),
 	_host(src._host), _fd(src._fd), _channels(src._channels),

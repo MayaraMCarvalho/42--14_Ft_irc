@@ -42,13 +42,13 @@ Client &Client::operator=(const Client &src) {
 }
 
 // Getters
-std::string Client::getNick(void) { return _nick; }
+const std::string &Client::getNick(void) { return _nick; }
 
-std::string Client::getUser(void) { return _user; }
+const std::string &Client::getUser(void) { return _user; }
 
-std::string Client::getHost(void) { return _host; }
+const std::string &Client::getHost(void) { return _host; }
 
-std::string Client::getFullId(void) {
+const std::string Client::getFullId(void) {
 	return _nick + '!' + _user + '@' + _host;
 }
 
@@ -66,15 +66,14 @@ int Client::getModeFlags(void) { return _modeFlags; }
 
 // Setters
 
-void Client::setNick(std::string nick) { _nick = nick; }
 
-void Client::setUser(std::string user) { _user = user; }
+void Client::setUser(const std::string &user) { _user = user; }
 
-void Client::setHost(std::string host) { _host = host; }
+void Client::setHost(const std::string &host) { _host = host; }
 
 void Client::setModeFlags(int modeFlags) { _modeFlags = modeFlags; }
 
-void Client::setMode(std::string modeStr) {
+void Client::setMode(const std::string &modeStr) {
 
 	int newModeFlags;
 
@@ -116,17 +115,17 @@ void Client::setMode(std::string modeStr) {
 void Client::setStatus(t_status status) { _status = status; }
 
 // Channel functions
-bool Client::isInChannel(std::string channelStr) {
+bool Client::isInChannel(const std::string &channelStr) {
 	return _channels.find(channelStr) != _channels.end();
 }
-void Client::addChannel(std::string channelStr)
+void Client::addChannel(const std::string &channelStr)
 {
 	_channels.insert(channelStr);
 }
-void Client::removeChannel(std::string channelStr) {
+void Client::removeChannel(const std::string &channelStr) {
 	_channels.erase(channelStr);
 }
 
-void Client::sendMessage(std::string &msg) {
+void Client::sendMessage(const std::string &msg) {
 	IRCServer::sendMessage(_fd, msg);
 }

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 01:09:01 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 03:41:06 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ bool ChannelList::userCanJoin(int userFD, Channel &chan,
 		return false;
 
 	if (chan.getChannelMode(Channel::INVITEONLY) &&
-		!userHasInvite(chan.getName(), userIt->second.getNick()))
+		!userHasInvite(userIt->second.getNick(), chan.getName()))
 		return false;
 
 	return true;
@@ -215,4 +215,33 @@ void ChannelList::removeInvite(const std::string &nick,
 
 	if (chanIt->second.empty())
 		_invites.erase(chanIt);
+}
+
+t_numCode ChannelList::inviteUser(const std::string &inviter,
+			const std::string &invitee, const std::string &chan) {
+	if (inviter.empty() || invitee.empty() || chan.empty())
+		return ERR_NEEDMOREPARAMS;
+
+	std::map<std::string, Channel>::iterator chanIt;
+
+	if (chanIt != _channels.end())
+	{
+		int inviteeFD = _clients->getFDByNick(invitee);
+		Channel &chanRef = chanIt->second;
+
+		if (chanRef.userIsInChannel(inviteeFD))
+			return ERR_USERONCHANNEL;
+
+		int inviterFD = _clients->getFDByNick(inviter);
+
+		if (chanRef.userIsInChannel(inviterFD))
+			return ERR_NOTONCHANNEL;
+
+		if (chanRef.getChannelMode(Channel::INVITEONLY) &&
+			chanRef.getUserMode(inviterFD, Channel::CHANOP))
+			return ERR_CHANOPRIVSNEEDED;
+	}
+
+	addInvite(invitee, chan);
+	return RPL_INVITING;
 }

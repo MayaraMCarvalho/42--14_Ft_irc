@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 02:04:17 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 03:23:33 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,27 +32,27 @@ class ClientList {
 
 		// Getters
 		std::map<int, Client>::iterator getClient(int fd);
-		std::map<int, Client>::iterator getClientByNick(std::string nick);
-		std::map<int, Client>::iterator getClientByUser(std::string user);
-		std::string getNick(int fd);
-		std::string getUser(int fd);
-		int getFDByNick(std::string &nick);
-		int getFDByUser(std::string &user);
+		std::map<int, Client>::iterator getClientByNick(const std::string &nick);
+		std::map<int, Client>::iterator getClientByUser(const std::string &user);
+		const std::string getNick(int fd);
+		const std::string getUser(int fd);
+		int getFDByNick(const std::string &nick);
+		int getFDByUser(const std::string &user);
 		std::map<int, Client>::iterator end(void);
 
 		// Setters
-		t_numCode setNick(int fd, std::string &newNick);
-		t_numCode setUser(int fd, std::string &newUser);
+		t_numCode setNick(int fd, const std::string &newNick);
+		t_numCode setUser(int fd, const std::string &newUser);
 
 		void add(Client &client);
 		void add(int fd, struct in_addr *address);
-		void add(int fd, std::string &host);
+		void add(int fd, const std::string &host);
 		void remove(int fd);
-		void removeByNick(std::string &nick);
-		void removeByUser(std::string &user);
+		void removeByNick(const std::string &nick);
+		void removeByUser(const std::string &user);
 
-		static bool isValidNick(std::string nick);
-		static bool isValidUser(std::string user);
+		static bool isValidNick(const std::string &nick);
+		static bool isValidUser(const std::string &user);
 		static bool isSpecialChar(char ch);
 
 	private:

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 15:22:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:06:59 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <iostream>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "Colors.hpp"
+# include "../utils/Colors.hpp"
 
 class ChannelList
 {

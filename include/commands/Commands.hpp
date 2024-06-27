@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 18:04:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:07:35 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
-#include "Colors.hpp"
-#include "numCode.hpp"
+#include "../utils/Colors.hpp"
+#include "../utils/numCode.hpp"
 
 class	Channel;
 

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/26 17:25:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 11:04:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ std::string Commands::getMessage( int index )
 	for (std::vector<std::string>::const_iterator it = _args.begin() + index;
 			it != _args.end(); ++it)
 	{
-		if (it != _args.begin() + 2)
+		if (it != _args.begin() + index)
 			result.append(" ");
 		result.append(*it);
 	}

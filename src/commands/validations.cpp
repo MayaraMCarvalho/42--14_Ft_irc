@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/26 17:49:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 11:40:34 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,5 @@ bool Commands::validMessage(std::string &message)
 	}
 	it->second.sendMessage(error);
 	std::cout << error << std::endl;
-
 	return false;
 }

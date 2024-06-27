@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 05:07:25 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:12:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ ChannelList &ChannelList::operator=(ChannelList &src) {
 // Getters
 std::map<std::string, Channel>::iterator ChannelList::get(std::string name) {
 	return _channels.find(name);
+}
+
+std::map<std::string, Channel>::iterator ChannelList::begin(void) {
+	return _channels.begin();
 }
 
 std::map<std::string, Channel>::iterator ChannelList::end(void) {

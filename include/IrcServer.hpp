@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/26 17:40:17 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:24:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,16 @@ class	Channel;
 class IRCServer
 {
 	private:
-		std::string						_port;
-		std::string						_password;
-		int 							_serverFd;
-		std::vector<struct pollfd>		_pollFds;
-		FileTransfer 					_fileTransfer;
-		Bot 							_bot;
-		ClientList						_clients;
-		ChannelList						_channels;
-		static bool						_shouldExit;
+		std::string					_port;
+		std::string					_password;
+		int 						_serverFd;
+		std::vector<struct pollfd>	_pollFds;
+		FileTransfer 				_fileTransfer;
+		Bot 						_bot;
+		ClientList					_clients;
+		ChannelList					_channels;
+		bool						_shouldExit;
+		static IRCServer*			_instance;
 
 		void handleFileTransfer(int clientFd, const std::string &command);
 

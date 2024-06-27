@@ -6,13 +6,15 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/26 17:53:33 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:50:12 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "Channel.hpp"
 #include "Commands.hpp"
+
+IRCServer* IRCServer::_instance = NULL;
 
 // Constructor & Destructor ===================================================
 IRCServer::IRCServer(void) {}
@@ -21,7 +23,10 @@ IRCServer::~IRCServer(void) {}
 
 IRCServer::IRCServer(const std::string &port, const std::string &password)
 	: _port(port), _password(password), _serverFd(-1), _bot("ChatBot"),
-	_clients(), _channels(&_clients) {}
+	_clients(), _channels(&_clients), _shouldExit(false)
+{
+	_instance = this;
+}
 
 // Getters ====================================================================
 
@@ -62,8 +67,13 @@ void IRCServer::signalHandler(int signal)
 {
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
-		std::cout << "\nExiting gracefully." << std::endl;
-		_shouldExit = true;
+		_instance->_shouldExit = true;
+		ChannelList channels = _instance->_channels;
+
+		std::cout << std::endl;
+		for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+			it->second.sendToAll(BRED + "The server was disconnected!" + RESET);
+		std::cout << BGREEN << "Exiting gracefully." << RESET << std::endl;
 	}
 }
 
@@ -93,10 +103,22 @@ void IRCServer::run(void)
 
 	while (!_shouldExit)
 	{
+		sigset_t pendingSignals;
+		if (sigpending(&pendingSignals) == 0)
+		{
+			if (sigismember(&pendingSignals, SIGINT)
+			|| sigismember(&pendingSignals, SIGTERM)
+			|| sigismember(&pendingSignals, SIGTSTP))
+				break;
+		}
 		pollCount = poll(_pollFds.data(), _pollFds.size(), -1);
 		if (pollCount < 0)
-			throw std::runtime_error("Poll error");
-
+		{
+			if (errno == EINTR)
+				continue;
+			else
+				throw std::runtime_error("Poll error");
+		}
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
 
@@ -241,7 +263,7 @@ void IRCServer::sendMessage(int clientFd, const std::string &message)
 	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
 	if (nbytes < 0)
 	{
-		std::cerr << RED << "Write error on client " << clientFd << std::endl;
+		std::cerr << RED << "Write error on client " << BYELLOW << clientFd << std::endl;
 		std::cout << RESET;
 	}
 }

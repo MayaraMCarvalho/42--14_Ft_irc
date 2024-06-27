@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:15:26 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class ChannelList
 
 		// Getters
 		std::map<std::string, Channel>::iterator get(std::string name);
+		std::map<std::string, Channel>::iterator begin(void);
 		std::map<std::string, Channel>::iterator end(void);
 
 		void join(int userFD, const std::string &chanName, const std::string &key);

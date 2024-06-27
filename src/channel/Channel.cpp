@@ -198,8 +198,8 @@ void Channel::sendToAll(const std::string &message)
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
-		std::cerr << "Sending message " << message << " to "
-			<< it->first << std::endl;
+		std::cerr << "Sending message " << BGREEN << message << RESET
+			<< " to " << BYELLOW << it->first << RESET << std::endl;
 		IRCServer::sendMessage(it->first, message);
 	}
 }

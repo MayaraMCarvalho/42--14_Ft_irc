@@ -140,14 +140,37 @@ void Commands::commandQuit( void )
 
 	if (initialVerify(error, 1, "QUIT <message(optional)>\n"))
 	{
-		std::string message = "";
+		std::string messageClient;
+		std::string message = RED + "Client " + BYELLOW + intToString(_fd)
+			+ RED + " left the channel ";
+
 		if (_args.size() > 1)
 		{
-			message = getMessage(1);
-			if (!validMessage(message)) {}
-				// Envia a mensagem para todos os canal em que o cliente estiver incrito
+			messageClient = getMessage(1);
+
+			if (validMessage(messageClient))
+			{
+				messageClient = BLUE + "\nAnd sent the following farewell message: "
+					+ BGREEN + messageClient + RESET;
+			}
+			else
+				messageClient = "";
 		}
-		IRCServer::removeClient(_fd);
+
+		for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		{
+			if (it->second.userIsInChannel(_fd))
+				it->second.sendToAll(message + BCYAN + it->second.getName() + RESET + messageClient);
+		}
+
+		IRCServer server;
+
+		server.removeClient(_fd);
+		_channels.partDisconnectedClient(_fd);
+		std::cout << RED << "Client disconnected: ";
+		std::cout << BYELLOW << _fd << RESET << std::endl;
+
+		return ;
 	}
 	it->second.sendMessage(error);
 	std::cout << error << std::endl;

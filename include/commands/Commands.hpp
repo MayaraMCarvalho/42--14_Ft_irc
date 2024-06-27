@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/26 17:22:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 11:29:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ class Commands
 		void		save(std::string &nick);
 		void		save(std::string &user, std::string &host);
 		std::string	codeToString(t_numCode code);
+		std::string	intToString(int num);
 
 };
 

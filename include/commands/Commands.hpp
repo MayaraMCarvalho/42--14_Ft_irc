@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 11:29:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:04:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,40 +76,47 @@ class Commands
 	// Setters ================================================================
 
 	// Methods ================================================================
-		bool		isCommand(const std::string &message);
 
 		// Commands.cpp
-		void		commandPass( void );
-		void		commandNick( void );
-		void		commandUser( void );
-
+		bool		isCommand(const std::string &message);
 		void		commandKick( void );
 		void		commandInvite( void );
 		void		commandTopic( void );
 		void		commandMode( void );
 		void		commandQuit( void );
+		void		quitServer( void );
+		std::string	getClientMessage( void );
 
-		// messages.cpp
+		// channelCommands.cpp
 		void		commandJoin( void );
 		void		commandPart( void );
+
+		// messagesCommands.cpp
 		void		commandPrivMsg( void );
 		bool		sendMessage(int clientFd, const std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
-		std::string	getMessage( int index );
+		std::string	getFullMessage(const std::string &message);
 
-		// validations.cpp
-		bool		initialVerify(std::string &error, size_t num, std::string usage);
-		bool		validArg(std::string &arg);
-		bool		validChannel(std::string &channel, std::string &error);
-		bool		validMessage(std::string &message);
+		// setupCommands.cpp
+		void		commandPass( void );
+		void		commandNick( void );
+		void		saveNick(std::string &nick);
+		void		commandUser( void );
+		void		saveUser(std::string &user);
 
 		// utils.cpp
 		void		parsingArgs(const std::string &message);
-		void		save(std::string &nick);
-		void		save(std::string &user, std::string &host);
+		std::string	getMessage( int index );
 		std::string	codeToString(t_numCode code);
 		std::string	intToString(int num);
+		void		printError(const std::string &errorMessage);
 
+		// validations.cpp
+		bool		initialVerify(size_t num, const std::string &usage);
+		bool		getErrors( void );
+		bool		validArg(std::string &arg);
+		bool		validChannel(std::string &channel);
+		bool		validMessage(std::string &message);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 14:58:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:40:04 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,45 +20,20 @@ void Commands::parsingArgs(const std::string &message)
 		_args.push_back(token);
 }
 
-void Commands::save(std::string &nick)
+std::string Commands::getMessage( int index )
 {
-	t_numCode errorCode = NO_CODE;
-	std::string message;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+	std::string result;
 
-	// _clients.setNick(_fd, nick);
-	// errorCode = _clients.updateNick(_fd, nick);
-
-	errorCode = _clients.setNick(_fd, nick);//
-
-	message = GREEN + "Nickname update successfully: " +
-		BYELLOW + it->second.getNick() + "\n" + RESET;
-	if (errorCode != NO_CODE)
-		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
-
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
+	for (std::vector<std::string>::const_iterator it = _args.begin() + index;
+			it != _args.end(); ++it)
+	{
+		if (it != _args.begin() + index)
+			result.append(" ");
+		result.append(*it);
+	}
+	return result;
 }
 
-void Commands::save(std::string &user, std::string &host)
-{
-	t_numCode errorCode = NO_CODE;
-	std::string message;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	// _clients.setUser(_fd, user);
-	// errorCode = _clients.updateUser(_fd, user);
-	
-	if (host.empty()){}//
-	errorCode = _clients.setUser(_fd, user);//
-
-	message = GREEN + "User update successfully!\n" + RESET;
-	if (errorCode != NO_CODE)
-		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
-
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
-}
 
 std::string Commands::codeToString(t_numCode code)
 {
@@ -76,4 +51,12 @@ std::string Commands::intToString(int num)
 	oss << static_cast<int>(num);
 
 	return oss.str();
+}
+
+void Commands::printError(const std::string &errorMessage)
+{
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+
+	it->second.sendMessage(errorMessage);
+	std::cout << errorMessage << std::endl;
 }

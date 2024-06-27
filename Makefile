@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/26 14:41:27 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/27 17:07:46 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,9 @@ SRCS		= main.cpp IrcServer.cpp \
 			\
 			Client.cpp ClientList.cpp \
 			\
-			Commands.cpp messages.cpp utils.cpp validations.cpp
+			Commands.cpp channelCommands.cpp messagesCommands.cpp \
+			setupCommands.cpp \
+			utils.cpp validations.cpp
 
 VPATH		= src/ src/bonus src/channel src/client src/commands
 OBJS_PATH	= obj

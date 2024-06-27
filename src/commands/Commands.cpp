@@ -37,80 +37,8 @@ bool Commands::isCommand(const std::string &message)
 		(this->*(it->second))();
 		return true;
 	}
-	else
-		return false;
-}
 
-void Commands::commandPass( void )
-{
-	std::string message;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	if (_args.size() != 2)
-	{
-		message = RED + "Error: Number of invalid arguments\n" +
-			"PASS <password>\n" + RESET;
-	}
-	else if (it->second.getStatus() == Client::REGISTERED)
-	{
-		message = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-			": Client has already been registered\n" + RESET;
-	}
-	else
-	{
-		std::string pass = _args[1];
-		if (pass == _serverPass)
-		{
-			it->second.setStatus(Client::AUTHENTICATED);
-			message = GREEN + "Your access has been approved!\n" + RESET;
-		}
-		else
-			message = RED + "Error: Password incorrect\r\n" + RESET;
-	}
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
-}
-
-void Commands::commandNick( void )
-{
-	std::string error;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	if (initialVerify(error, 2, "NICK <new_nickname>\n"))
-	{
-		std::string nick = _args[1];
-		if (!validArg(nick))
-			return ;
-		else
-			save(nick);
-		return ;
-	}
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
-}
-
-void Commands::commandUser( void )
-{
-	std::string error;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	if (initialVerify(error, 3, "USER <user> <host>\n"))
-	{
-		std::string user = _args[1];
-		std::string host = _args[2];
-		if (!validArg(user) || !validArg(host))
-			return ;
-		else if (it->second.getStatus() == Client::REGISTERED)
-		{
-			error = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-				": Client has already been registered\n" + RESET;
-		}
-		else
-			save(user, host);
-		return ;
-	}
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
+	return false;
 }
 
 void Commands::commandKick( void )
@@ -135,43 +63,45 @@ void Commands::commandMode( void )
 
 void Commands::commandQuit( void )
 {
-	std::string error;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	if (initialVerify(error, 1, "QUIT <message(optional)>\n"))
+	if (initialVerify(1, "QUIT <message(optional)>\n"))
 	{
-		std::string messageClient;
 		std::string message = RED + "Client " + BYELLOW + intToString(_fd)
 			+ RED + " left the channel ";
 
-		if (_args.size() > 1)
-		{
-			messageClient = getMessage(1);
-
-			if (validMessage(messageClient))
-			{
-				messageClient = BLUE + "\nAnd sent the following farewell message: "
-					+ BGREEN + messageClient + RESET;
-			}
-			else
-				messageClient = "";
-		}
-
-		for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		for (std::map<std::string, Channel>::iterator it = _channels.begin();
+			it != _channels.end(); ++it)
 		{
 			if (it->second.userIsInChannel(_fd))
-				it->second.sendToAll(message + BCYAN + it->second.getName() + RESET + messageClient);
+				it->second.sendToAll(message + BCYAN + it->second.getName()
+					+ RESET + getClientMessage());
 		}
 
-		IRCServer server;
-
-		server.removeClient(_fd);
-		_channels.partDisconnectedClient(_fd);
-		std::cout << RED << "Client disconnected: ";
-		std::cout << BYELLOW << _fd << RESET << std::endl;
-
-		return ;
+		quitServer();
 	}
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
+}
+
+void Commands::quitServer( void )
+{
+	IRCServer server;
+
+	server.removeClient(_fd);
+	_channels.partDisconnectedClient(_fd);
+	std::cout << RED << "Client disconnected: ";
+	std::cout << BYELLOW << _fd << RESET << std::endl;
+}
+
+std::string Commands::getClientMessage( void )
+{
+	std::string messageClient = "";
+
+	if (_args.size() > 1)
+	{
+		std::string message = getMessage(1);
+		if (validMessage(message))
+		{
+			messageClient = BLUE + "\nAnd sent the following farewell message: "
+				+ BGREEN + messageClient + RESET;
+		}
+	}
+	return messageClient;
 }

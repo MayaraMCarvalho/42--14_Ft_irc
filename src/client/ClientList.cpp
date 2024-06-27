@@ -6,13 +6,15 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 14:55:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 16:35:54 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+#include <iostream>//
 
 #include "ClientList.hpp"
 
@@ -164,10 +166,8 @@ t_numCode ClientList::setUser(int fd, const std::string &newUser) {
 
 	if (status == Client::REGISTERED)
 		return ERR_ALREADYREGISTERED;
-
 	else if (status == Client::AUTHENTICATED)
 		it->second.setStatus(Client::GOT_USER);
-
 	else if (status == Client::GOT_NICK)
 		it->second.setStatus(Client::REGISTERED);
 

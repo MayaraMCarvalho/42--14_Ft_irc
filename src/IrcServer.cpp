@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   IrcServer.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:12:51 by gmachado         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "IrcServer.hpp"
 #include "Channel.hpp"
 #include "Commands.hpp"
@@ -31,7 +19,13 @@ IRCServer::IRCServer(const std::string &port, const std::string &password)
 
 void IRCServer::setupServer(void)
 {
+	struct sockaddr_in address;
 	int	opt;
+
+	std::memset(&address, 0, sizeof(address));
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(std::atoi(_port.c_str()));
 
 	_serverFd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -42,18 +36,15 @@ void IRCServer::setupServer(void)
 	if (setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
 		throw std::runtime_error("Failed to set socket options");
 
-	struct sockaddr_in address;
-	std::memset(&address, 0, sizeof(address));
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(std::atoi(_port.c_str()));
+	if (fcntl(_serverFd, F_SETFL, O_NONBLOCK) == -1)
+		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
 
 	if (bind(_serverFd, (struct sockaddr *)&address, sizeof(address)) < 0)
 		throw std::runtime_error("Failed to bind socket");
+
 	if (listen(_serverFd, 10) < 0)
 		throw std::runtime_error("Failed to listen on socket");
-
-	fcntl(_serverFd, F_SETFL, O_NONBLOCK);
+		
 	struct pollfd pfd = {_serverFd, POLLIN, STDIN_FILENO};
 	_pollFds.push_back(pfd);
 }
@@ -122,8 +113,9 @@ void IRCServer::acceptNewClient(void)
 		return;
 	}
 
-	fcntl(clientFd, F_SETFL, O_NONBLOCK);
-
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK)) {
+		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
+	}
 
 	_clients.add(clientFd, &clientAddress.sin_addr);
 
@@ -168,7 +160,7 @@ void IRCServer::handleClientMessage(int clientFd)
 	ssize_t	nbytes;
 
 	std::memset(buffer, 0, sizeof(buffer));
-	nbytes = read(clientFd, buffer, sizeof(buffer) - 1); // read client data
+	nbytes = recv(clientFd, buffer, sizeof(buffer) - 1, 0); // read client data
 
 	if (nbytes <= 0)
 	{
@@ -243,7 +235,7 @@ void IRCServer::sendMessage(int clientFd, const std::string &message)
 	ssize_t	nbytes;
 
 	std::string fullMessage = message + "\n";
-	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
+	nbytes = send(clientFd, fullMessage.c_str(), fullMessage.length(), 0);
 	if (nbytes < 0)
 	{
 		std::cerr << RED << "Write error on client " << clientFd << std::endl;

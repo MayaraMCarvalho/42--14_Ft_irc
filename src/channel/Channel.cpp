@@ -206,3 +206,11 @@ void Channel::sendToAll(const std::string &message)
 		IRCServer::sendMessage(it->first, message);
 	}
 }
+
+bool Channel::userHasInvite(const std::string &nick) {
+	return (_invites.find(nick) != _invites.end());
+}
+
+void Channel::addInvite(const std::string &nick) { _invites.insert(nick); }
+
+void Channel::removeInvite(const std::string &nick) { _invites.erase(nick); }

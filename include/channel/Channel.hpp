@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 01:07:54 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:31:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 # include <string>
 # include <map>
+# include <iostream>
+
 # include "Client.hpp"
 
 class Channel
@@ -60,6 +62,7 @@ class Channel
 		int getUserModeFlags(const int userFD);
 		bool userIsInChannel(const int userFD);
 		bool userCanJoin(const int userFD);
+		bool userHasInvite(const std::string &nick);
 		bool empty(void);
 		std::map<int, int>::iterator usersBegin(void);
 		std::map<int, int>::iterator usersEnd(void);
@@ -77,6 +80,8 @@ class Channel
 		void addUser(const int fd, const int userModeFlags);
 		void removeUser(const int fd);
 		void sendToAll(const std::string &message);
+		void addInvite(const std::string &nick);
+		void removeInvite(const std::string &nick);
 
 	private:
 		std::string _name;

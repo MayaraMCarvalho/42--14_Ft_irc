@@ -81,22 +81,32 @@ void Client::setMode(std::string modeStr) {
 	if (modeStr.length() != 2)
 		return;
 
-	if (modeStr[1] == 'a')
-		newModeFlags = AWAY;
-	else if (modeStr[1] == 'i')
-		newModeFlags = INVISIBLE;
-	else if (modeStr[1] == 'w')
-		newModeFlags = WALLOPS;
-	else if (modeStr[1] == 'r')
-		newModeFlags = RESTRICTED;
-	else if (modeStr[1] == 'o')
-		newModeFlags = OPERATOR;
-	else if (modeStr[1] == 'O')
-		newModeFlags = LOCAL_OP;
-	else if (modeStr[1] == 's')
-		newModeFlags = RECV_NOTICES;
-	else
-		return;
+	switch (modeStr[1])
+	{
+		case 'a':
+			newModeFlags = AWAY;
+			break;
+		case 'i':
+			newModeFlags = INVISIBLE;
+			break;
+		case 'w':
+			newModeFlags = WALLOPS;
+			break;
+		case 'r':
+			newModeFlags = RESTRICTED;
+			break;
+		case 'o':
+			newModeFlags = OPERATOR;
+			break;
+		case 'O':
+			newModeFlags = LOCAL_OP;
+			break;
+		case 's':
+			newModeFlags = RECV_NOTICES;
+			break;
+		default:
+			return;
+	}
 
 	if (modeStr[0] == '+')
 		_modeFlags |= newModeFlags;

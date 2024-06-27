@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 01:43:49 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,6 @@ void ClientList::add(Client &client) {
 void ClientList::add(int fd, struct in_addr *address) {
 	std::string hostname = inet_ntoa(*address);
 
-
 	add(fd, hostname);
 }
 
@@ -319,8 +318,6 @@ bool ClientList::isValidUser(std::string user) {
 
 	return true;
 }
-
-
 
 bool ClientList::isSpecialChar(char ch) {
 	return (ch >= 0x5B && ch <= 0x60) || (ch >= 0x7B && ch <= 0x7D);

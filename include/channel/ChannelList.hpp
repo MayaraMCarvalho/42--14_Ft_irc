@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 00:43:52 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class ChannelList
 		std::map<std::string, Channel> _channels;
 		ClientList *_clients;
 		static const int _DEFAULT_FLAGS = Channel::NO_UMODE;
+		std::map<std::string, std::set<std::string> > _invites;
 
 		std::map<std::string, Channel>::iterator add(Channel channel);
 		std::map<std::string, Channel>::size_type remove(std::string name);
@@ -46,6 +47,10 @@ class ChannelList
 		void part(int userFD, std::string chanName);
 		void partDisconnectedClient(int userFD);
 		bool userCanJoin(int userFD, Channel &chan, const std::string &key);
+		bool userHasInvite(const std::string &nick, const std::string &chan);
+
+		void addInvite(const std::string &nick, const std::string &chan);
+		void removeInvite(const std::string &nick, const std::string &chan);
 };
 
 #endif

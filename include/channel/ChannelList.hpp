@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 10:15:26 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 11:57:13 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <iostream>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "Colors.hpp"
+# include "colors.hpp"
 
 class ChannelList
 {
@@ -43,10 +43,9 @@ class ChannelList
 		std::map<std::string, Channel>::iterator begin(void);
 		std::map<std::string, Channel>::iterator end(void);
 
-		void join(int userFD, const std::string &chanName, const std::string &key);
+		void join(int userFD, std::string chanName);
 		void part(int userFD, std::string chanName);
 		void partDisconnectedClient(int userFD);
-		bool userCanJoin(int userFD, Channel &chan, const std::string &key);
 };
 
 #endif

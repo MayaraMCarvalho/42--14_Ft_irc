@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 10:12:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 11:58:32 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ std::map<std::string, Channel>::size_type ChannelList::remove(std::string name)
 	return removed;
 }
 
-void ChannelList::join(int userFD, const std::string &chanName,
-	const std::string &key) {
+void ChannelList::join(int userFD, std::string chanName) {
 	if (!_clients)
 		return;
 
@@ -82,22 +81,12 @@ void ChannelList::join(int userFD, const std::string &chanName,
 		if (chanIt == end())
 			chanIt = add(Channel(chanName));
 
-		Channel& chan = chanIt->second;
-		chan.addUser(userFD, _DEFAULT_FLAGS);
-		userIt->second.addChannel(chanName);
-		chan.setUserModeFlags(userFD,
-			chan.getChannelModeFlags() | Channel::CHANOP);
-		return;
 	} catch (std::exception &e) {
 		std::cerr << RED << "Could not create channel: " << YELLOW
 			<< chanName << std::endl;
 		std::cout << RESET << std::endl;
 		return;
 	}
-
-	// TODO: add exception
-	if (!userCanJoin(userFD, chanIt->second, key))
-		return;
 
 	chanIt->second.addUser(userFD, _DEFAULT_FLAGS);
 	userIt->second.addChannel(chanName);
@@ -148,27 +137,4 @@ void ChannelList::partDisconnectedClient(int userFD)
 		std::set<std::string>::iterator oldChanIt = chanIt++;
 		part(userFD, oldChanIt->data());
 	}
-}
-
-bool ChannelList::userCanJoin(int userFD, Channel &chan,
-	const std::string &key) {
-	std::map<int, Client>::iterator userIt = _clients->getClient(userFD);
-
-	if (userIt == _clients->end())
-		return false;
-
-	if (chan.userIsInChannel(userFD))
-		return false;
-
-	if (chan.getKey() != key)
-		return false;
-
-	if (chan.getUserLimit() != -1 && chan.getUserLimit() == chan.getNumUsers())
-		return false;
-
-	if (chan.getChannelMode(Channel::INVITEONLY) &&
-		!chan.userHasInvite(userIt->second.getNick()))
-		return false;
-
-	return true;
 }

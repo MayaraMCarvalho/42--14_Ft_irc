@@ -6,13 +6,10 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/26 16:24:17 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 11:58:55 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include "ClientList.hpp"
 
 ClientList::ClientList(void) : _clients(), _userToClient(), _nickToClient() { }

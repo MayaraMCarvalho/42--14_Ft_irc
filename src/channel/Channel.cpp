@@ -96,26 +96,38 @@ void Channel::setChannelMode(const std::string &modeStr) {
 	if (modeStr.length() != 2)
 		return;
 
-	if (modeStr[1] == 'a')
-		newModeFlags = ANONYMOUS;
-	else if (modeStr[1] == 'i')
-		newModeFlags = INVITEONLY;
-	else if (modeStr[1] == 'm')
-		newModeFlags = MODERATED;
-	else if (modeStr[1] == 'n')
-		newModeFlags = NO_OUT_MSG;
-	else if (modeStr[1] == 'q')
-		newModeFlags = QUIET;
-	else if (modeStr[1] == 'p')
-		newModeFlags = PRIVATE;
-	else if (modeStr[1] == 's')
-		newModeFlags = SECRET;
-	else if (modeStr[1] == 'r')
-		newModeFlags = SERV_REOP;
-	else if (modeStr[1] == 't')
-		newModeFlags = OP_TOPIC;
-	else
-		return;
+	switch(modeStr[1])
+	{
+		case 'a':
+			newModeFlags = ANONYMOUS;
+			break;
+		case  'i':
+			newModeFlags = INVITEONLY;
+			break;
+		case  'm':
+			newModeFlags = MODERATED;
+			break;
+		case 'n':
+			newModeFlags = NO_OUT_MSG;
+			break;
+		case 'q':
+			newModeFlags = QUIET;
+			break;
+		case 'p':
+			newModeFlags = PRIVATE;
+			break;
+		case 's':
+			newModeFlags = SECRET;
+			break;
+		case 'r':
+			newModeFlags = SERV_REOP;
+			break;
+		case 't':
+			newModeFlags = OP_TOPIC;
+			break;
+		default:
+			return;
+	}
 
 	if (modeStr[0] == '+')
 		_channelModeFlags |= newModeFlags;
@@ -183,15 +195,6 @@ std::map<int, int>::iterator Channel::usersBegin(void) {
 std::map<int, int>::iterator Channel::usersEnd(void) {
 	return _users.end();
 }
-
-bool Channel::userHasInvite(const std::string &nick) {
-	return (_invites.find(nick) != _invites.end());
-}
-
-void Channel::addInvite(const std::string &nick) { _invites.insert(nick); }
-
-void Channel::removeInvite(const std::string &nick) { _invites.erase(nick); }
-
 
 void Channel::sendToAll(const std::string &message)
 {

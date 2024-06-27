@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/20 04:02:40 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 02:04:17 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class ClientList {
 		std::map<int, Client>::iterator end(void);
 
 		// Setters
-		void setNick(int fd, std::string &nick);
-		void setUser(int fd, std::string &user);
+		t_numCode setNick(int fd, std::string &newNick);
+		t_numCode setUser(int fd, std::string &newUser);
 
 		void add(Client &client);
 		void add(int fd, struct in_addr *address);
@@ -50,8 +50,6 @@ class ClientList {
 		void remove(int fd);
 		void removeByNick(std::string &nick);
 		void removeByUser(std::string &user);
-		t_numCode updateNick(int fd, std::string &newNick);
-		t_numCode updateUser(int fd, std::string &newUser);
 
 		static bool isValidNick(std::string nick);
 		static bool isValidUser(std::string user);

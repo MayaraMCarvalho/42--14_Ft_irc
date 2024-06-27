@@ -6,33 +6,27 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 00:02:17 by lucperei          #+#    #+#             */
-/*   Updated: 2024/06/26 16:45:19 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/05/25 11:34:41 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Bot.hpp"
+#include "../include/Bot.hpp"
 
 // Constructor ================================================================
-
 Bot::Bot() {}
 
 Bot::Bot(const std::string &name) : _name(name) {}
 
 // Methods ====================================================================
-
-void Bot::respondToMessage(int clientFd, const std::string &message)
+void Bot::respondToMessage(int client_fd, const std::string &message)
 {
-    std::string response = _name + ": I received your message: " + message;
-    sendMessage(clientFd, response);
+	std::string response = _name + ": I received your message: " + message;
+	sendMessage(client_fd, response);
 }
 
-void Bot::sendMessage(int clientFd, const std::string &message)
+void Bot::sendMessage(int client_fd, const std::string &message)
 {
-    std::string fullMessage = message + "\n";
-    ssize_t nbytes = send(clientFd, fullMessage.c_str(), fullMessage.length(), 0);
-    
-    if (nbytes < 0)
-    {
-        std::cerr << "Error writing to client " << clientFd << std::endl;
-    }
+	// std::cout << "Bot sending message to client " << clientFd << ": " << message << std::endl; // Adicionando log de depura��o
+	std::string fullMessage = message + "\r\n";
+	write(clientFd, fullMessage.c_str(), fullMessage.length());
 }

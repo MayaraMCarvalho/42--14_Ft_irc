@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:08:05 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 10:24:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,16 @@ class	Channel;
 class IRCServer
 {
 	private:
-		std::string						_port;
-		std::string						_password;
-		int 							_serverFd;
-		std::vector<struct pollfd>		_pollFds;
-		FileTransfer 					_fileTransfer;
-		Bot 							_bot;
-		ClientList						_clients;
-		ChannelList						_channels;
+		std::string					_port;
+		std::string					_password;
+		int 						_serverFd;
+		std::vector<struct pollfd>	_pollFds;
+		FileTransfer 				_fileTransfer;
+		Bot 						_bot;
+		ClientList					_clients;
+		ChannelList					_channels;
+		bool						_shouldExit;
+		static IRCServer*			_instance;
 
 		void handleFileTransfer(int clientFd, const std::string &command);
 

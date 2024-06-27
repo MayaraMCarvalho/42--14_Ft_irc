@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 15:13:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:33:14 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,13 +202,14 @@ void IRCServer::handleClientMessage(int clientFd)
 	{
 		std::cout << RED;
 		if (nbytes < 0 && errno != EWOULDBLOCK)
-			std::cerr << "Read error on client " << clientFd << std::endl;
+			std::cerr << "Read error on client: ";
 		else if (nbytes == 0)
-			std::cout << "Client disconnected: " << clientFd << std::endl;
+			std::cout << "Client disconnected: ";
+		std::cout << BYELLOW << clientFd << std::endl;
 		std::cout << RESET;
 
 		removeClient(clientFd);
-		
+
 		return;
 	}
 
@@ -276,6 +277,24 @@ void IRCServer::sendMessage(int clientFd, const std::string &message)
 			<< BYELLOW << clientFd << std::endl << RESET;
 	}
 }
+
+// void IRCServer::sendToChannel(const std::string &chanStr,
+// 						const std::string &message)
+// {
+// 	std::map<std::string, Channel>::iterator chanIt = _channels.get(chanStr);
+
+// 	// TODO: Add exception
+// 	if (chanIt == _channels.end())
+// 		return;
+
+// 	for (std::map<int, int>::iterator it = chanIt->second.usersBegin();
+// 		it != chanIt->second.usersEnd(); ++it)
+// 	{
+// 		std::cerr << "Sending message " << message << " to "
+// 			<< it->first << std::endl;
+// 		sendMessage(it->first, message);
+// 	}
+// }
 
 void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
 {

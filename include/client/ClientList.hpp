@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 03:23:33 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/27 14:55:51 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ class ClientList {
 		void remove(int fd);
 		void removeByNick(const std::string &nick);
 		void removeByUser(const std::string &user);
+
+		// t_numCode updateNick(int fd, std::string &newNick);
+		// t_numCode updateUser(int fd, std::string &newUser);
 
 		static bool isValidNick(const std::string &nick);
 		static bool isValidUser(const std::string &user);

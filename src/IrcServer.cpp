@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 12:00:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/27 15:13:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,31 +36,34 @@ IRCServer::IRCServer(const std::string &port, const std::string &password)
 
 void IRCServer::setupServer(void)
 {
+	struct sockaddr_in address;
 	int	opt;
 
-	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (_server_fd < 0)
-		throw std::runtime_error("Failed to create socket");
-
-	opt = 1;
-	if (setsockopt(_server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-		throw std::runtime_error("Failed to set socket options");
-
-	struct sockaddr_in address;
 	std::memset(&address, 0, sizeof(address));
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(std::atoi(_port.c_str()));
 
-	if (bind(_server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+	_serverFd = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (_serverFd < 0)
+		throw std::runtime_error("Failed to create socket");
+
+	opt = 1;
+	if (setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+		throw std::runtime_error("Failed to set socket options");
+
+	if (fcntl(_serverFd, F_SETFL, O_NONBLOCK) == -1)
+		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
+
+	if (bind(_serverFd, (struct sockaddr *)&address, sizeof(address)) < 0)
 		throw std::runtime_error("Failed to bind socket");
-	if (listen(_server_fd, 10) < 0)
+
+	if (listen(_serverFd, 10) < 0)
 		throw std::runtime_error("Failed to listen on socket");
 
-	fcntl(_server_fd, F_SETFL, O_NONBLOCK);
-	struct pollfd pfd = {_server_fd, POLLIN, STDIN_FILENO};
-	_poll_fds.push_back(pfd);
+	struct pollfd pfd = {_serverFd, POLLIN, STDIN_FILENO};
+	_pollFds.push_back(pfd);
 }
 
 void IRCServer::signalHandler(int signal)
@@ -94,15 +97,17 @@ void IRCServer::setupSignalHandlers(void)
 
 void IRCServer::run(void)
 {
-	int	poll_count;
+	int	pollCount;
 
 	setupServer();
 	setupSignalHandlers();
-	std::cout << "Server running on port " << _port << std::endl;
+	std::cout << GREEN << "Server running on port ";
+	std::cout << BYELLOW << _port << RESET << std::endl;
 
 	while (!_shouldExit)
 	{
 		sigset_t pendingSignals;
+
 		if (sigpending(&pendingSignals) == 0)
 		{
 			if (sigismember(&pendingSignals, SIGINT)
@@ -110,6 +115,7 @@ void IRCServer::run(void)
 			|| sigismember(&pendingSignals, SIGTSTP))
 				break;
 		}
+
 		pollCount = poll(_pollFds.data(), _pollFds.size(), -1);
 		if (pollCount < 0)
 		{
@@ -121,35 +127,37 @@ void IRCServer::run(void)
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
 
-		for (size_t i = 1; i < _poll_fds.size(); ++i)
+		for (size_t i = 1; i < _pollFds.size(); ++i)
 		{
-			if (_poll_fds[i].revents & POLLIN)
-				handleClientMessage(_poll_fds[i].fd);
+			if (_pollFds[i].revents & POLLIN)
+				handleClientMessage(_pollFds[i].fd);
 		}
 	}
 }
 
 void IRCServer::acceptNewClient(void)
 {
-	int	client_fd;
+	int	clientFd;
+	struct sockaddr_in clientAddress;
+	socklen_t clientLen = sizeof(clientAddress);
+	clientFd = accept(_serverFd, (struct sockaddr *)&clientAddress, &clientLen);
 
-	struct sockaddr_in client_address;
-	socklen_t client_len = sizeof(client_address);
-	client_fd = accept(_server_fd, (struct sockaddr *)&client_address, &client_len);
-
-	if (client_fd < 0)
+	if (clientFd < 0)
 	{
 		if (errno != EWOULDBLOCK)
 			std::cerr << "Failed to accept new client" << std::endl;
 		return;
 	}
 
-	fcntl(client_fd, F_SETFL, O_NONBLOCK);
-	_clients.add(client_fd, &client_address.sin_addr);
+	if (fcntl(clientFd, F_SETFL, O_NONBLOCK)) {
+		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
+	}
 
-	_channels.join(client_fd, "default");
-	struct pollfd pfd = {client_fd, POLLIN, 0};
-	_poll_fds.push_back(pfd);
+	_clients.add(clientFd, &clientAddress.sin_addr);
+
+	_channels.join(clientFd, "default", "");
+	struct pollfd pfd = {clientFd, POLLIN, 0};
+	_pollFds.push_back(pfd);
 
 	std::cout << BLUE << "New client connected: ";
 	std::cout << BYELLOW << clientFd << RESET << std::endl;
@@ -182,21 +190,25 @@ t_numCode IRCServer::authenticate(int userFD, std::string password) {
 	return NO_CODE;
 }
 
-void IRCServer::handleClientMessage(int client_fd)
+void IRCServer::handleClientMessage(int clientFd)
 {
 	char	buffer[512];
 	ssize_t	nbytes;
 
 	std::memset(buffer, 0, sizeof(buffer));
-	nbytes = read(client_fd, buffer, sizeof(buffer) - 1); // read client data
+	nbytes = recv(clientFd, buffer, sizeof(buffer) - 1, 0); // read client data
 
 	if (nbytes <= 0)
 	{
+		std::cout << RED;
 		if (nbytes < 0 && errno != EWOULDBLOCK)
-			std::cerr << "Read error on client " << client_fd << std::endl;
+			std::cerr << "Read error on client " << clientFd << std::endl;
 		else if (nbytes == 0)
-			std::cout << "Client disconnected: " << client_fd << std::endl;
-		removeClient(client_fd);
+			std::cout << "Client disconnected: " << clientFd << std::endl;
+		std::cout << RESET;
+
+		removeClient(clientFd);
+		
 		return;
 	}
 
@@ -218,58 +230,61 @@ void IRCServer::handleClientMessage(int client_fd)
 		isCommand = true;
 	//
 	else if (message.substr(0, 5) == "/file")
-		handleFileTransfer(client_fd, message);
+		handleFileTransfer(clientFd, message);
 	else
-		_bot.respondToMessage(client_fd, message); // call for the bot to respond
+		_bot.respondToMessage(clientFd, message); // call for the bot to respond
 
-	std::map<std::string, Channel>::iterator it = _channels.get("default");
+	if (!isCommand)
+	{
+		std::map<std::string, Channel>::iterator it = _channels.get("default");
 
-	if (it != _channels.end())
-		it->second.sendToAll(message);
-	else
-		std::cerr << "Failed to send message to channel default" << std::endl;
+		if (it != _channels.end())
+			it->second.sendToAll(message);
+		else
+			std::cerr << "Failed to send message to channel default" << std::endl;
+	}
 }
 
-void IRCServer::removeClient(int client_fd)
+void IRCServer::removeClient(int clientFd)
 {
-	close(client_fd);
+	close(clientFd);
 
-	_channels.partDisconnectedClient(client_fd);
+	_channels.partDisconnectedClient(clientFd);
 
-	for (std::vector<struct pollfd>::iterator it = _poll_fds.begin(); it != _poll_fds.end(); ++it)
+	for (std::vector<struct pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it)
 	{
-		if (it->fd == client_fd)
+		if (it->fd == clientFd)
 		{
-			_poll_fds.erase(it);
+			_pollFds.erase(it);
 
 			break;
 		}
 	}
 
-	_clients.remove(client_fd);
+	_clients.remove(clientFd);
 }
 
-void IRCServer::sendMessage(int client_fd, const std::string &message)
+void IRCServer::sendMessage(int clientFd, const std::string &message)
 {
 	ssize_t	nbytes;
 
 	std::string fullMessage = message + "\r\n";
-	nbytes = write(clientFd, fullMessage.c_str(), fullMessage.length());
+	nbytes = send(clientFd, fullMessage.c_str(), fullMessage.length(), 0);
 	if (nbytes < 0)
 	{
-		std::cerr << RED << "Write error on client " << BYELLOW << clientFd << std::endl;
-		std::cout << RESET;
+		std::cerr << RED << "Write error on client "
+			<< BYELLOW << clientFd << std::endl << RESET;
 	}
 }
 
-void IRCServer::handleFileTransfer(int client_fd, const std::string &command)
+void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
 {
 	std::istringstream	iss(command);
 	std::string			cmd, file_name;
 	int					receiver_fd;
 
 	iss >> cmd >> receiver_fd >> file_name;
-	_file_transfer.requestTransfer(client_fd, receiver_fd, file_name); // starts file transfer
+	_fileTransfer.requestTransfer(clientFd, receiver_fd, file_name); // starts file transfer
 }
 
 // Exceptions =================================================================

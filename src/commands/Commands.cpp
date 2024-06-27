@@ -1,8 +1,10 @@
 #include "Commands.hpp"
+#include "IrcServer.hpp"
 
 // Constructor & Destructor ===================================================
-Commands::Commands(ClientList &clients, ChannelList &channels, int fd) :
-		_clients(clients), _channels(channels), _fd(fd) {}
+Commands::Commands(ClientList &clients, ChannelList &channels,
+	int fd, const std::string &pass) :
+		_clients(clients), _channels(channels), _fd(fd), _serverPass(pass) {}
 
 Commands::~Commands(void) {}
 
@@ -15,11 +17,17 @@ bool Commands::isCommand(const std::string &message)
 {
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
+	cmdFuncs[PASS] = &Commands::commandPass;
 	cmdFuncs[NICK] = &Commands::commandNick;
 	cmdFuncs[USER] = &Commands::commandUser;
 	cmdFuncs[JOIN] = &Commands::commandJoin;
 	cmdFuncs[PART] = &Commands::commandPart;
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg;
+	cmdFuncs[KICK] = &Commands::commandKick;
+	cmdFuncs[INVITE] = &Commands::commandInvite;
+	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[MODE] = &Commands::commandMode;
+	cmdFuncs[QUIT] = &Commands::commandQuit;
 
 	parsingArgs(message);
 
@@ -33,13 +41,34 @@ bool Commands::isCommand(const std::string &message)
 		return false;
 }
 
-void Commands::parsingArgs(const std::string &message)
+void Commands::commandPass( void )
 {
-	std::string token;
-	std::istringstream tokenStream(message);
+	std::string message;
+	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
-	while (std::getline(tokenStream, token, ' '))
-		_args.push_back(token);
+	if (_args.size() != 2)
+	{
+		message = RED + "Error: Number of invalid arguments\n" +
+			"PASS <password>\n" + RESET;
+	}
+	else if (it->second.getStatus() == Client::REGISTERED)
+	{
+		message = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
+			": Client has already been registered\n" + RESET;
+	}
+	else
+	{
+		std::string pass = _args[1];
+		if (pass == _serverPass)
+		{
+			it->second.setStatus(Client::AUTHENTICATED);
+			message = GREEN + "Your access has been approved!\n" + RESET;
+		}
+		else
+			message = RED + "Error: Password incorrect\r\n" + RESET;
+	}
+	it->second.sendMessage(message);
+	std::cout << message << std::endl;
 }
 
 void Commands::commandNick( void )
@@ -71,6 +100,11 @@ void Commands::commandUser( void )
 		std::string host = _args[2];
 		if (!validArg(user) || !validArg(host))
 			return ;
+		else if (it->second.getStatus() == Client::REGISTERED)
+		{
+			error = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
+				": Client has already been registered\n" + RESET;
+		}
 		else
 			save(user, host);
 		return ;
@@ -79,107 +113,65 @@ void Commands::commandUser( void )
 	std::cout << error << std::endl;
 }
 
-void Commands::commandJoin( void )
+void Commands::commandKick( void )
+{
+	std::cout << "Command Kick" << std::endl;
+}
+
+void Commands::commandInvite( void )
+{
+ std::cout << "Command Invite" << std::endl;
+}
+
+void Commands::commandTopic( void )
+{
+	std::cout << "Command Topic" << std::endl;
+}
+
+void Commands::commandMode( void )
+{
+	std::cout << "Command Mode" << std::endl;
+}
+
+void Commands::commandQuit( void )
 {
 	std::string error;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
-	if (initialVerify(error, 2, "JOIN <#channel_name>\n"))
+	if (initialVerify(error, 1, "QUIT <message(optional)>\n"))
 	{
-		std::string channel = _args[1];
+		std::string messageClient;
+		std::string message = RED + "Client " + BYELLOW + intToString(_fd)
+			+ RED + " left the channel ";
 
-		if (validChannel(channel, error))
+		if (_args.size() > 1)
 		{
-			if (!validArg(channel))
-				return ;
-			else
+			messageClient = getMessage(1);
+
+			if (validMessage(messageClient))
 			{
-				_channels.join(_fd, channel);
-				error = GREEN + "User successfully join the channel " +
-					channel + "!\n" + RESET;
+				messageClient = BLUE + "\nAnd sent the following farewell message: "
+					+ BGREEN + messageClient + RESET;
 			}
+			else
+				messageClient = "";
 		}
+
+		for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		{
+			if (it->second.userIsInChannel(_fd))
+				it->second.sendToAll(message + BCYAN + it->second.getName() + RESET + messageClient);
+		}
+
+		IRCServer server;
+
+		server.removeClient(_fd);
+		_channels.partDisconnectedClient(_fd);
+		std::cout << RED << "Client disconnected: ";
+		std::cout << BYELLOW << _fd << RESET << std::endl;
+
+		return ;
 	}
 	it->second.sendMessage(error);
 	std::cout << error << std::endl;
 }
-
-void Commands::commandPart( void )
-{
-	std::string error;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	if (initialVerify(error, 2, "PART <#channel_name>\n"))
-	{
-		std::string channel = _args[1];
-
-		if (validChannel(channel, error))
-		{
-			if (!validArg(channel))
-				return ;
-			else
-			{
-				_channels.part(_fd, channel);
-				error = GREEN + "User successfully part the channel " +
-					channel + "!\n" + RESET;
-			}
-		}
-	}
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
-}
-
-void Commands::commandPrivMsg( void )
-{
-	std::string error;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	if (initialVerify(error, 3, "PRIVMSG <recipient> :<message>\n"))
-	{
-		std::string recipient = _args[1];
-		std::string message = getMessage();
-		bool isChannel = validChannel(recipient, error);
-
-		if (!validArg(recipient) || !validMessage(message))
-			return ;
-		else
-		{
-			if (!isChannel)
-			{
-				if (sendMessage(_clients.getFDByNick(recipient), message))
-					return ;
-				error = RED + "Error: User not found\n" + RESET;
-			}
-			else
-			{
-				if (sendMessage( _channels.get(recipient), message))
-					return ;
-				error = RED + "Error: channel not found\n" + RESET;
-			}
-		}
-	}
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
-}
-
-// Exceptions =================================================================
-
-// void		authenticate(Client &client, const std::string &pass, const std::string &serverPass);
-
-// void Client::authenticate(Client &client, const std::string &pass, const std::string &serverPass)
-// {
-// 	std::string message;
-
-// 	if (pass == serverPass)
-// 	{
-// 		client.au
-// 		message = ":server 001 " + client._nickname + " :Welcome to the IRC server\r\n";
-// 		send(client._fd, message.c_str(), message.length(), 0);
-// 	}
-// 	else
-// 	{
-// 		client._authenticated = false;//Verificar se é realmente necessário
-// 		message = ":server 464 " + client._nickname + " :Password incorrect\r\n";
-// 		send(client._fd, message.c_str(), message.length(), 0);
-// 	}
-// }

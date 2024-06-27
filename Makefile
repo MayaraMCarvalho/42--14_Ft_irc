@@ -6,15 +6,21 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/21 11:03:18 by macarval         ###   ########.fr        #
+#    Updated: 2024/06/26 14:41:27 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 
-SRCS		= main.cpp Bot.cpp Channel.cpp ChannelList.cpp Client.cpp \
-			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp \
-			utils.cpp validations.cpp
+SRCS		= main.cpp IrcServer.cpp \
+			\
+			Bot.cpp FileTransfer.cpp \
+			\
+			Channel.cpp ChannelList.cpp \
+			\
+			Client.cpp ClientList.cpp \
+			\
+			Commands.cpp messages.cpp utils.cpp validations.cpp
 
 VPATH		= src/ src/bonus src/channel src/client src/commands
 OBJS_PATH	= obj

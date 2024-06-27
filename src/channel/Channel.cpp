@@ -13,15 +13,15 @@
 #include "Channel.hpp"
 #include "IrcServer.hpp"
 
-Channel::Channel(void) : _name("#default"), _topic(""), _users(),
-	_channelModeFlags(NO_CMODE), _limit(-1) { }
+Channel::Channel(void) : _name("#default"), _topic(""), _key(""),
+	_users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
 
-Channel::Channel(std::string name) : _name(name), _topic(""), _users(),
-	_channelModeFlags(NO_CMODE), _limit(-1) { }
+Channel::Channel(const std::string &name) : _name(name), _topic(""), _key(""),
+_users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
 
 Channel::Channel(const Channel &src) : _name(src._name), _topic(src._topic),
-	_users(src._users), _channelModeFlags(src._channelModeFlags),
-	_limit(src._limit) { }
+	_key(src._key), _users(src._users),
+	_channelModeFlags(src._channelModeFlags), _limit(src._limit) { }
 
 Channel::~Channel(void) { }
 
@@ -39,11 +39,15 @@ Channel &Channel::operator=(const Channel &src) {
 }
 
 // Getters
-std::string Channel::getName(void) { return _name; }
+const std::string &Channel::getName(void) { return _name; }
 
-std::string Channel::getTopic(void) { return _topic; }
+const std::string &Channel::getTopic(void) { return _topic; }
+
+const std::string &Channel::getKey(void) {	return _key; }
 
 int	Channel::getUserLimit(void) { return _limit; }
+
+int	Channel::getNumUsers(void) { return _users.size(); }
 
 bool Channel::getChannelMode(t_cmode mode) {
 	return (_channelModeFlags & mode) != 0;
@@ -51,11 +55,11 @@ bool Channel::getChannelMode(t_cmode mode) {
 
 int Channel::getChannelModeFlags(void) { return _channelModeFlags; }
 
-bool Channel::getUserMode(int userFD, t_umode mode) {
+bool Channel::getUserMode(const int userFD, const t_umode mode) {
 	return (getUserModeFlags(userFD) & mode) != 0;
 }
 
-int Channel::getUserModeFlags(int userFD) {
+int Channel::getUserModeFlags(const int userFD) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
 	// TODO: add exception
@@ -65,51 +69,65 @@ int Channel::getUserModeFlags(int userFD) {
 	return it->second;
 }
 
-bool Channel::isUserInChannel(int userFD) {
+bool Channel::userIsInChannel(const int userFD) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
 	return (it != _users.end());
 }
 
-bool Channel::userCanJoin(int userFD) {
+bool Channel::userCanJoin(const int userFD) {
 	// TODO: mask checks
 	(void)userFD;
 	return true;
 }
 
-bool Channel::empty() { return _users.empty(); }
+bool Channel::empty(void) { return _users.empty(); }
 
 // Setters
-void Channel::setTopic(std::string topic) { _topic = topic; }
+void Channel::setTopic(const std::string &topic) { _topic = topic; }
 
-void Channel::setUserLimit(int limit) {_limit = limit; }
+void Channel::setKey(const std::string &key) { _key = key; }
 
-void Channel::setChannelMode(std::string modeStr) {
+void Channel::setUserLimit(const int limit) {_limit = limit; }
+
+void Channel::setChannelMode(const std::string &modeStr) {
 	int newModeFlags;
 
 	if (modeStr.length() != 2)
 		return;
 
-	if (modeStr[1] == 'a')
-		newModeFlags = ANONYMOUS;
-	else if (modeStr[1] == 'i')
-		newModeFlags = INVITEONLY;
-	else if (modeStr[1] == 'm')
-		newModeFlags = MODERATED;
-	else if (modeStr[1] == 'n')
-		newModeFlags = NO_OUT_MSG;
-	else if (modeStr[1] == 'q')
-		newModeFlags = QUIET;
-	else if (modeStr[1] == 'p')
-		newModeFlags = PRIVATE;
-	else if (modeStr[1] == 's')
-		newModeFlags = SECRET;
-	else if (modeStr[1] == 'r')
-		newModeFlags = SERV_REOP;
-	else if (modeStr[1] == 't')
-		newModeFlags = OP_TOPIC;
-	else
-		return;
+	switch(modeStr[1])
+	{
+		case 'a':
+			newModeFlags = ANONYMOUS;
+			break;
+		case  'i':
+			newModeFlags = INVITEONLY;
+			break;
+		case  'm':
+			newModeFlags = MODERATED;
+			break;
+		case 'n':
+			newModeFlags = NO_OUT_MSG;
+			break;
+		case 'q':
+			newModeFlags = QUIET;
+			break;
+		case 'p':
+			newModeFlags = PRIVATE;
+			break;
+		case 's':
+			newModeFlags = SECRET;
+			break;
+		case 'r':
+			newModeFlags = SERV_REOP;
+			break;
+		case 't':
+			newModeFlags = OP_TOPIC;
+			break;
+		default:
+			return;
+	}
 
 	if (modeStr[0] == '+')
 		_channelModeFlags |= newModeFlags;
@@ -117,11 +135,11 @@ void Channel::setChannelMode(std::string modeStr) {
 		_channelModeFlags &= (~newModeFlags);
 }
 
-void Channel::setChannelModeFlags(int modeFlags) {
+void Channel::setChannelModeFlags(const int modeFlags) {
 	_channelModeFlags = modeFlags;
 }
 
-void Channel::setUserMode(int userFD, std::string modeStr) {
+void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
 	// TODO: add exception
@@ -148,7 +166,17 @@ void Channel::setUserMode(int userFD, std::string modeStr) {
 		(it->second) &= (~newModeFlags);
 }
 
-void Channel::addUser(int fd, int userModeFlags) {
+void Channel::setUserModeFlags(const int userFD, const int modeFlags) {
+	std::map<int, int>::iterator it = _users.find(userFD);
+
+	// TODO: add exception
+	if (it == _users.end())
+		return;
+
+	it->second = modeFlags;
+}
+
+void Channel::addUser(const int fd, const int userModeFlags) {
 	// TODO: add exception
 	if (!userCanJoin(fd))
 		return;
@@ -156,16 +184,33 @@ void Channel::addUser(int fd, int userModeFlags) {
 	_users.insert(std::pair<int, int>(fd, userModeFlags));
 }
 
-void Channel::removeUser(int fd) {
+void Channel::removeUser(const int fd) {
 	_users.erase(fd);
 }
 
-void Channel::sendToAll(std::string &message)
+std::map<int, int>::iterator Channel::usersBegin(void) {
+	return _users.begin();
+}
+
+std::map<int, int>::iterator Channel::usersEnd(void) {
+	return _users.end();
+}
+
+void Channel::sendToAll(const std::string &message)
 {
-	for (std::map<int, int>::iterator it = _users.begin(); it != _users.end(); ++it)
+	for (std::map<int, int>::iterator it = usersBegin();
+		it != usersEnd(); ++it)
 	{
-		std::cerr << GRAY << "Sending message " << message << " to " ;
-		std::cerr << it->first << RESET << std::endl;
+		std::cerr << "Sending message " << BGREEN << message << RESET
+			<< " to " << BYELLOW << it->first << RESET << std::endl;
 		IRCServer::sendMessage(it->first, message);
 	}
 }
+
+bool Channel::userHasInvite(const std::string &nick) {
+	return (_invites.find(nick) != _invites.end());
+}
+
+void Channel::addInvite(const std::string &nick) { _invites.insert(nick); }
+
+void Channel::removeInvite(const std::string &nick) { _invites.erase(nick); }

@@ -26,7 +26,9 @@ void Bot::respondToMessage(int clientFd, const std::string &message)
 
 void Bot::sendMessage(int clientFd, const std::string &message)
 {
-	// std::cout << "Bot sending message to client " << clientFd << ": " << message << std::endl; // Adicionando log de depura��o
-	std::string fullMessage = message + "\n";
-	write(clientFd, fullMessage.c_str(), fullMessage.length());
+	std::string fullMessage = message + "\r\n";
+	ssize_t nbytes = send(clientFd, fullMessage.c_str(), fullMessage.length(), 0);
+
+	if (nbytes < 0)
+		std::cerr << "Error writing to client " << clientFd << std::endl;
 }

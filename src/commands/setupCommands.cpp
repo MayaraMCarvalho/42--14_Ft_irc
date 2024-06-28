@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 14:25:11 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 17:02:04 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,14 @@ void Commands::commandPass( void )
 
 	if (_args.size() != 2)
 	{
-		printError(RED + "Error: Number of invalid arguments\n" +
-			"PASS <password>\n" + RESET);
+		printError(RED + "Error " + codeToString(ERR_NEEDMOREPARAMS) +
+			"\n" + _args[0] + ": Not enough parameters\n"
+			+ "Usage: PASS <password>\n" + RESET);
 	}
 	else if (it->second.getStatus() == Client::REGISTERED)
 	{
 		printError(RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-			": Client has already been registered\n" + RESET);
+			"\nYou may not reregister\n" + RESET);
 	}
 	else
 	{
@@ -52,8 +53,8 @@ void Commands::commandNick( void )
 			saveNick(nick);
 		else
 		{
-			printError(RED + "Error " + codeToString(ERR_NICKCOLLISION) +
-				": Nickname already exists\n" + RESET);
+			printError(RED + "Error " + codeToString(ERR_NICKNAMEINUSE) +
+				"\n" + _args[0] + ": Nickname is already in use\n" + RESET);
 		}
 	}
 }
@@ -88,7 +89,7 @@ void Commands::commandUser( void )
 		else
 		{
 			printError(RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-				": Client has already been registered\n" + RESET);
+				"\nYou may not reregister\n" + RESET);
 		}
 	}
 }

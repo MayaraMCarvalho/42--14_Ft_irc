@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 14:03:41 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 16:34:03 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ class Commands
 		// Commands.cpp
 		bool		isCommand(int clientFd, const std::string &message);
 		void		commandKick( void );
+		bool		verifyKick(std::string &channel, std::string &user);
 		void		commandInvite( void );
 		void		commandTopic( void );
 		void		commandMode( void );

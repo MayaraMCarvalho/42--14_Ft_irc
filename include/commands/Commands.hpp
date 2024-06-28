@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 16:34:03 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 17:05:51 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,13 @@ class Commands
 		void		commandJoin( void );
 		void		commandPart( void );
 
-		// messagesCommands.cpp
+		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
 		bool		sendMessage(int clientFd, const std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
 		std::string	getFullMessage(const std::string &message);
 
-		// quitCommands.cpp
+		// quitCommand.cpp
 		void		commandQuit( void );
 		void		quitServer( void );
 		std::string	getQuitMessage( void );

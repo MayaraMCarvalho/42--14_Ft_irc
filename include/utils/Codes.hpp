@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   numCode.hpp                                        :+:      :+:    :+:   */
+/*   Codes.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/19 03:17:47 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/28 08:36:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NUM_CODE_HPP
-# define NUM_CODE_HPP
+#ifndef CODES_HPP
+# define CODES_HPP
 
 typedef enum {
 	NO_CODE = 000,

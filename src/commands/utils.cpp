@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 17:40:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 08:44:45 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ std::string Commands::getMessage( int index )
 	}
 	return result;
 }
-
 
 std::string Commands::codeToString(t_numCode code)
 {

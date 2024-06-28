@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 17:28:48 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 09:15:53 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void Commands::commandJoin( void )
 {
-	std::string error;
-
 	if (initialVerify(2, "JOIN <#channel_name> <key (optional)>\n"))
 	{
 		std::string channel = _args[1];
@@ -30,9 +28,8 @@ void Commands::commandJoin( void )
 			else
 			{
 				_channels.join(_fd, channel, key);
-				error = GREEN + "User successfully join the channel " +
-					channel + "!\n" + RESET;
-				printError(error);
+				printError(GREEN + "User successfully join the channel " +
+					channel + "!\n" + RESET);
 			}
 		}
 	}
@@ -40,8 +37,6 @@ void Commands::commandJoin( void )
 
 void Commands::commandPart( void )
 {
-	std::string error;
-
 	if (initialVerify(2, "PART <#channel_name>\n"))
 	{
 		std::string channel = _args[1];
@@ -53,9 +48,8 @@ void Commands::commandPart( void )
 			else
 			{
 				_channels.part(_fd, channel);
-				error = GREEN + "User successfully part the channel " +
-					channel + "!\n" + RESET;
-				printError(error);
+				printError(GREEN + "User successfully part the channel " +
+					channel + "!\n" + RESET);
 			}
 		}
 	}

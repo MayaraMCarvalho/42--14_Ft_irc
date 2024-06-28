@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 17:40:52 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:25:11 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,17 @@
 
 void Commands::commandPass( void )
 {
-	std::string message;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
 	if (_args.size() != 2)
 	{
-		message = RED + "Error: Number of invalid arguments\n" +
-			"PASS <password>\n" + RESET;
+		printError(RED + "Error: Number of invalid arguments\n" +
+			"PASS <password>\n" + RESET);
 	}
 	else if (it->second.getStatus() == Client::REGISTERED)
 	{
-		message = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-			": Client has already been registered\n" + RESET;
+		printError(RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
+			": Client has already been registered\n" + RESET);
 	}
 	else
 	{
@@ -33,19 +32,15 @@ void Commands::commandPass( void )
 		if (pass == _serverPass)
 		{
 			it->second.setStatus(Client::AUTHENTICATED);
-			message = GREEN + "Your access has been approved!\n" + RESET;
+			printError(GREEN + "Your access has been approved!\n" + RESET);
 		}
 		else
-			message = RED + "Error: Password incorrect\r\n" + RESET;
+			printError(RED + "Error: Password incorrect\r\n" + RESET);
 	}
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
 }
 
 void Commands::commandNick( void )
 {
-	std::string error;
-
 	if (initialVerify(2, "NICK <new_nickname>\n"))
 	{
 		std::string nick = _args[1];
@@ -57,34 +52,28 @@ void Commands::commandNick( void )
 			saveNick(nick);
 		else
 		{
-			error = RED + "Error " + codeToString(ERR_NICKCOLLISION) +
-				": Nickname already exists\n" + RESET;
-			printError(error);
+			printError(RED + "Error " + codeToString(ERR_NICKCOLLISION) +
+				": Nickname already exists\n" + RESET);
 		}
 	}
 }
 
 void Commands::saveNick(std::string &nick)
 {
-	t_numCode errorCode = NO_CODE;
 	std::string message;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+	t_numCode errorCode = NO_CODE;
 
 	errorCode = _clients.setNick(_fd, nick);
-
-	message = GREEN + "Nickname update successfully: " +
-		BYELLOW + it->second.getNick() + "\n" + RESET;
+	message = GREEN + "Nickname saved successfully!\n" + RESET;
 	if (errorCode != NO_CODE)
 		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
 
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
+	printError(message);
 }
 
 
 void Commands::commandUser( void )
 {
-	std::string error;
 	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 
 	if (initialVerify(2, "USER <user> ...\n"))
@@ -98,9 +87,8 @@ void Commands::commandUser( void )
 			saveUser(user);
 		else
 		{
-			error = RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-				": Client has already been registered\n" + RESET;
-			printError(error);
+			printError(RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
+				": Client has already been registered\n" + RESET);
 		}
 	}
 }
@@ -112,7 +100,7 @@ void Commands::saveUser(std::string &user)
 
 	errorCode = _clients.setUser(_fd, user);
 
-	message = GREEN + "User update successfully!\n" + RESET;
+	message = GREEN + "User saved successfully!\n" + RESET;
 	if (errorCode != NO_CODE)
 		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
 

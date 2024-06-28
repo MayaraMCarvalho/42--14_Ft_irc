@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 15:33:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:12:11 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ IRCServer::IRCServer(const std::string &port, const std::string &password)
 }
 
 // Getters ====================================================================
+ClientList& IRCServer::getClients( void ) { return _clients; }
+
+ChannelList& IRCServer::getChannels( void ) { return _channels; }
+
+const std::string& IRCServer::getPassword( void ) { return _password; }
 
 // Setters ====================================================================
 
@@ -224,10 +229,11 @@ void IRCServer::handleClientMessage(int clientFd)
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
-	Commands commands(this->_clients, this->_channels, clientFd, this->_password);
+	Commands commands(*this);
+
 	bool isCommand = false;
 
-	if (!message.empty() && commands.isCommand(message))
+	if (!message.empty() && commands.isCommand(clientFd, message))
 		isCommand = true;
 	//
 	else if (message.substr(0, 5) == "/file")
@@ -249,7 +255,6 @@ void IRCServer::handleClientMessage(int clientFd)
 void IRCServer::removeClient(int clientFd)
 {
 	close(clientFd);
-
 	_channels.partDisconnectedClient(clientFd);
 
 	for (std::vector<struct pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it)
@@ -257,7 +262,6 @@ void IRCServer::removeClient(int clientFd)
 		if (it->fd == clientFd)
 		{
 			_pollFds.erase(it);
-
 			break;
 		}
 	}

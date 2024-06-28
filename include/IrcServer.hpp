@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 18:07:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:11:27 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
-#include "../utils/Colors.hpp"
-#include "../utils/numCode.hpp"
+#include "Colors.hpp"
+#include "Codes.hpp"
 
 class	Channel;
 
@@ -46,6 +46,7 @@ class IRCServer
 		Bot 						_bot;
 		ClientList					_clients;
 		ChannelList					_channels;
+
 		bool						_shouldExit;
 		static IRCServer*			_instance;
 
@@ -59,6 +60,9 @@ class IRCServer
 	// Exceptions =============================================================
 
 	// Getters ================================================================
+		ClientList			&getClients( void );
+		ChannelList			&getChannels( void );
+		const std::string	&getPassword( void );
 
 	// Setters ================================================================
 

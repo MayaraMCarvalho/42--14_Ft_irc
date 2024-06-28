@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 18:06:32 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 08:41:12 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
-# include "../utils/numCode.hpp"
+# include "Codes.hpp"
 
 class ClientList {
 	public:

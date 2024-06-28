@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 18:07:35 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/28 14:03:41 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,15 @@
 #include <vector>
 #include <poll.h>
 
+// #include "IrcServer.hpp"
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
-#include "../utils/Colors.hpp"
-#include "../utils/numCode.hpp"
+#include "Colors.hpp"
+#include "Codes.hpp"
 
+class	IRCServer;
 class	Channel;
 
 # define MAX_LENGTH 30
@@ -58,15 +60,16 @@ class Commands
 {
 	private:
 		std::vector<std::string>	_args;
+		IRCServer					&_server;
 		ClientList					&_clients;
 		ChannelList					&_channels;
-		const int					_fd;
 		const std::string			&_serverPass;
+
+		int							_fd;
 
 	public:
 	// Constructor & Destructor ===============================================
-		Commands( ClientList &clients, ChannelList &channels,
-			int fd, const std::string &pass);
+		Commands( IRCServer& server );
 		~Commands( void );
 
 	// Exceptions =============================================================
@@ -78,14 +81,12 @@ class Commands
 	// Methods ================================================================
 
 		// Commands.cpp
-		bool		isCommand(const std::string &message);
+		bool		isCommand(int clientFd, const std::string &message);
 		void		commandKick( void );
 		void		commandInvite( void );
 		void		commandTopic( void );
 		void		commandMode( void );
-		void		commandQuit( void );
-		void		quitServer( void );
-		std::string	getClientMessage( void );
+
 
 		// channelCommands.cpp
 		void		commandJoin( void );
@@ -97,6 +98,11 @@ class Commands
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
 		std::string	getFullMessage(const std::string &message);
 
+		// quitCommands.cpp
+		void		commandQuit( void );
+		void		quitServer( void );
+		std::string	getQuitMessage( void );
+
 		// setupCommands.cpp
 		void		commandPass( void );
 		void		commandNick( void );
@@ -105,8 +111,8 @@ class Commands
 		void		saveUser(std::string &user);
 
 		// utils.cpp
-		void		parsingArgs(const std::string &message);
-		std::string	getMessage( int index );
+		void		parsingArgs(const std::string &message); // mover para Commands.cpp?
+		std::string	getMessage( int index ); // mover para messageCommands
 		std::string	codeToString(t_numCode code);
 		std::string	intToString(int num);
 		void		printError(const std::string &errorMessage);

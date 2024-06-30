@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 15:27:11 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 04:55:09 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChannelList.hpp"
+#include "Colors.hpp"
+#include <iostream>
 
 ChannelList::ChannelList(void) : _channels(), _clients(NULL) { }
 

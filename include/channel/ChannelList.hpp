@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 15:22:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 04:53:12 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 # define CHANNEL_LIST_HPP
 
 # include <map>
-# include <iostream>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "Colors.hpp"
+# include "numCode.hpp"
 
 class ChannelList
 {

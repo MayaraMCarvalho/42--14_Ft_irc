@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 15:33:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 04:51:30 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "Channel.hpp"
 #include "Commands.hpp"
+#include <cerrno>
+#include <cstdio>
 
 IRCServer* IRCServer::_instance = NULL;
 

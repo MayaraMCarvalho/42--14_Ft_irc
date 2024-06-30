@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include "Channel.hpp"
 #include "IrcServer.hpp"
 
@@ -69,6 +70,25 @@ int Channel::getUserModeFlags(const int userFD) {
 	return it->second;
 }
 
+char Channel::getPrefix(t_umode umode) {
+	if (umode & FOUNDER)
+		return '~';
+
+	if (umode & PROTECTED)
+		return '&';
+
+	if (umode & CHANOP)
+		return '@';
+
+	if (umode & HALFOP)
+		return '%';
+
+	if (umode & VOICE)
+		return '+';
+
+	return '\0';
+}
+
 bool Channel::userIsInChannel(const int userFD) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
@@ -86,12 +106,26 @@ bool Channel::empty(void) { return _users.empty(); }
 // Setters
 void Channel::setTopic(const std::string &topic) { _topic = topic; }
 
-void Channel::setKey(const std::string &key) { _key = key; }
+void Channel::setKey(const std::string &key) {
+	_key = key;
 
-void Channel::setUserLimit(const int limit) {_limit = limit; }
+	if (key.empty())
+		_channelModeFlags &= (~HAS_KEY);
+	else
+		_channelModeFlags |= HAS_KEY;
+}
+
+void Channel::setUserLimit(const int limit) {
+	_limit = limit;
+
+	if (limit < 0)
+		_channelModeFlags &= (~ULIMIT);
+	else
+		_channelModeFlags |= ULIMIT;
+}
 
 void Channel::setChannelMode(const std::string &modeStr) {
-	int newModeFlags;
+	int newModeFlags = NO_CMODE;
 
 	if (modeStr.length() != 2)
 		return;
@@ -114,12 +148,22 @@ void Channel::setChannelMode(const std::string &modeStr) {
 			newModeFlags = QUIET;
 			break;
 		case 'p':
+			if (_channelModeFlags & SECRET)
+			{
+				_channelModeFlags &= (~PRIVATE);
+				return;
+			}
 			newModeFlags = PRIVATE;
 			break;
 		case 's':
+			if (_channelModeFlags & PRIVATE)
+			{
+				_channelModeFlags &= (~SECRET);
+				return;
+			}
 			newModeFlags = SECRET;
 			break;
-		case 'r':
+		case 'r': // TODO: User must be founder, channel must start with !
 			newModeFlags = SERV_REOP;
 			break;
 		case 't':
@@ -152,7 +196,7 @@ void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 		return;
 
 	if (modeStr[1] == 'O')
-		newModeFlags = CREATOR;
+		newModeFlags = FOUNDER;
 	else if (modeStr[1] == 'o')
 		newModeFlags = CHANOP;
 	else if (modeStr[1] == 'v')

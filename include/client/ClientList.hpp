@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 14:55:51 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 04:57:59 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include <map>
 # include "Client.hpp"
-# include <stdexcept>
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>

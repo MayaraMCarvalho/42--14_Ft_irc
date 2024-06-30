@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 14:55:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 05:00:20 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
+# include <stdexcept>
 #include "ClientList.hpp"
 
 ClientList::ClientList(void) : _clients(), _userToClient(), _nickToClient() { }
@@ -270,82 +270,6 @@ void ClientList::removeByUser(const std::string &user) {
 	_userToClient.erase(fdIt->second.getUser());
 	_clients.erase(fdIt);
 }
-
-// t_numCode ClientList::updateNick(int fd, std::string &newNick) {
-
-// 	if (newNick.empty())
-// 		return ERR_NONICKNAMEGIVEN;
-
-// 	if (!isValidNick(newNick))
-// 		return ERR_ERRONEUSNICKNAME;
-
-// 	std::map<int, Client>::iterator it = getClient(fd);
-
-// 	if (it == end())
-// 		throw std::invalid_argument("Unknown user");
-
-// 	Client::t_status status = it->second.getStatus();
-
-// 	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
-// 		throw std::invalid_argument("Invalid user status");
-
-// 	if (status == Client::CONNECTED)
-// 		throw std::invalid_argument("User must be authenticated first");
-
-// 	if (_nickToClient.find(newNick) != _nickToClient.end())
-// 		return ERR_NICKNAMEINUSE;
-
-// 	else if (status == Client::AUTHENTICATED)
-// 		it->second.setStatus(Client::GOT_NICK);
-
-// 	else if (status == Client::GOT_USER)
-// 		it->second.setStatus(Client::REGISTERED);
-
-// 	if (!it->second.getNick().empty())
-// 		_nickToClient.erase(it->second.getNick());
-
-// 	_nickToClient.insert(std::pair<std::string,
-// 		std::map<int, Client>::iterator>(newNick, it));
-// 	return NO_CODE;
-// }
-
-// t_numCode ClientList::updateUser(int fd, std::string &newUser) {
-
-// 	if (newUser.empty())
-// 		return ERR_NEEDMOREPARAMS;
-
-// 	if (!isValidUser(newUser))
-// 		throw std::invalid_argument("Invalid user format");
-
-// 	std::map<int, Client>::iterator it = getClient(fd);
-
-// 	if (it == end())
-// 		throw std::invalid_argument("Unknown user");
-
-// 	Client::t_status status = it->second.getStatus();
-
-// 	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
-// 		throw std::invalid_argument("Invalid user status");
-
-// 	if (status == Client::CONNECTED)
-// 		throw std::invalid_argument("User must be authenticated first");
-
-// 	if (status == Client::REGISTERED)
-// 		return ERR_ALREADYREGISTERED;
-
-// 	else if (status == Client::AUTHENTICATED)
-// 		it->second.setStatus(Client::GOT_USER);
-
-// 	else if (status == Client::GOT_NICK)
-// 		it->second.setStatus(Client::REGISTERED);
-
-// 	if (!it->second.getUser().empty())
-// 		_userToClient.erase(it->second.getUser());
-
-// 	_userToClient.insert(std::pair<std::string,
-// 		std::map<int, Client>::iterator>(newUser, it));
-// 	return NO_CODE;
-// }
 
 bool ClientList::isValidNick(const std::string &nick) {
 	if (nick.empty() || nick.length() > 9)

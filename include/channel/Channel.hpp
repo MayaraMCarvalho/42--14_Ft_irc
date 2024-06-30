@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 15:31:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 04:44:43 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 # include <string>
 # include <map>
-# include <iostream>
-
 # include "Client.hpp"
 
 class Channel
@@ -33,14 +31,18 @@ class Channel
 			SECRET = 64,
 			SERV_REOP = 128,
 			OP_TOPIC = 256,
-			SAFE = 512
+			SAFE = 512,
+			HAS_KEY = 1024,
+			ULIMIT = 2048
 		} t_cmode;
 
 		typedef enum {
 			NO_UMODE = 0,
-			CREATOR = 1,
+			FOUNDER = 1,
 			CHANOP = 2,
-			VOICE = 4
+			VOICE = 4,
+			HALFOP = 8,
+			PROTECTED = 16
 		} t_umode;
 
 		Channel(const std::string &name);
@@ -64,6 +66,7 @@ class Channel
 		bool userCanJoin(const int userFD);
 		bool userHasInvite(const std::string &nick);
 		bool empty(void);
+		static char getPrefix(t_umode umode);
 		std::map<int, int>::iterator usersBegin(void);
 		std::map<int, int>::iterator usersEnd(void);
 

@@ -3,14 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 12:00:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 05:37:35 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/IrcServer.hpp"
+
+#include <cstdlib>
+#include <iostream>
+#include "Colors.hpp"
+#include "IrcServer.hpp"
+
 
 bool validateArguments(int argc, char *argv[], std::string &port, std::string &password)
 {

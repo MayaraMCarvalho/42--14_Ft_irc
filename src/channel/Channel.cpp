@@ -13,6 +13,7 @@
 #include <iostream>
 #include "Channel.hpp"
 #include "IrcServer.hpp"
+#include "Colors.hpp"
 
 Channel::Channel(void) : _name("#default"), _topic(""), _key(""),
 	_users(), _channelModeFlags(NO_CMODE), _limit(-1) { }

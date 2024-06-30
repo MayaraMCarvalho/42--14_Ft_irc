@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/30 04:51:30 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/30 05:39:24 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,24 +279,6 @@ void IRCServer::sendMessage(int clientFd, const std::string &message)
 			<< BYELLOW << clientFd << std::endl << RESET;
 	}
 }
-
-// void IRCServer::sendToChannel(const std::string &chanStr,
-// 						const std::string &message)
-// {
-// 	std::map<std::string, Channel>::iterator chanIt = _channels.get(chanStr);
-
-// 	// TODO: Add exception
-// 	if (chanIt == _channels.end())
-// 		return;
-
-// 	for (std::map<int, int>::iterator it = chanIt->second.usersBegin();
-// 		it != chanIt->second.usersEnd(); ++it)
-// 	{
-// 		std::cerr << "Sending message " << message << " to "
-// 			<< it->first << std::endl;
-// 		sendMessage(it->first, message);
-// 	}
-// }
 
 void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
 {

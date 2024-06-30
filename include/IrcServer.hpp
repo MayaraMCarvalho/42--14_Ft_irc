@@ -6,31 +6,17 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/30 04:52:08 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/06/30 05:38:04 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRC_SERVER_HPP
 #define IRC_SERVER_HPP
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <cstring>
-#include <cstdlib>
-#include <csignal>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <poll.h>
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
-#include "Colors.hpp"
 # include "numCode.hpp"
 
 class	Channel;

@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 15:04:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/01 03:32:22 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
+#include "MsgHandler.hpp"
 #include <string>
 #include <set>
 
@@ -43,8 +44,9 @@ class Client {
 		} t_status;
 
 		// Constructors
-		Client(int fd);
+		Client(int fd, MsgHandler &MsgHandler);
 		Client(const Client &src);
+		Client(int fd, MsgHandler &MsgHandler, const std::string &host);
 
 		~Client(void);
 
@@ -75,9 +77,11 @@ class Client {
 		bool isInChannel(const std::string &channelStr) ;
 		void addChannel(const std::string &channelStr);
 		void removeChannel(const std::string &channelStr);
+		void sendMessage(const std::string &from, const std::string &msg);
 		void sendMessage(const std::string &msg);
 
 	private:
+		MsgHandler &_msgHandler;
 		std::string _nick;
 		std::string _user;
 		std::string _host;
@@ -85,10 +89,6 @@ class Client {
 		std::set<std::string> _channels;
 		int _modeFlags;
 		t_status _status;
-
-		// Private default constructor to prevent empty initialization
-		Client(void);
-
 };
 
 #endif

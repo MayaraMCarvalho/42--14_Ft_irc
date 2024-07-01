@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   messages.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 11:04:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/01 05:26:23 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,12 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 		BYELLOW + _clients.getNick(_fd) + BPURPLE +
 		"\n" + message + RESET;
 
-	IRCServer::sendMessage(clientFd, fullMessage);
+	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
+
+	if (it == _clients.end())
+		return false;
+
+	it->second.sendMessage(fullMessage);
 	return true;
 }
 

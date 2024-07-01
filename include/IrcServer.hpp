@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/30 05:38:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/01 06:31:38 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
-# include "numCode.hpp"
+#include "MsgHandler.hpp"
+#include "numCode.hpp"
 
 class	Channel;
 
@@ -30,6 +31,7 @@ class IRCServer
 		std::vector<struct pollfd>	_pollFds;
 		FileTransfer 				_fileTransfer;
 		Bot 						_bot;
+		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
 		bool						_shouldExit;
@@ -39,7 +41,7 @@ class IRCServer
 
 	public:
 	// Constructor & Destructor ===============================================
-		IRCServer( void );
+		IRCServer(const std::string &port, const std::string &password);
 		~IRCServer( void );
 
 	// Exceptions =============================================================
@@ -49,16 +51,16 @@ class IRCServer
 	// Setters ================================================================
 
 	// Methods ================================================================
-		IRCServer(const std::string &port, const std::string &password);
-		void		setupServer(void);
-		void		run(void);
-		t_numCode	authenticate(int userFD, std::string password);
-		void		acceptNewClient(void);
-		void		handleClientMessage(int clientFd);
-		void		removeClient(int clientFd);
-		static void	sendMessage(int clientFd, const std::string &message);
-		static void	signalHandler(int signal);
-		static void	setupSignalHandlers(void);
+
+		void				setupServer(void);
+		void				run(void);
+		t_numCode			authenticate(int userFD, std::string password);
+		void				acceptNewClient(void);
+		void				handleClientMessage(int clientFd);
+		void				removeClient(int clientFd);
+		static void			signalHandler(int signal);
+		static void			setupSignalHandlers(void);
+		static std::string	getHostName(const char *ip, const char *port);
 };
 
 #endif

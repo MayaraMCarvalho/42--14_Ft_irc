@@ -15,14 +15,12 @@
 #include "IrcServer.hpp"
 #include "Colors.hpp"
 
-Channel::Channel(void) : _name("#default"), _topic(""), _key(""),
-	_users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
-
-Channel::Channel(const std::string &name) : _name(name), _topic(""), _key(""),
+Channel::Channel(const std::string &name, MsgHandler &msgHandler) :
+	_msgHandler(msgHandler), _name(name), _topic(""), _key(""),
 _users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
 
-Channel::Channel(const Channel &src) : _name(src._name), _topic(src._topic),
-	_key(src._key), _users(src._users),
+Channel::Channel(const Channel &src) : _msgHandler(src._msgHandler),
+	_name(src._name), _topic(src._topic), _key(src._key), _users(src._users),
 	_channelModeFlags(src._channelModeFlags), _limit(src._limit) { }
 
 Channel::~Channel(void) { }
@@ -241,14 +239,24 @@ std::map<int, int>::iterator Channel::usersEnd(void) {
 	return _users.end();
 }
 
-void Channel::sendToAll(const std::string &message)
+void Channel::sendToAll(const std::string &message) {
+	for (std::map<int, int>::iterator it = usersBegin();
+		it != usersEnd(); ++it)
+	{
+		std::cerr << "Sending message " << BGREEN << message << RESET
+			<< " to " << BYELLOW << it->first << RESET << std::endl;
+		_msgHandler.sendMessage(it->first, message);
+	}
+}
+
+void Channel::sendToAll(const std::string &from, const std::string &message)
 {
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
 		std::cerr << "Sending message " << BGREEN << message << RESET
 			<< " to " << BYELLOW << it->first << RESET << std::endl;
-		IRCServer::sendMessage(it->first, message);
+		_msgHandler.sendMessage(it->first, from, message);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 03:32:58 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/30 04:50:22 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/01 05:57:09 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,88 @@
 #include "Channel.hpp"
 # include "numCode.hpp"
 
-MsgHandler::MsgHandler(void) { }
+MsgHandler::MsgHandler(void) : _host("defaulthost"), _msgQueues() { }
 
-MsgHandler::MsgHandler(MsgHandler &src) { (void)src; }
+MsgHandler::MsgHandler(MsgHandler &src) : _host(src._host) , _msgQueues() { }
+
+MsgHandler::MsgHandler(std::string host) : _host(host), _msgQueues() { }
 
 MsgHandler::~MsgHandler(void) { }
 
 MsgHandler &MsgHandler::operator=(MsgHandler &src) {
-	(void)src;
+	if (this == &src)
+		return *this;
+
+	_host = src._host;
+	_msgQueues = src._msgQueues;
 	return *this;
 }
+
+std::string MsgHandler::getHost(void) { return _host; }
+
+void MsgHandler::sendMessage(int fd, const std::string &msg) {
+	sendMessage(fd, _host, msg);
+}
+
+void MsgHandler::sendMessage(int fd, const std::string &from,
+			const std::string &msg)
+{
+	t_msg msgToQueue;
+
+	msgToQueue.msgStr = ":" + from + " " + msg + "\r\n";
+	msgToQueue.retries = 0;
+
+	push(fd, msgToQueue);
+}
+
+MsgHandler::t_msg MsgHandler::pop(int fd) {
+	std::map<int, std::list<t_msg> >::iterator it = _msgQueues.find(fd);
+	t_msg poppedMsg;
+
+	if (it == _msgQueues.end() || it->second.empty())
+	{
+		poppedMsg.error = -1;
+		return poppedMsg;
+	}
+
+	std::list<t_msg> &listRef = it->second;
+	t_msg front = listRef.front();
+	listRef.pop_front();
+
+	if (listRef.empty())
+		_msgQueues.erase(fd);
+
+	return front;
+}
+
+void MsgHandler::push(int fd, MsgHandler::t_msg msg) {
+	std::map<int, std::list<t_msg> >::iterator it = _msgQueues.find(fd);
+	std::pair<std::map<int, std::list<t_msg> >::iterator, bool> inserted;
+
+	if (it == _msgQueues.end())
+	{
+		inserted = _msgQueues.insert(
+			std::pair<int, std::list<t_msg> >(fd, std::list<t_msg>()));
+
+		// TODO: Add exception
+		if (!inserted.second)
+			return;
+
+		it = inserted.first;
+	}
+
+	it->second.push_back(msg);
+}
+
+unsigned long MsgHandler::size(int fd) {
+	std::map<int, std::list<t_msg> >::iterator it = _msgQueues.find(fd);
+	if (it == _msgQueues.end())
+		return 0;
+
+	return it->second.size();
+}
+
+// Numeric error replies
 
 std::string MsgHandler::errNeedMoreParams(const std::string &client,
 		const std::string &command) {
@@ -278,6 +350,16 @@ std::string MsgHandler::errUsersDontMatch(const std::string &client) {
 
 	ss << ERR_USERSDONTMATCH << ' ' << client
 		<< " :Cant change mode for other users";
+	return ss.str();
+}
+
+// Numeric normal replies
+
+std::string MsgHandler::rplWelcome(const std::string &client) {
+	std::ostringstream ss;
+
+	ss << RPL_WELCOME << ' ' << client << " :Welcome to "
+		<< _host << " IRC server!";
 	return ss.str();
 }
 

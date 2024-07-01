@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/30 04:44:43 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/01 03:35:48 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Channel
 			PROTECTED = 16
 		} t_umode;
 
-		Channel(const std::string &name);
+		Channel(const std::string &name, MsgHandler &msgHandler);
 		Channel(const Channel &src);
 
 		~Channel(void);
@@ -82,11 +82,13 @@ class Channel
 		// Channel functions
 		void addUser(const int fd, const int userModeFlags);
 		void removeUser(const int fd);
+		void sendToAll(const std::string &from, const std::string &message);
 		void sendToAll(const std::string &message);
 		void addInvite(const std::string &nick);
 		void removeInvite(const std::string &nick);
 
 	private:
+		MsgHandler &_msgHandler;
 		std::string _name;
 		std::string _topic;
 		std::string _key;
@@ -94,8 +96,6 @@ class Channel
 		std::set<std::string> _invites;
 		int _channelModeFlags;
 		int _limit;
-
-		Channel(void);
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 14:58:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/01 06:40:25 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void Commands::save(std::string &user, std::string &host)
 
 	// _clients.setUser(_fd, user);
 	// errorCode = _clients.updateUser(_fd, user);
-	
+
 	if (host.empty()){}//
 	errorCode = _clients.setUser(_fd, user);//
 

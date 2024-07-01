@@ -163,9 +163,7 @@ void Commands::commandQuit( void )
 				it->second.sendToAll(message + BCYAN + it->second.getName() + RESET + messageClient);
 		}
 
-		IRCServer server;
-
-		server.removeClient(_fd);
+		_clients.removeClientFD(_fd);
 		_channels.partDisconnectedClient(_fd);
 		std::cout << RED << "Client disconnected: ";
 		std::cout << BYELLOW << _fd << RESET << std::endl;

@@ -6,19 +6,24 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/30 05:00:20 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/01 06:46:07 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <sys/poll.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 # include <stdexcept>
+#include <unistd.h>
 #include "ClientList.hpp"
 
-ClientList::ClientList(void) : _clients(), _userToClient(), _nickToClient() { }
+ClientList::ClientList(MsgHandler &msgHandler,
+	std::vector<struct pollfd> &pollFds) : _msgHandler(msgHandler),
+	_pollFds(pollFds), _clients(), _userToClient(), _nickToClient() { }
 
-ClientList::ClientList(ClientList &src) : _clients(src._clients),
+ClientList::ClientList(ClientList &src) : _msgHandler(src._msgHandler),
+	_pollFds(src._pollFds), _clients(src._clients),
 	_userToClient(src._userToClient), _nickToClient(src._nickToClient) { }
 
 ClientList::~ClientList(void) { }
@@ -224,15 +229,15 @@ void ClientList::add(Client &client) {
 	}
 }
 
-void ClientList::add(int fd, struct in_addr *address) {
-	std::string hostname = inet_ntoa(*address);
+void ClientList::add(int fd) {
+	std::string hostname = _msgHandler.getHost();
 
 
 	add(fd, hostname);
 }
 
 void ClientList::add(int fd, const std::string &host) {
-	Client newClient(fd);
+	Client newClient(fd, _msgHandler);
 
 	newClient.setHost(host);
 	add(newClient);
@@ -271,6 +276,25 @@ void ClientList::removeByUser(const std::string &user) {
 	_clients.erase(fdIt);
 }
 
+void ClientList::removeClientFD(int clientFd)
+{
+	close(clientFd);
+
+	for (std::vector<struct pollfd>::iterator it = _pollFds.begin();
+		it != _pollFds.end(); ++it)
+	{
+		if (it->fd == clientFd)
+		{
+			_pollFds.erase(it);
+
+			break;
+		}
+	}
+
+	remove(clientFd);
+}
+
+
 bool ClientList::isValidNick(const std::string &nick) {
 	if (nick.empty() || nick.length() > 9)
 		return false;
@@ -307,8 +331,6 @@ bool ClientList::isValidUser(const std::string &user) {
 
 	return true;
 }
-
-
 
 bool ClientList::isSpecialChar(char ch) {
 	return (ch >= 0x5B && ch <= 0x60) || (ch >= 0x7B && ch <= 0x7D);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 11:29:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/01 06:35:26 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ class Commands
 
 	public:
 	// Constructor & Destructor ===============================================
-		Commands( ClientList &clients, ChannelList &channels,
-			int fd, const std::string &pass);
+		Commands( ClientList &clients, ChannelList &channels, int fd,
+			const std::string &pass);
 		~Commands( void );
 
 	// Exceptions =============================================================

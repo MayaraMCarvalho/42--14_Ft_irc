@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 16:59:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 10:27:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,22 @@
 
 bool Commands::initialVerify(size_t num, const std::string &usage)
 {
+	std::string pre = RED + "Error ";
 	std::string error;
 	if (_args.size() < num) // verificar se melhor usar !=
 	{
-		error = RED + "Error " + codeToString(ERR_NEEDMOREPARAMS) +
-			"\n" + _args[0] + ": Not enough parameters\n" + "Usage: " + usage + RESET;
+		error = errorNeedMoreParams("Not enough parameters\n");
 		if (_args[0] == NICK)
-			error = RED + "Error " + codeToString(ERR_NONICKNAMEGIVEN) +
-			"\n: No nickname given\n" + "Usage: " + usage + RESET;
-		printError(error);
+			error = pre + codeToStr(ERR_NONICKNAMEGIVEN) +
+				"\n: No nickname given\n";
+		if (_args[0] == PRIVMSG)
+		{
+			error = pre + codeToStr(ERR_NOTEXTTOSEND) + "\n: No text to send\n";
+			if (_args.size() < 2)
+				error = pre + codeToStr(ERR_NORECIPIENT) +
+					"\n: No recipient given (" + _args[0] + ")\n";
+		}
+		printError(error + BBLUE + "Usage: " + usage + RESET);
 		return false;
 	}
 	else if (_args[0] != QUIT && getErrors())
@@ -33,10 +40,9 @@ bool Commands::initialVerify(size_t num, const std::string &usage)
 
 bool Commands::getErrors(void)
 {
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
 	bool isUser = (_args[0] == USER);
 	bool isNick = (_args[0] == NICK);
-	int status = it->second.getStatus();
+	int status = _clients.getClient(_fd)->second.getStatus();
 	bool isAuth = (status == Client::AUTHENTICATED);
 	bool isGotNick = (status == Client::GOT_NICK);
 	bool isGotUser = (status == Client::GOT_USER);
@@ -66,10 +72,7 @@ bool Commands::validArg(std::string &arg)
 	else if (!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
 	{
 		if (_args[0] == NICK)
-		{
-			error = RED + "Error " + codeToString(ERR_NEEDMOREPARAMS) +
-			"\n" + _args[0] + ": Erroneus nickname\n" + RESET;
-		}
+			error = errorNeedMoreParams("Erroneus nickname\n");
 		else
 			error = RED + "Error: Prohibited characters found\n" + RESET;
 		printError(error);

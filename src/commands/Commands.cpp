@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 17:02:53 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 10:29:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
 	cmdFuncs[JOIN] = &Commands::commandJoin; //
-	cmdFuncs[PART] = &Commands::commandPart; //
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //
+	cmdFuncs[PART] = &Commands::commandPart; // Ok
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // Ok
 	cmdFuncs[KICK] = &Commands::commandKick;
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
 	cmdFuncs[MODE] = &Commands::commandMode;
-	cmdFuncs[QUIT] = &Commands::commandQuit; //
+	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
 
 	parsingArgs(message);
 
@@ -60,42 +60,27 @@ void Commands::commandKick( void )
 	{
 		std::string channel = _args[1];
 		std::string user = _args[2];
+		
 		if (_args.size() > 3)
 			std::string comment = getMessage(3);
 
 		if (!validChannel(channel) || !validArg(channel) ||
-			!validArg(user) || !verifyKick(channel, user))
+			!validArg(user) || !verifyChannel(channel))
 			return ;
+
+		if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
+		{
+			printError(RED + "Error " + codeToStr(ERR_CHANOPRIVSNEEDED) +
+				": #" + channel + ":You're not channel operator\n" + RESET);
+			return ;
+		}
 
 		_channels.part(_clients.getFDByUser(user), channel);
 		printError(PURPLE + "The user " + BYELLOW + user +
 			PURPLE + " have been removed from the channel " +
 			BYELLOW + channel + PURPLE + "by the operator " +
 			BYELLOW + _clients.getUser(_fd) + "!\n" + RESET);
-
 	}
-}
-
-bool Commands::verifyKick(std::string &channel, std::string &user)
-{
-	if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
-	{
-		printError(RED + "Error " + codeToString(ERR_CHANOPRIVSNEEDED) +
-			": #" + channel + ":You're not channel operator\n" + RESET);
-	}
-	else if (_channels.get(channel) == _channels.end())
-	{
-		printError(RED + "Error "+ codeToString(ERR_NOSUCHCHANNEL) +
-			":Channel not found\n" + RESET);
-	}
-	else if (user.empty())
-	{
-		printError(RED + "Error "+ codeToString(ERR_NOSUCHCHANNEL) +
-			":Channel not found\n" + RESET);
-	}
-	else
-		return true;
-	return false;
 }
 
 void Commands::commandInvite( void )

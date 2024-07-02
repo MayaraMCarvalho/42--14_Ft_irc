@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 17:02:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 10:25:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,21 @@
 
 void Commands::commandPass( void )
 {
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+	Client client = _clients.getClient(_fd)->second;
 
 	if (_args.size() != 2)
 	{
-		printError(RED + "Error " + codeToString(ERR_NEEDMOREPARAMS) +
-			"\n" + _args[0] + ": Not enough parameters\n"
-			+ "Usage: PASS <password>\n" + RESET);
+		printError(
+			errorNeedMoreParams("Not enough parameters\nUsage: PASS <password>\n"));
 	}
-	else if (it->second.getStatus() == Client::REGISTERED)
-	{
-		printError(RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-			"\nYou may not reregister\n" + RESET);
-	}
+	else if (client.getStatus() == Client::REGISTERED)
+		printError(errorAlredyRegister());
 	else
 	{
 		std::string pass = _args[1];
 		if (pass == _serverPass)
 		{
-			it->second.setStatus(Client::AUTHENTICATED);
+			client.setStatus(Client::AUTHENTICATED);
 			printError(GREEN + "Your access has been approved!\n" + RESET);
 		}
 		else
@@ -53,7 +49,7 @@ void Commands::commandNick( void )
 			saveNick(nick);
 		else
 		{
-			printError(RED + "Error " + codeToString(ERR_NICKNAMEINUSE) +
+			printError(RED + "Error " + codeToStr(ERR_NICKNAMEINUSE) +
 				"\n" + _args[0] + ": Nickname is already in use\n" + RESET);
 		}
 	}
@@ -67,16 +63,13 @@ void Commands::saveNick(std::string &nick)
 	errorCode = _clients.setNick(_fd, nick);
 	message = GREEN + "Nickname saved successfully!\n" + RESET;
 	if (errorCode != NO_CODE)
-		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
+		message = RED + "Error " + codeToStr(errorCode) + "\n" + RESET;
 
 	printError(message);
 }
 
-
 void Commands::commandUser( void )
 {
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
 	if (initialVerify(2, "USER <user> ...\n"))
 	{
 		std::string user = _args[1];
@@ -84,13 +77,10 @@ void Commands::commandUser( void )
 		if (!validArg(user))
 			return ;
 
-		if (it->second.getStatus() != Client::REGISTERED)
+		if (_clients.getClient(_fd)->second.getStatus() != Client::REGISTERED)
 			saveUser(user);
 		else
-		{
-			printError(RED + "Error " + codeToString(ERR_ALREADYREGISTERED) +
-				"\nYou may not reregister\n" + RESET);
-		}
+			printError(errorAlredyRegister());
 	}
 }
 
@@ -103,7 +93,7 @@ void Commands::saveUser(std::string &user)
 
 	message = GREEN + "User saved successfully!\n" + RESET;
 	if (errorCode != NO_CODE)
-		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
+		message = RED + "Error " + codeToStr(errorCode) + "\n" + RESET;
 
 	printError(message);
 }

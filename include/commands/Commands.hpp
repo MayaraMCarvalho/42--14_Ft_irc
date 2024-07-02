@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 17:05:51 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 10:23:31 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 #include <vector>
 #include <poll.h>
 
-// #include "IrcServer.hpp"
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
@@ -64,7 +63,6 @@ class Commands
 		ClientList					&_clients;
 		ChannelList					&_channels;
 		const std::string			&_serverPass;
-
 		int							_fd;
 
 	public:
@@ -83,20 +81,20 @@ class Commands
 		// Commands.cpp
 		bool		isCommand(int clientFd, const std::string &message);
 		void		commandKick( void );
-		bool		verifyKick(std::string &channel, std::string &user);
 		void		commandInvite( void );
 		void		commandTopic( void );
 		void		commandMode( void );
 
-
 		// channelCommands.cpp
 		void		commandJoin( void );
+		bool		verifyJoin(std::string &channelName, std::string &key);
 		void		commandPart( void );
 
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
 		bool		sendMessage(int clientFd, const std::string &message);
-		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
+		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
+						std::string &message);
 		std::string	getFullMessage(const std::string &message);
 
 		// quitCommand.cpp
@@ -111,10 +109,15 @@ class Commands
 		void		commandUser( void );
 		void		saveUser(std::string &user);
 
+		// errorsCode.cpp
+		std::string	codeToStr(t_numCode code);
+		std::string	errorNeedMoreParams(std::string suffix);
+		std::string	errorNoSuchNick(std::string &recipient, std::string who);
+		std::string	errorAlredyRegister( void );
+
 		// utils.cpp
 		void		parsingArgs(const std::string &message); // mover para Commands.cpp?
 		std::string	getMessage( int index ); // mover para messageCommands
-		std::string	codeToString(t_numCode code);
 		std::string	intToString(int num);
 		void		printError(const std::string &errorMessage);
 
@@ -124,6 +127,9 @@ class Commands
 		bool		validArg(std::string &arg);
 		bool		validChannel(std::string &channel);
 		bool		validMessage(std::string &message);
+
+		// verify.cpp
+		bool	verifyChannel(std::string &channelName);
 };
 
 #endif

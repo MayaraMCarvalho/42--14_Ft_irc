@@ -119,10 +119,12 @@ void Client::setStatus(t_status status) { _status = status; }
 bool Client::isInChannel(const std::string &channelStr) {
 	return _channels.find(channelStr) != _channels.end();
 }
+
 void Client::addChannel(const std::string &channelStr)
 {
 	_channels.insert(channelStr);
 }
+
 void Client::removeChannel(const std::string &channelStr) {
 	_channels.erase(channelStr);
 }

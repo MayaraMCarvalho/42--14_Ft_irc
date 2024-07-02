@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 08:44:45 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/01 14:30:12 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,6 @@ std::string Commands::getMessage( int index )
 	return result;
 }
 
-std::string Commands::codeToString(t_numCode code)
-{
-	std::ostringstream oss;
-
-	oss << static_cast<int>(code);
-
-	return oss.str();
-}
-
 std::string Commands::intToString(int num)
 {
 	std::ostringstream oss;
@@ -54,8 +45,6 @@ std::string Commands::intToString(int num)
 
 void Commands::printError(const std::string &errorMessage)
 {
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	it->second.sendMessage(errorMessage);
+	_clients.getClient(_fd)->second.sendMessage(errorMessage);
 	std::cout << errorMessage << std::endl;
 }

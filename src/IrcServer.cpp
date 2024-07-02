@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 03:13:09 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:34:00 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@ IRCServer::IRCServer(const std::string &port, const std::string &password)
 }
 
 // Getters ====================================================================
+ClientList& IRCServer::getClients( void ) { return _clients; }
+
+ChannelList& IRCServer::getChannels( void ) { return _channels; }
+
+const std::string& IRCServer::getPassword( void ) { return _password; }
 
 // Setters ====================================================================
 
@@ -252,11 +257,11 @@ void IRCServer::handleClientMessage(int clientFd)
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
-	Commands commands(_clients, _channels, clientFd,
-		_password);
+	Commands commands(*this);
+
 	bool isCommand = false;
 
-	if (!message.empty() && commands.isCommand(message))
+	if (!message.empty() && commands.isCommand(clientFd, message))
 		isCommand = true;
 	//
 	else if (message.substr(0, 5) == "/file")

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/01 06:46:07 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:31:42 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 #include <vector>
-# include "numCode.hpp"
+# include "Codes.hpp"
 
 class ClientList {
 	public:

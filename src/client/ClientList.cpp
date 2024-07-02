@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/02 04:05:10 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 19:02:19 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,10 +169,8 @@ t_numCode ClientList::setUser(int fd, const std::string &newUser) {
 
 	if (status == Client::REGISTERED)
 		return ERR_ALREADYREGISTERED;
-
 	else if (status == Client::AUTHENTICATED)
 		it->second.setStatus(Client::GOT_USER);
-
 	else if (status == Client::GOT_NICK)
 		it->second.setStatus(Client::REGISTERED);
 

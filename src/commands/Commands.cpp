@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:28:53 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:28:16 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[PASS] = &Commands::commandPass; // Ok
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; //			F1
+	cmdFuncs[JOIN] = &Commands::commandJoin; //			F4
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //	F1
 	cmdFuncs[KICK] = &Commands::commandKick; // Ok
@@ -47,7 +47,13 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 		cmdFuncs.find(_args[0]);
 	if (it != cmdFuncs.end())
 	{
+		//
+		std::cout << "Status ANTES:" << _clients.getClient(_fd)->second.getStatus() << std::endl;
+		//
 		(this->*(it->second))();
+		//
+		std::cout << "Status DEPOIS:" << _clients.getClient(_fd)->second.getStatus() << std::endl;
+		//
 		return true;
 	}
 	return false;

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:32:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:29:08 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Commands::commandPass( void )
 {
-	Client	client = _clients.getClient(_fd)->second;
+	Client	&client = _clients.getClient(_fd)->second;
 
 	if (_args.size() != 2)
 	{
@@ -40,7 +40,7 @@ void Commands::commandPass( void )
 
 void Commands::commandNick( void )
 {
-	if (initialVerify(2, "NICK <new_nickname>\n"))
+	if (initValidation(2, "NICK <new_nickname>\n"))
 	{
 		std::string	nick = _args[1];
 
@@ -73,7 +73,7 @@ void Commands::saveNick(std::string &nick)
 
 void Commands::commandUser( void )
 {
-	if (initialVerify(2, "USER <user> ...\n"))
+	if (initValidation(2, "USER <user> ...\n"))
 	{
 		std::string	user = _args[1];
 

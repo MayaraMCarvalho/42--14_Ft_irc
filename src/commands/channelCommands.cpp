@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:27:40 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:52:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Commands::commandJoin( void )
 {
-	if (initialVerify(2, "JOIN <#channel_name> <key (optional)>\n"))
+	if (initValidation(2, "JOIN <#channel_name> <key (optional)>\n"))
 	{
 		std::string	channel = _args[1];
 		std::string	key = "";
@@ -34,7 +34,7 @@ void Commands::commandJoin( void )
 
 void Commands::commandPart( void )
 {
-	if (initialVerify(2, "PART <#channel_name>\n"))
+	if (initValidation(2, "PART <#channel_name>\n"))
 	{
 		std::string channel = _args[1];
 
@@ -49,7 +49,7 @@ void Commands::commandPart( void )
 
 void Commands::commandKick( void )
 {
-	if (initialVerify(3, "KICK <channel> <user> <comment(Optional)>\n"))
+	if (initValidation(3, "KICK <channel> <user> <comment(Optional)>\n"))
 	{
 		std::string	channel = _args[1];
 		std::string	user = _args[2];

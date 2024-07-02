@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:32:48 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:55:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,11 +123,11 @@ class Commands
 		void		printError(const std::string &errorMessage);
 
 		// validations.cpp
-		bool		initialVerify(size_t num, const std::string &usage);
-		bool		getErrors( void );
+		bool		initValidation(size_t num, const std::string &usage);
 		bool		validArg(std::string &arg);
 		bool		validChannel(std::string &channel);
 		bool		validMessage(std::string &message);
+		bool		setupDone( void );
 
 		// verify.cpp
 		bool		verifyChannel(std::string &channelName);

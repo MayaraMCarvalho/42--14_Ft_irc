@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:32:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:52:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void Commands::commandPrivMsg( void )
 {
-	if (initialVerify(3, "PRIVMSG <recipient> :<message>\n"))
+	if (initValidation(3, "PRIVMSG <recipient> :<message>\n"))
 	{
 		std::string recipient = _args[1];
 		std::string message = getMessage(2);

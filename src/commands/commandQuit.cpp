@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:39:15 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:52:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void Commands::commandQuit( void )
 {
-	if (initialVerify(1, "QUIT <message(optional)>\n"))
+	if (initValidation(1, "QUIT <message(optional)>\n"))
 	{
 		std::string prefix = RED + "Client " + BYELLOW + toString(_fd)
 			+ RED + " left the channel ";

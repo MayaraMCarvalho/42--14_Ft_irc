@@ -6,13 +6,13 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:32:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:26:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
 
-bool Commands::initialVerify(size_t num, const std::string &usage)
+bool Commands::initValidation(size_t num, const std::string &usage)
 {
 	std::string	pre = RED + "Error ";
 	std::string	error;
@@ -33,12 +33,12 @@ bool Commands::initialVerify(size_t num, const std::string &usage)
 		printError(error + BBLUE + "Usage: " + usage + RESET);
 		return false;
 	}
-	else if (_args[0] != QUIT && getErrors())
+	else if (_args[0] != QUIT && setupDone())
 		return false;
 	return true;
 }
 
-bool Commands::getErrors(void)
+bool Commands::setupDone(void)
 {
 	bool	isUser = (_args[0] == USER);
 	bool	isNick = (_args[0] == NICK);

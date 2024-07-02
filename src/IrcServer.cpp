@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/01 06:46:07 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 03:13:09 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void IRCServer::run(void)
 				break;
 		}
 
-		pollCount = poll(_pollFds.data(), _pollFds.size(), -1);
+		pollCount = poll(_pollFds.data(), _pollFds.size(), 0);
 		if (pollCount < 0)
 		{
 			if (errno == EINTR)
@@ -138,21 +138,22 @@ void IRCServer::run(void)
 			unsigned long	mustRetrySize = 0;
 			if (_pollFds[fdIdx].revents & POLLOUT)
 			{
-				while (_msgHandler.size(fdIdx) > mustRetrySize)
+				int fd = _pollFds[fdIdx].fd;
+				while (_msgHandler.size(fd) > mustRetrySize)
 				{
-					MsgHandler::t_msg msg = _msgHandler.pop(fdIdx);
+					MsgHandler::t_msg msg = _msgHandler.pop(fd);
 					if (msg.error == -1 || msg.retries > MsgHandler::MAX_RETRIES)
 						break;
 
-					ssize_t	nbytes = send(fdIdx, msg.msgStr.c_str(),
+					ssize_t	nbytes = send(fd, msg.msgStr.c_str(),
 						msg.msgStr.length(), 0);
 
 					if (nbytes < 0)
 					{
 						std::cerr << RED << "Write error on client "
-							<< BYELLOW << fdIdx << std::endl << RESET;
+							<< BYELLOW << fd << std::endl << RESET;
 						++msg.retries;
-						_msgHandler.push(fdIdx, msg);
+						_msgHandler.push(fd, msg);
 					}
 				}
 			}
@@ -182,9 +183,7 @@ void IRCServer::acceptNewClient(void)
 	}
 
 	_clients.add(clientFd);
-
-	_channels.join(clientFd, "default", "");
-	struct pollfd pfd = {clientFd, POLLIN, 0};
+	struct pollfd pfd = {clientFd, POLLIN | POLLOUT, 0};
 	_pollFds.push_back(pfd);
 
 	std::cout << BLUE << "New client connected: ";

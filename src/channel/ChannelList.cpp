@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/01 05:45:33 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 04:05:08 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void ChannelList::partDisconnectedClient(int userFD)
 	std::set<std::string> &chanRef = userIt->second.getChannelList();
 	;
 
-	for (chanIt = chanRef.begin();chanIt != chanRef.end();)
+	for (chanIt = chanRef.begin(); chanIt != chanRef.end();)
 	{
 		std::set<std::string>::iterator oldChanIt = chanIt++;
 		part(userFD, oldChanIt->data());

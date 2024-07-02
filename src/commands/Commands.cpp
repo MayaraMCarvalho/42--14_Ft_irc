@@ -157,14 +157,21 @@ void Commands::commandQuit( void )
 				messageClient = "";
 		}
 
-		for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
-		{
-			if (it->second.userIsInChannel(_fd))
-				it->second.sendToAll(message + BCYAN + it->second.getName() + RESET + messageClient);
+		std::set<std::string> &chanRef = it->second.getChannelList();
+		std::set<std::string>::iterator chanIt;
+
+		for (chanIt = chanRef.begin(); chanIt != chanRef.end(); chanIt++) {
+			std::map<std::string, Channel>::iterator curChanIt =
+				_channels.get(*chanIt);
+
+			if (curChanIt != _channels.end())
+				curChanIt->second.sendToAll(it->second.getFullId(),
+					 message + BCYAN + curChanIt->second.getName() +
+					 RESET + messageClient);
 		}
 
-		_clients.removeClientFD(_fd);
 		_channels.partDisconnectedClient(_fd);
+		_clients.removeClientFD(_fd);
 		std::cout << RED << "Client disconnected: ";
 		std::cout << BYELLOW << _fd << RESET << std::endl;
 

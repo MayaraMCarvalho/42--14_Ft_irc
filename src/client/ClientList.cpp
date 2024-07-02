@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/01 06:46:07 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 04:05:10 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,7 +286,6 @@ void ClientList::removeClientFD(int clientFd)
 		if (it->fd == clientFd)
 		{
 			_pollFds.erase(it);
-
 			break;
 		}
 	}

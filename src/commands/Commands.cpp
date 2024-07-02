@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 10:29:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:58:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[PASS] = &Commands::commandPass; // Ok
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; //
+	cmdFuncs[JOIN] = &Commands::commandJoin; // F1
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // Ok
-	cmdFuncs[KICK] = &Commands::commandKick;
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // F1
+	cmdFuncs[KICK] = &Commands::commandKick; // Ok
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
 	cmdFuncs[MODE] = &Commands::commandMode;
@@ -60,7 +60,7 @@ void Commands::commandKick( void )
 	{
 		std::string channel = _args[1];
 		std::string user = _args[2];
-		
+
 		if (_args.size() > 3)
 			std::string comment = getMessage(3);
 

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 10:27:46 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 15:54:59 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ bool Commands::validArg(std::string &arg)
 	else if (!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
 	{
 		if (_args[0] == NICK)
-			error = errorNeedMoreParams("Erroneus nickname\n");
+			error = RED + "Error " + codeToStr(ERR_ERRONEUSNICKNAME) +
+			"\n" + arg + ": Erroneus nickname\n" + RESET;
 		else
 			error = RED + "Error: Prohibited characters found\n" + RESET;
 		printError(error);

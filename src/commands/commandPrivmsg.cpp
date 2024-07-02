@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 10:13:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:32:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void Commands::commandPrivMsg( void )
 		else if (!sendMessage( _channels.get(recipient), message))
 				printError(errorNoSuchNick(recipient, "channel"));
 		else if (false) // Acrescentar: Enviado para um usuário que (a) não está em um canal que esteja no modo +n ou (b) não é um chanop (ou modo +v) em um canal que tem o modo +m definido
-			printError(RED + "Error " + codeToStr(ERR_CANNOTSENDTOCHAN) +
+			printError(RED + "Error " + toString(ERR_CANNOTSENDTOCHAN) +
 				"\n" + recipient + ":Cannot send to channel \n" + RESET);
 	}
 }

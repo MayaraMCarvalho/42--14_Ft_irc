@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 10:23:31 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:32:48 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,17 @@ class Commands
 
 		// Commands.cpp
 		bool		isCommand(int clientFd, const std::string &message);
-		void		commandKick( void );
+		void		parsingArgs(const std::string &message);
+		// Mover?
 		void		commandInvite( void );
 		void		commandTopic( void );
 		void		commandMode( void );
+		//
 
 		// channelCommands.cpp
 		void		commandJoin( void );
-		bool		verifyJoin(std::string &channelName, std::string &key);
 		void		commandPart( void );
+		void		commandKick( void );
 
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
@@ -110,15 +112,14 @@ class Commands
 		void		saveUser(std::string &user);
 
 		// errorsCode.cpp
-		std::string	codeToStr(t_numCode code);
 		std::string	errorNeedMoreParams(std::string suffix);
 		std::string	errorNoSuchNick(std::string &recipient, std::string who);
 		std::string	errorAlredyRegister( void );
 
 		// utils.cpp
-		void		parsingArgs(const std::string &message); // mover para Commands.cpp?
-		std::string	getMessage( int index ); // mover para messageCommands
-		std::string	intToString(int num);
+		std::string	getMessage(int index);
+		std::string	toString(t_numCode code);
+		std::string	toString(int num);
 		void		printError(const std::string &errorMessage);
 
 		// validations.cpp
@@ -129,7 +130,9 @@ class Commands
 		bool		validMessage(std::string &message);
 
 		// verify.cpp
-		bool	verifyChannel(std::string &channelName);
+		bool		verifyChannel(std::string &channelName);
+		bool		verifyJoin(std::string &channelName, std::string &key);
+		bool		verifyKick (std::string &channel);
 };
 
 #endif

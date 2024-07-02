@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 15:58:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:28:53 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ Commands::~Commands(void) {}
 bool Commands::isCommand(int clientFd, const std::string &message)
 {
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
-	_fd = clientFd;
 
+	_fd = clientFd;
 	cmdFuncs[PASS] = &Commands::commandPass; // Ok
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; // F1
+	cmdFuncs[JOIN] = &Commands::commandJoin; //			F1
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // F1
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //	F1
 	cmdFuncs[KICK] = &Commands::commandKick; // Ok
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
@@ -43,44 +43,23 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
 
 	parsingArgs(message);
-
-	std::map<std::string, void (Commands::*)()>::iterator it = cmdFuncs.find(_args[0]);
+	std::map<std::string, void (Commands::*)()>::iterator it =
+		cmdFuncs.find(_args[0]);
 	if (it != cmdFuncs.end())
 	{
 		(this->*(it->second))();
 		return true;
 	}
-
 	return false;
 }
 
-void Commands::commandKick( void )
+void Commands::parsingArgs(const std::string &message)
 {
-	if (initialVerify(3, "KICK <channel> <user> <comment(Optional)>\n"))
-	{
-		std::string channel = _args[1];
-		std::string user = _args[2];
+	std::string			token;
+	std::istringstream	tokenStream(message);
 
-		if (_args.size() > 3)
-			std::string comment = getMessage(3);
-
-		if (!validChannel(channel) || !validArg(channel) ||
-			!validArg(user) || !verifyChannel(channel))
-			return ;
-
-		if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
-		{
-			printError(RED + "Error " + codeToStr(ERR_CHANOPRIVSNEEDED) +
-				": #" + channel + ":You're not channel operator\n" + RESET);
-			return ;
-		}
-
-		_channels.part(_clients.getFDByUser(user), channel);
-		printError(PURPLE + "The user " + BYELLOW + user +
-			PURPLE + " have been removed from the channel " +
-			BYELLOW + channel + PURPLE + "by the operator " +
-			BYELLOW + _clients.getUser(_fd) + "!\n" + RESET);
-	}
+	while (std::getline(tokenStream, token, ' '))
+		_args.push_back(token);
 }
 
 void Commands::commandInvite( void )

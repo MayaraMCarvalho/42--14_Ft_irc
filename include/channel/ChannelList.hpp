@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/28 08:41:06 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:23:05 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 # define CHANNEL_LIST_HPP
 
 # include <map>
-# include <iostream>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "Colors.hpp"
+# include "Codes.hpp"
 
 class ChannelList
 {
 	private:
 		std::map<std::string, Channel> _channels;
-		ClientList *_clients;
+		ClientList &_clients;
+		MsgHandler &_msgHandler;
 		static const int _DEFAULT_FLAGS = Channel::NO_UMODE;
 		std::map<std::string, std::set<std::string> > _invites;
 
@@ -34,8 +34,7 @@ class ChannelList
 		void removeInvite(const std::string &nick, const std::string &chan);
 
 	public:
-		ChannelList(void);
-		ChannelList(ClientList *clients);
+		ChannelList(ClientList &clients, MsgHandler &msgHandler);
 		ChannelList(ChannelList &src);
 
 		~ChannelList(void);
@@ -44,6 +43,7 @@ class ChannelList
 
 		// Getters
 		std::map<std::string, Channel>::iterator get(std::string name);
+		std::map<std::string, Channel>::iterator get(int fd);
 		std::map<std::string, Channel>::iterator begin(void);
 		std::map<std::string, Channel>::iterator end(void);
 

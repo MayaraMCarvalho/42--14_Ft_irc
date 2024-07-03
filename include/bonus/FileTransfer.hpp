@@ -14,8 +14,6 @@
 #define FILE_TRANSFER_HPP
 
 #include <sys/socket.h>
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <map>

@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/02 10:15:13 by macarval         ###   ########.fr        #
+#    Updated: 2024/07/02 18:20:29 by gmachado         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 
-SRCS		= main.cpp IrcServer.cpp \
+SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
 			Bot.cpp FileTransfer.cpp \
 			\

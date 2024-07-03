@@ -3,34 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/28 14:11:27 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/03 03:38:06 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRC_SERVER_HPP
 #define IRC_SERVER_HPP
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <cstring>
-#include <cstdlib>
-#include <csignal>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <poll.h>
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
-#include "Colors.hpp"
+#include "MsgHandler.hpp"
 #include "Codes.hpp"
 
 class	Channel;
@@ -44,6 +31,7 @@ class IRCServer
 		std::vector<struct pollfd>	_pollFds;
 		FileTransfer 				_fileTransfer;
 		Bot 						_bot;
+		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
 
@@ -54,7 +42,7 @@ class IRCServer
 
 	public:
 	// Constructor & Destructor ===============================================
-		IRCServer( void );
+		IRCServer(const std::string &port, const std::string &password);
 		~IRCServer( void );
 
 	// Exceptions =============================================================
@@ -63,20 +51,21 @@ class IRCServer
 		ClientList			&getClients( void );
 		ChannelList			&getChannels( void );
 		const std::string	&getPassword( void );
+		MsgHandler			&getMsgHandler(void);
 
 	// Setters ================================================================
 
 	// Methods ================================================================
-		IRCServer(const std::string &port, const std::string &password);
-		void		setupServer(void);
-		void		run(void);
-		t_numCode	authenticate(int userFD, std::string password);
-		void		acceptNewClient(void);
-		void		handleClientMessage(int clientFd);
-		void		removeClient(int clientFd);
-		static void	sendMessage(int clientFd, const std::string &message);
-		static void	signalHandler(int signal);
-		static void	setupSignalHandlers(void);
+
+		void				setupServer(void);
+		void				run(void);
+		t_numCode			authenticate(int userFD, std::string password);
+		void				acceptNewClient(void);
+		void				handleClientMessage(int clientFd);
+		void				removeClient(int clientFd);
+		static void			signalHandler(int signal);
+		static void			setupSignalHandlers(void);
+		static std::string	getHostName(const char *ip, const char *port);
 };
 
 #endif

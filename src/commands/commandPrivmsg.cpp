@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandPrivmsg.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:52:39 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/03 03:39:35 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 	if (clientFd == -1)
 		return false;
 
-	IRCServer::sendMessage(clientFd, getFullMessage(message));
+	_server.getMsgHandler().sendMessage(clientFd, getFullMessage(message));
 
 	return true;
 }

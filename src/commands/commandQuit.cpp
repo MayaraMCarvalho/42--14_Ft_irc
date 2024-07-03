@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandQuit.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:58:50 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/03 03:41:34 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void Commands::commandQuit( void )
 
 void Commands::quitServer( void )
 {
-	_server.removeClient(_fd);
+	_clients.removeClientFD(_fd);
+	_channels.partDisconnectedClient(_fd);
 	std::cout << RED << "Client disconnected: ";
 	std::cout << BYELLOW << _fd << RESET << std::endl;
 }

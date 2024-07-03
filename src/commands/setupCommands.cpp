@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setupCommands.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:32:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/03 05:09:07 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Commands::commandPass( void )
 {
-	Client	client = _clients.getClient(_fd)->second;
+	Client	&client = _clients.getClient(_fd)->second;
 
 	if (_args.size() != 2)
 	{

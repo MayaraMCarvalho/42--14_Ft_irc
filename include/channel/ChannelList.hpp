@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/02 18:22:53 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:23:05 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <map>
 # include "Channel.hpp"
 # include "ClientList.hpp"
-# include "numCode.hpp"
+# include "Codes.hpp"
 
 class ChannelList
 {

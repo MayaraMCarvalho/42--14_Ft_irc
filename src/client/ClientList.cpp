@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/02 19:02:19 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/03 05:12:19 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,8 @@ t_numCode ClientList::setNick(int fd, const std::string &newNick) {
 	if (it == end())
 		throw std::invalid_argument("Unknown user");
 
-	it->second.setNick(newNick);
-
 	Client::t_status status = it->second.getStatus();
+
 
 	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
 		throw std::invalid_argument("Invalid user status");
@@ -130,7 +129,7 @@ t_numCode ClientList::setNick(int fd, const std::string &newNick) {
 	if (_nickToClient.find(newNick) != _nickToClient.end())
 		return ERR_NICKNAMEINUSE;
 
-	else if (status == Client::AUTHENTICATED)
+	if (status == Client::AUTHENTICATED)
 		it->second.setStatus(Client::GOT_NICK);
 
 	else if (status == Client::GOT_USER)
@@ -138,6 +137,8 @@ t_numCode ClientList::setNick(int fd, const std::string &newNick) {
 
 	if (!it->second.getNick().empty())
 		_nickToClient.erase(it->second.getNick());
+
+	it->second.setNick(newNick);
 
 	_nickToClient.insert(std::pair<std::string,
 		std::map<int, Client>::iterator>(newNick, it));
@@ -157,8 +158,6 @@ t_numCode ClientList::setUser(int fd, const std::string &newUser) {
 	if (it == end())
 		throw std::invalid_argument("Unknown user");
 
-	it->second.setUser(newUser);
-
 	Client::t_status status = it->second.getStatus();
 
 	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
@@ -169,13 +168,17 @@ t_numCode ClientList::setUser(int fd, const std::string &newUser) {
 
 	if (status == Client::REGISTERED)
 		return ERR_ALREADYREGISTERED;
+
 	else if (status == Client::AUTHENTICATED)
 		it->second.setStatus(Client::GOT_USER);
+
 	else if (status == Client::GOT_NICK)
 		it->second.setStatus(Client::REGISTERED);
 
 	if (!it->second.getUser().empty())
 		_userToClient.erase(it->second.getUser());
+
+	it->second.setUser(newUser);
 
 	_userToClient.insert(std::pair<std::string,
 		std::map<int, Client>::iterator>(newUser, it));

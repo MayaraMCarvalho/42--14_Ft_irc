@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:21:22 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/03 03:38:06 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class IRCServer
 		ClientList			&getClients( void );
 		ChannelList			&getChannels( void );
 		const std::string	&getPassword( void );
+		MsgHandler			&getMsgHandler(void);
 
 	// Setters ================================================================
 

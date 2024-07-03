@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:34:00 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/03 03:38:54 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,5 +301,7 @@ std::string IRCServer::getHostName(const char *ip, const char *port) {
 	freeaddrinfo(addrInfo);
 	return hostName;
 }
+
+MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
 
 // Exceptions =================================================================

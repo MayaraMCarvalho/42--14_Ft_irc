@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 03:32:58 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/01 05:57:09 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/03 03:37:16 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "MsgHandler.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
-# include "numCode.hpp"
+# include "Codes.hpp"
 
 MsgHandler::MsgHandler(void) : _host("defaulthost"), _msgQueues() { }
 

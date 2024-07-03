@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:55:05 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:57:13 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ class Commands
 		// quitCommand.cpp
 		void		commandQuit( void );
 		void		quitServer( void );
-		std::string	getQuitMessage( void );
+		bool		getQuitMessage(std::string &messageQuit);
 
 		// setupCommands.cpp
 		void		commandPass( void );

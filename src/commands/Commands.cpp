@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:28:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:46:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 		cmdFuncs.find(_args[0]);
 	if (it != cmdFuncs.end())
 	{
-		//
-		std::cout << "Status ANTES:" << _clients.getClient(_fd)->second.getStatus() << std::endl;
-		//
 		(this->*(it->second))();
-		//
-		std::cout << "Status DEPOIS:" << _clients.getClient(_fd)->second.getStatus() << std::endl;
-		//
 		return true;
 	}
 	return false;

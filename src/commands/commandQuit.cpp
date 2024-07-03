@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:52:39 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:58:50 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,21 @@ void Commands::commandQuit( void )
 {
 	if (initValidation(1, "QUIT <message(optional)>\n"))
 	{
-		std::string prefix = RED + "Client " + BYELLOW + toString(_fd)
+		std::string	messageQuit = "";
+		std::string	prefix = RED + "Client " + BYELLOW + toString(_fd)
 			+ RED + " left the channel ";
-		std::string quitMessage = getQuitMessage();
 
-		for (std::map<std::string, Channel>::iterator it = _channels.begin();
-			it != _channels.end(); ++it)
+		if(getQuitMessage(messageQuit))
 		{
-			if (it->second.userIsInChannel(_fd))
-				it->second.sendToAll(prefix + BCYAN + it->second.getName()
-					+ quitMessage);
+			for (std::map<std::string, Channel>::iterator it = _channels.begin();
+				it != _channels.end(); ++it)
+			{
+				if (it->second.userIsInChannel(_fd))
+					it->second.sendToAll(prefix + BCYAN + it->second.getName()
+						+ messageQuit);
+			}
+			quitServer();
 		}
-		quitServer();
 	}
 }
 
@@ -39,18 +42,15 @@ void Commands::quitServer( void )
 	std::cout << BYELLOW << _fd << RESET << std::endl;
 }
 
-std::string Commands::getQuitMessage( void )
+bool Commands::getQuitMessage(std::string &messageQuit)
 {
-	std::string messageQuit = "";
-
 	if (_args.size() > 1)
 	{
 		std::string message = getMessage(1);
-		if (validMessage(message))
-		{
-			messageQuit = BLUE + "\nAnd sent the following farewell message: "
-				+ BGREEN + message + RESET;
-		}
+		if (!validMessage(message))
+			return false;
+		messageQuit = BLUE + "\nAnd sent the following farewell message: "
+			+ BGREEN + message + RESET;
 	}
-	return messageQuit;
+	return true;
 }

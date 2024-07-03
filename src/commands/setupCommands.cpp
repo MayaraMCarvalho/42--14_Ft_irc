@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:29:08 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:39:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void Commands::commandPass( void )
 
 	if (_args.size() != 2)
 	{
-		printError(
-			errorNeedMoreParams("Not enough parameters\nUsage: PASS <password>\n"));
+		printError( errorNeedMoreParams("Not enough parameters\n" + BLUE
+				+ "Usage: PASS <password>\n"));
 	}
 	else if (client.getStatus() == Client::REGISTERED)
 		printError(errorAlredyRegister());

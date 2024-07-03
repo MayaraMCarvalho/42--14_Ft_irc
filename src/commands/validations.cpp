@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:26:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:42:51 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ bool Commands::initValidation(size_t num, const std::string &usage)
 		error = errorNeedMoreParams("Not enough parameters\n");
 		if (_args[0] == NICK)
 			error = pre + toString(ERR_NONICKNAMEGIVEN) +
-				"\n: No nickname given\n";
+				": No nickname given\n";
 		if (_args[0] == PRIVMSG)
 		{
-			error = pre + toString(ERR_NOTEXTTOSEND) + "\n: No text to send\n";
+			error = pre + toString(ERR_NOTEXTTOSEND) + ": No text to send\n";
 			if (_args.size() < 2)
 				error = pre + toString(ERR_NORECIPIENT) +
-					"\n: No recipient given (" + _args[0] + ")\n";
+					": No recipient given (" + _args[0] + ")\n";
 		}
 		printError(error + BBLUE + "Usage: " + usage + RESET);
 		return false;

@@ -3,77 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 14:58:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:19:35 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
-void Commands::parsingArgs(const std::string &message)
-{
-	std::string token;
-	std::istringstream tokenStream(message);
 
-	while (std::getline(tokenStream, token, ' '))
-		_args.push_back(token);
+std::string Commands::getMessage(int index)
+{
+	std::string	result;
+
+	for (std::vector<std::string>::const_iterator it = _args.begin() + index;
+			it != _args.end(); ++it)
+	{
+		if (it != _args.begin() + index)
+			result.append(" ");
+		result.append(*it);
+	}
+	return result;
 }
 
-void Commands::save(std::string &nick)
+std::string Commands::toString(t_numCode code)
 {
-	t_numCode errorCode = NO_CODE;
-	std::string message;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	// _clients.setNick(_fd, nick);
-	// errorCode = _clients.updateNick(_fd, nick);
-
-	errorCode = _clients.setNick(_fd, nick);//
-
-	message = GREEN + "Nickname update successfully: " +
-		BYELLOW + it->second.getNick() + "\n" + RESET;
-	if (errorCode != NO_CODE)
-		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
-
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
-}
-
-void Commands::save(std::string &user, std::string &host)
-{
-	t_numCode errorCode = NO_CODE;
-	std::string message;
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
-
-	// _clients.setUser(_fd, user);
-	// errorCode = _clients.updateUser(_fd, user);
-	
-	if (host.empty()){}//
-	errorCode = _clients.setUser(_fd, user);//
-
-	message = GREEN + "User update successfully!\n" + RESET;
-	if (errorCode != NO_CODE)
-		message = RED + "Error " + codeToString(errorCode) + "\n" + RESET;
-
-	it->second.sendMessage(message);
-	std::cout << message << std::endl;
-}
-
-std::string Commands::codeToString(t_numCode code)
-{
-	std::ostringstream oss;
+	std::ostringstream	oss;
 
 	oss << static_cast<int>(code);
-
 	return oss.str();
 }
 
-std::string Commands::intToString(int num)
+std::string Commands::toString(int num)
 {
-	std::ostringstream oss;
+	std::ostringstream	oss;
 
 	oss << static_cast<int>(num);
-
 	return oss.str();
+}
+
+void Commands::printError(const std::string &errorMessage)
+{
+	_clients.getClient(_fd)->second.sendMessage(errorMessage);
+	std::cout << errorMessage << std::endl;
 }

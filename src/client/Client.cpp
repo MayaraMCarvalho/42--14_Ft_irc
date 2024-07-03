@@ -11,17 +11,19 @@
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include "IrcServer.hpp"
 
-Client::Client() : _nick(""), _user(""), _host(""), _fd(-1), _channels(),
-	_modeFlags(Client::NO_MODE), _status(Client::UNKNOWN) { }
+Client::Client(int fd, MsgHandler &msgHandler) : _msgHandler(msgHandler),
+	_nick(""), _user(""), _host(""), _fd(fd), _channels(),
+	_modeFlags(Client::NO_MODE), _status(Client::CONNECTED) { }
 
-Client::Client(int fd) : _nick(""), _user(""), _host(""), _fd(fd),
+Client::Client(int fd, MsgHandler &msgHandler, const std::string &host) :
+	_msgHandler(msgHandler), _nick(""), _user(""), _host(host), _fd(fd),
 	_channels(), _modeFlags(Client::NO_MODE), _status(Client::CONNECTED) { }
 
-Client::Client(const Client &src) : _nick(src._nick), _user(src._user),
-	_host(src._host), _fd(src._fd), _channels(src._channels),
-	_modeFlags(src._modeFlags), _status(src._status) { }
+Client::Client(const Client &src) : _msgHandler(src._msgHandler),
+	_nick(src._nick), _user(src._user), _host(src._host), _fd(src._fd),
+	_channels(src._channels), _modeFlags(src._modeFlags),
+	_status(src._status) { }
 
 
 Client::~Client(void) { }
@@ -119,14 +121,20 @@ void Client::setStatus(t_status status) { _status = status; }
 bool Client::isInChannel(const std::string &channelStr) {
 	return _channels.find(channelStr) != _channels.end();
 }
+
 void Client::addChannel(const std::string &channelStr)
 {
 	_channels.insert(channelStr);
 }
+
 void Client::removeChannel(const std::string &channelStr) {
 	_channels.erase(channelStr);
 }
 
+void Client::sendMessage(const std::string &from, const std::string &msg) {
+	_msgHandler.sendMessage(_fd, from, msg);
+}
+
 void Client::sendMessage(const std::string &msg) {
-	IRCServer::sendMessage(_fd, msg);
+	_msgHandler.sendMessage(_fd, msg);
 }

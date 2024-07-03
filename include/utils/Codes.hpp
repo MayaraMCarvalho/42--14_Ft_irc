@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   numCode.hpp                                        :+:      :+:    :+:   */
+/*   Codes.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/19 03:17:47 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/02 18:22:22 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef NUM_CODE_HPP
-# define NUM_CODE_HPP
+#ifndef CODES_HPP
+# define CODES_HPP
 
 typedef enum {
 	NO_CODE = 000,
@@ -90,38 +90,38 @@ typedef enum {
 	RPL_REHASHING = 382,
 	RPL_TIME = 391,
 	ERR_UNKNOWNERROR = 400,
-	ERR_NOSUCHNICK = 401,
+	ERR_NOSUCHNICK = 401, //
 	ERR_NOSUCHSERVER = 402,
-	ERR_NOSUCHCHANNEL = 403,
-	ERR_CANNOTSENDTOCHAN = 404,
-	ERR_TOOMANYCHANNELS = 405,
+	ERR_NOSUCHCHANNEL = 403, //
+	ERR_CANNOTSENDTOCHAN = 404, //
+	ERR_TOOMANYCHANNELS = 405, //
 	ERR_WASNOSUCHNICK = 406,
 	ERR_NOORIGIN = 409,
-	ERR_NORECIPIENT = 411,
-	ERR_NOTEXTTOSEND = 412,
+	ERR_NORECIPIENT = 411, //
+	ERR_NOTEXTTOSEND = 412, //
 	ERR_INPUTTOOLONG = 417,
 	ERR_UNKNOWNCOMMAND = 421,
 	ERR_NOMOTD = 422,
-	ERR_NONICKNAMEGIVEN = 431,
+	ERR_NONICKNAMEGIVEN = 431, //
 	ERR_ERRONEUSNICKNAME = 432,
-	ERR_NICKNAMEINUSE = 433,
+	ERR_NICKNAMEINUSE = 433, //
 	ERR_NICKCOLLISION = 436,
 	ERR_USERNOTINCHANNEL = 441,
-	ERR_NOTONCHANNEL = 442,
+	ERR_NOTONCHANNEL = 442, //
 	ERR_USERONCHANNEL = 443,
 	ERR_NOTREGISTERED = 451,
-	ERR_NEEDMOREPARAMS = 461,
-	ERR_ALREADYREGISTERED = 462,
+	ERR_NEEDMOREPARAMS = 461, //
+	ERR_ALREADYREGISTERED = 462, //
 	ERR_PASSWDMISMATCH = 464,
 	ERR_YOUREBANNEDCREEP = 465,
-	ERR_CHANNELISFULL = 471,
+	ERR_CHANNELISFULL = 471, //
 	ERR_UNKNOWNMODE = 472,
-	ERR_INVITEONLYCHAN = 473,
-	ERR_BANNEDFROMCHAN = 474,
-	ERR_BADCHANNELKEY = 475,
+	ERR_INVITEONLYCHAN = 473, //
+	ERR_BANNEDFROMCHAN = 474, //
+	ERR_BADCHANNELKEY = 475, //
 	ERR_BADCHANMASK = 476,
 	ERR_NOPRIVILEGES = 481,
-	ERR_CHANOPRIVSNEEDED = 482,
+	ERR_CHANOPRIVSNEEDED = 482, //
 	ERR_CANTKILLSERVER = 483,
 	ERR_NOOPERHOST = 491,
 	ERR_UMODEUNKNOWNFLAG = 501,

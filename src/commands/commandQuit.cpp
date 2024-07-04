@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandQuit.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 03:41:34 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:17:57 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void Commands::commandQuit( void )
 {
-	if (initValidation(1, "QUIT <message(optional)>\n"))
+	if (initValidation(1))
 	{
 		std::string	messageQuit = "";
 		std::string	prefix = RED + "Client " + BYELLOW + toString(_fd)
@@ -50,7 +50,7 @@ bool Commands::getQuitMessage(std::string &messageQuit)
 		std::string message = getMessage(1);
 		if (!validMessage(message))
 			return false;
-		messageQuit = BLUE + "\nAnd sent the following farewell message: "
+		messageQuit = BLUE + " And sent the following farewell message: "
 			+ BGREEN + message + RESET;
 	}
 	return true;

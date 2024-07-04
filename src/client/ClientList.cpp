@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/03 05:12:19 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 10:11:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ int ClientList::getFDByUser(const std::string &user) {
 
 	return it->second.getFD();
 }
+
+std::map<int, Client>::iterator ClientList::begin(void) { return _clients.begin(); }
 
 std::map<int, Client>::iterator ClientList::end(void) { return _clients.end(); }
 

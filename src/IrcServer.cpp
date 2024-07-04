@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 03:38:54 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:53:11 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include <cstdio>
 #include <sys/types.h>
 #include <netdb.h>
-
 
 IRCServer* IRCServer::_instance = NULL;
 
@@ -64,7 +63,6 @@ void IRCServer::setupServer(void)
 
 	if (fcntl(_serverFd, F_SETFL, O_NONBLOCK) == -1)
 		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
-
 	if (bind(_serverFd, (struct sockaddr *)&address, sizeof(address)) < 0)
 		throw std::runtime_error("Failed to bind socket");
 
@@ -79,13 +77,15 @@ void IRCServer::signalHandler(int signal)
 {
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
+		ChannelList	channels = _instance->_channels;
+		ClientList	clients = _instance->_clients;
 		_instance->_shouldExit = true;
-		ChannelList channels = _instance->_channels;
 
-		std::cout << std::endl;
-		for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
-			it->second.sendToAll(BRED + "The server was disconnected!" + RESET);
-		std::cout << BGREEN << "Exiting gracefully." << RESET << std::endl;
+		for (std::map<int, Client>::iterator it = clients.begin();
+			it != clients.end(); ++it)
+			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
+		std::cout << BGREEN << std::endl;
+		std::cout << "Exiting gracefully!" << RESET << std::endl;
 	}
 }
 
@@ -195,9 +195,8 @@ void IRCServer::acceptNewClient(void)
 	std::cout << BYELLOW << clientFd << RESET << std::endl;
 
 	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
-	std::string message = BPURPLE + "-----------------------------------\n" +
-		"------ Welcome to IRC server ------\n" +
-		"-----------------------------------\n" + RESET;
+	std::string message = BPURPLE +
+		"NOTICE * :*** Welcome to the IRC server ***" + RESET;
 	it->second.sendMessage(message);
 }
 
@@ -256,14 +255,11 @@ void IRCServer::handleClientMessage(int clientFd)
 	std::cout << "Received message from client " << clientFd;
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
-	//
-	Commands commands(*this);
-
-	bool isCommand = false;
+	Commands	commands(*this);
+	bool		isCommand = false;
 
 	if (!message.empty() && commands.isCommand(clientFd, message))
 		isCommand = true;
-	//
 	else if (message.substr(0, 5) == "/file")
 		handleFileTransfer(clientFd, message);
 	else

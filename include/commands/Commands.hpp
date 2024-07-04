@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:30:37 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:32:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ class Commands
 		void		commandNick( void );
 		void		saveNick(std::string &nick);
 		void		commandUser( void );
-		void		saveUser(std::string &user);
+		void		saveUser(std::string &user, std::string &userName);
 
 		// errorsCode.cpp
 		std::string	errorNeedMoreParams(std::string suffix);
@@ -123,7 +123,7 @@ class Commands
 		void		printError(const std::string &errorMessage);
 
 		// validations.cpp
-		bool		initValidation(size_t num, const std::string &usage);
+		bool		initValidation(size_t numArgs);
 		bool		validArg(std::string &arg);
 		bool		validChannel(std::string &channel);
 		bool		validMessage(std::string &message);

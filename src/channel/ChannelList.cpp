@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/02 04:05:08 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:11:23 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,13 @@ std::map<std::string, Channel>::iterator ChannelList::begin(void) {
 
 std::map<std::string, Channel>::iterator ChannelList::end(void) {
 	return _channels.end();
+}
+
+int ChannelList::size(void) {
+	int count = 0;
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		++count;
+	return count;
 }
 
 std::map<std::string, Channel>::iterator ChannelList::add(Channel channel) {

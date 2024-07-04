@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Codes.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/02 18:22:22 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 08:28:25 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,9 @@ typedef enum {
 	ERR_NOTONCHANNEL = 442, //
 	ERR_USERONCHANNEL = 443,
 	ERR_NOTREGISTERED = 451,
-	ERR_NEEDMOREPARAMS = 461, //
+	ERR_NEEDMOREPARAMS = 461, // Ok
 	ERR_ALREADYREGISTERED = 462, //
-	ERR_PASSWDMISMATCH = 464,
+	ERR_PASSWDMISMATCH = 464, // Ok
 	ERR_YOUREBANNEDCREEP = 465,
 	ERR_CHANNELISFULL = 471, //
 	ERR_UNKNOWNMODE = 472,

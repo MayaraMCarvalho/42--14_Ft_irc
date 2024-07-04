@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/02 18:31:42 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 10:11:21 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class ClientList {
 		const std::string getUser(int fd);
 		int getFDByNick(const std::string &nick);
 		int getFDByUser(const std::string &user);
+		std::map<int, Client>::iterator begin(void);
 		std::map<int, Client>::iterator end(void);
 
 		// Setters

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 19:00:25 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:41:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,17 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; // Ok
+	cmdFuncs[PASS] = &Commands::commandPass; // Ok c/ ressalvas
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; //			F4
-	cmdFuncs[PART] = &Commands::commandPart; // Ok
+	cmdFuncs[JOIN] = &Commands::commandJoin; //	F4
+	cmdFuncs[PART] = &Commands::commandPart; //
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //	F1
-	cmdFuncs[KICK] = &Commands::commandKick; // Ok
+	cmdFuncs[KICK] = &Commands::commandKick; //
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
 	cmdFuncs[MODE] = &Commands::commandMode;
-	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
+	cmdFuncs[QUIT] = &Commands::commandQuit; //
 
 	parsingArgs(message);
 	std::map<std::string, void (Commands::*)()>::iterator it =

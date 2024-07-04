@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setupCommands.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 05:09:07 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:34:18 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@ void Commands::commandPass( void )
 	Client	&client = _clients.getClient(_fd)->second;
 
 	if (_args.size() != 2)
-	{
-		printError( errorNeedMoreParams("Not enough parameters\n" + BLUE
-				+ "Usage: PASS <password>\n"));
-	}
+		printError(errorNeedMoreParams("Not enough parameters"));
 	else if (client.getStatus() == Client::REGISTERED)
 		printError(errorAlredyRegister());
 	else
@@ -28,11 +25,13 @@ void Commands::commandPass( void )
 		std::string	pass = _args[1];
 
 		if (pass != _serverPass)
-			printError(RED + "Error: Password incorrect\r\n" + RESET);
+			printError(RED + toString(ERR_PASSWDMISMATCH)
+				+ " * :Password incorrect" + RESET);
 		else
 		{
 			client.setStatus(Client::AUTHENTICATED);
-			printError(GREEN + "Your access has been approved!\n" + RESET);
+			printError(GREEN + _args[0] +
+				": Your access has been approved!" + RESET);//Retirar?
 		}
 
 	}
@@ -40,7 +39,7 @@ void Commands::commandPass( void )
 
 void Commands::commandNick( void )
 {
-	if (initValidation(2, "NICK <new_nickname>\n"))
+	if (initValidation(2))
 	{
 		std::string	nick = _args[1];
 
@@ -50,8 +49,8 @@ void Commands::commandNick( void )
 		std::map<int, Client>::iterator	exist = _clients.getClientByNick(nick);
 		if (exist != _clients.end())
 		{
-			printError(RED + "Error " + toString(ERR_NICKNAMEINUSE) +
-				"\n" + _args[0] + ": Nickname is already in use\n" + RESET);
+			printError(RED + toString(ERR_NICKNAMEINUSE) + " " +
+				nick + " :Nickname is already in use" + RESET);
 		}
 		else
 			saveNick(nick);
@@ -65,35 +64,43 @@ void Commands::saveNick(std::string &nick)
 	t_numCode	errorCode = NO_CODE;
 
 	errorCode = _clients.setNick(_fd, nick);
-	message = GREEN + "Nickname saved successfully!\n" + RESET;
+	message = GREEN + ":" + _args[0] + " " + nick + RESET;
 	if (errorCode != NO_CODE)
-		message = RED + "Error " + toString(errorCode) + "\n" + RESET;
+		message = RED + toString(errorCode) + RESET;
 	printError(message);
 }
 
 void Commands::commandUser( void )
 {
-	if (initValidation(2, "USER <user> ...\n"))
+	if (initValidation(5))
 	{
 		std::string	user = _args[1];
+		std::string	userName = getMessage(4);
 
-		if (!validArg(user))
+		if (!validArg(user) || !validMessage(userName))
 			return ;
 		if (_clients.getClient(_fd)->second.getStatus() == Client::REGISTERED)
 			printError(errorAlredyRegister());
 		else
-			saveUser(user);
+			saveUser(user, userName);
 	}
 }
 
-void Commands::saveUser(std::string &user)
+void Commands::saveUser(std::string &user, std::string &userName)
 {
-	t_numCode	errorCode = NO_CODE;
 	std::string	message;
+	t_numCode	errorCode = NO_CODE;
 
 	errorCode = _clients.setUser(_fd, user);
-	message = GREEN + "User saved successfully!\n" + RESET;
-	if (errorCode != NO_CODE)
-		message = RED + "Error " + toString(errorCode) + "\n" + RESET;
+	Client client = _clients.getClient(_fd)->second;
+	if (errorCode == NO_CODE)
+	{
+		message = GREEN + "001 " + user + " :Welcome to the IRC server" + RESET;
+		client.setUserHost(_args[2]);
+		client.setUserServer(_args[3]);
+		client.setUserName(userName);
+	}
+	else
+		message = RED + toString(errorCode) + RESET;
 	printError(message);
 }

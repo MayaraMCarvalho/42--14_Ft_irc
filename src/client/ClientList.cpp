@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/04 10:11:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:47:20 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,15 @@ const std::string ClientList::getUser(int fd) {
 		return "";
 
 	return it->second.getUser();
+}
+
+const std::string ClientList::getHost(int fd) {
+	std::map<int, Client>::iterator it = getClient(fd);
+
+	if (it == end())
+		return "";
+
+	return it->second.getHost();
 }
 
 int ClientList::getFDByNick(const std::string &nick) {

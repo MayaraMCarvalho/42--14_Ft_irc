@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 17:20:45 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:38:21 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ bool Commands::verifyChannel(std::string &channelName)
 {
 	if (!_clients.getClient(_fd)->second.isInChannel(channelName))
 	{
-		printError(RED + toString(ERR_NOTONCHANNEL) +
+		printInfo(RED + toString(ERR_NOTONCHANNEL) +
 			":You're not on that channel" + RESET);
 	}
 	else
@@ -26,37 +26,38 @@ bool Commands::verifyChannel(std::string &channelName)
 
 bool Commands::verifyJoin(std::string &channelName, std::string &key)
 {
+	std::string	nick = _clients.getNick(_fd);
+
 	if (false)// TO DO
 	{
-		printError(RED + toString(ERR_TOOMANYCHANNELS) +
-			" " + channelName + " :You have joined too many channels" + RESET);
+		printInfo(RED + toString(ERR_TOOMANYCHANNELS) + " " + nick +
+			" #" + channelName + " :You have joined too many channels" + RESET);
 		return false;
 	}
 	else if (_channels.get(channelName) != _channels.end())
 	{
 		Channel		channel = (_channels.get(channelName))->second;
-		Client		client = (_clients.getClient(_fd))->second;
-		std::string	error = " " + channelName + " :Cannot join channel ";
+		std::string	error = nick + " #" + channelName + " :Cannot join channel ";
 
-		if (true)// TO DO
+		if (false)// TO DO
 		{
-			printError(RED + toString(ERR_BANNEDFROMCHAN) + " " +
-				_clients.getNick(_fd) + error + "(+b)" + RESET);
+			printInfo(RED + toString(ERR_BANNEDFROMCHAN) + " " +
+				error + "(+b)" + RESET);
 		}
 		else if (channel.getChannelModeFlags() == Channel::INVITEONLY &&
-			!channel.userHasInvite(client.getNick()))
+			!channel.userHasInvite(nick))
 		{
-			printError(RED + toString(ERR_INVITEONLYCHAN) +
+			printInfo(RED + toString(ERR_INVITEONLYCHAN) + " " +
 				error + "(+i)" + RESET);
 		}
 		else if (channel.getKey() != key)
 		{
-			printError(RED + toString(ERR_BADCHANNELKEY) +
+			printInfo(RED + toString(ERR_BADCHANNELKEY) + " " +
 				error + "(+k)" + RESET);
 		}
 		else if (false)// TO DO
 		{
-			printError(RED + toString(ERR_CHANNELISFULL) +
+			printInfo(RED + toString(ERR_CHANNELISFULL) + " " +
 				error + "(+l)" + RESET);
 		}
 		else
@@ -70,7 +71,7 @@ bool Commands::verifyKick (std::string &channel)
 {
 	if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
 	{
-		printError(RED + toString(ERR_CHANOPRIVSNEEDED) +
+		printInfo(RED + toString(ERR_CHANOPRIVSNEEDED) +
 			": #" + channel + ":You're not channel operator" + RESET);
 		return false;
 	}

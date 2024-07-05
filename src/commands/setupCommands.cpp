@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 16:34:18 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:38:21 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,20 +17,20 @@ void Commands::commandPass( void )
 	Client	&client = _clients.getClient(_fd)->second;
 
 	if (_args.size() != 2)
-		printError(errorNeedMoreParams("Not enough parameters"));
+		printInfo(errorNeedMoreParams("Not enough parameters"));
 	else if (client.getStatus() == Client::REGISTERED)
-		printError(errorAlredyRegister());
+		printInfo(errorAlredyRegister());
 	else
 	{
 		std::string	pass = _args[1];
 
 		if (pass != _serverPass)
-			printError(RED + toString(ERR_PASSWDMISMATCH)
+			printInfo(RED + toString(ERR_PASSWDMISMATCH)
 				+ " * :Password incorrect" + RESET);
 		else
 		{
 			client.setStatus(Client::AUTHENTICATED);
-			printError(GREEN + _args[0] +
+			printInfo(GREEN + _args[0] +
 				": Your access has been approved!" + RESET);//Retirar?
 		}
 
@@ -49,7 +49,7 @@ void Commands::commandNick( void )
 		std::map<int, Client>::iterator	exist = _clients.getClientByNick(nick);
 		if (exist != _clients.end())
 		{
-			printError(RED + toString(ERR_NICKNAMEINUSE) + " " +
+			printInfo(RED + toString(ERR_NICKNAMEINUSE) + " " +
 				nick + " :Nickname is already in use" + RESET);
 		}
 		else
@@ -67,7 +67,7 @@ void Commands::saveNick(std::string &nick)
 	message = GREEN + ":" + _args[0] + " " + nick + RESET;
 	if (errorCode != NO_CODE)
 		message = RED + toString(errorCode) + RESET;
-	printError(message);
+	printInfo(message);
 }
 
 void Commands::commandUser( void )
@@ -80,7 +80,7 @@ void Commands::commandUser( void )
 		if (!validArg(user) || !validMessage(userName))
 			return ;
 		if (_clients.getClient(_fd)->second.getStatus() == Client::REGISTERED)
-			printError(errorAlredyRegister());
+			printInfo(errorAlredyRegister());
 		else
 			saveUser(user, userName);
 	}
@@ -102,5 +102,5 @@ void Commands::saveUser(std::string &user, std::string &userName)
 	}
 	else
 		message = RED + toString(errorCode) + RESET;
-	printError(message);
+	printInfo(message);
 }

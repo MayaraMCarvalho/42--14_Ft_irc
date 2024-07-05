@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/04 10:00:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:03:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ class ChannelList
 
 		// Getters
 		std::map<std::string, Channel>::iterator get(std::string name);
-		std::map<std::string, Channel>::iterator get(int fd);
+		// std::map<std::string, Channel>::iterator get(int fd);
 		std::map<std::string, Channel>::iterator begin(void);
 		std::map<std::string, Channel>::iterator end(void);
-		
+
 		int size(void);
 		void join(int userFD, const std::string &chanName, const std::string &key);
 		void part(int userFD, std::string chanName);

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 16:32:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:00:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ class Commands
 
 		// channelCommands.cpp
 		void		commandJoin( void );
+		void		printJoin(std::string channelName);
 		void		commandPart( void );
 		void		commandKick( void );
 
@@ -116,11 +117,15 @@ class Commands
 		std::string	errorNoSuchNick(std::string &recipient, std::string who);
 		std::string	errorAlredyRegister( void );
 
+		// infos.cpp
+		std::string	getTopic(std::string &channelName);
+		std::string	getUsersInChannel(std::string &channelName);
+
 		// utils.cpp
 		std::string	getMessage(int index);
 		std::string	toString(t_numCode code);
 		std::string	toString(int num);
-		void		printError(const std::string &errorMessage);
+		void		printInfo(const std::string &info);
 
 		// validations.cpp
 		bool		initValidation(size_t numArgs);

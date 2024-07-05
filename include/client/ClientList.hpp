@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/04 10:11:21 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:02:37 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class ClientList {
 		std::map<int, Client>::iterator getClientByUser(const std::string &user);
 		const std::string getNick(int fd);
 		const std::string getUser(int fd);
+		const std::string getHost(int fd);
 		int getFDByNick(const std::string &nick);
 		int getFDByUser(const std::string &user);
 		std::map<int, Client>::iterator begin(void);
@@ -52,9 +53,6 @@ class ClientList {
 		void removeByNick(const std::string &nick);
 		void removeByUser(const std::string &user);
 		void removeClientFD(int clientFd);
-
-		// t_numCode updateNick(int fd, std::string &newNick);
-		// t_numCode updateUser(int fd, std::string &newUser);
 
 		static bool isValidNick(const std::string &nick);
 		static bool isValidUser(const std::string &user);

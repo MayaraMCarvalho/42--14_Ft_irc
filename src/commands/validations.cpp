@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 17:07:45 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:38:21 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool Commands::initValidation(size_t numArgs)
 				error = toString(ERR_NORECIPIENT) +
 					": No recipient given (" + _args[0] + ")";
 		}
-		printError(RED + error + RESET);
+		printInfo(RED + error + RESET);
 		return false;
 	}
 	else if (_args[0] != QUIT && setupDone())
@@ -48,12 +48,12 @@ bool Commands::setupDone(void)
 	bool	isReg = (status == Client::REGISTERED);
 
 	if ((isUser || isNick) && !isAuth && !isGotNick && !isGotUser && !isReg)
-		printError(RED + "Error: Unauthenticated client" + RESET);
+		printInfo(RED + "Error: Unauthenticated client" + RESET);
 	else if ((!isAuth && !isReg)
 		&& ((isUser && !isGotNick) || (isNick && !isGotUser)))
-		printError(RED + "Error: Registration must be completed" + RESET);
+		printInfo(RED + "Error: Registration must be completed" + RESET);
 	else if (!isUser && !isNick && !isReg)
-		printError(RED + "Error: You need to register the client first" + RESET);
+		printInfo(RED + "Error: You need to register the client first" + RESET);
 	else
 		return false;
 	return true;
@@ -65,9 +65,9 @@ bool Commands::validArg(std::string &arg)
 	std::string	error;
 
 	if (arg.empty())
-		printError(RED + "Error: Empty parameter" + RESET);
+		printInfo(RED + "Error: Empty parameter" + RESET);
 	else if (arg.size() > MAX_LENGTH)
-		printError(RED + "Error: Too long" + RESET);
+		printInfo(RED + "Error: Too long" + RESET);
 	else if (!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
 	{
 		if (_args[0] == NICK)
@@ -75,7 +75,7 @@ bool Commands::validArg(std::string &arg)
 			arg + ": Erroneus nickname" + RESET;
 		else
 			error = RED + "Error: Prohibited characters found" + RESET;
-		printError(error);
+		printInfo(error);
 	}
 	else
 		return true;
@@ -88,7 +88,7 @@ bool Commands::validChannel(std::string &channel)
 	if (channel[0] != '#')
 	{
 		if (_args[0] != PRIVMSG)
-			printError(RED + toString(ERR_NOSUCHCHANNEL) + " " +
+			printInfo(RED + toString(ERR_NOSUCHCHANNEL) + " " +
 			_clients.getNick(_fd) + " " +  channel + " :No such channel" + RESET);
 		return false;
 	}
@@ -103,7 +103,7 @@ bool Commands::validMessage(std::string &message)
 
 	if (message[0] != ':')
 	{
-		printError(RED + "Error: Non-standard message" + RESET);
+		printInfo(RED + "Error: Non-standard message" + RESET);
 		return false;
 	}
 	message.erase(0, 1);

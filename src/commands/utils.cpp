@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:19:35 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:37:32 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ std::string Commands::toString(int num)
 	return oss.str();
 }
 
-void Commands::printError(const std::string &errorMessage)
+void Commands::printInfo(const std::string &info)
 {
-	_clients.getClient(_fd)->second.sendMessage(errorMessage);
-	std::cout << errorMessage << std::endl;
+	_clients.getClient(_fd)->second.sendMessage(info);
+	std::cout << info << std::endl;
 }

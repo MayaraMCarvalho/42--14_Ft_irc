@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/04 08:28:25 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:19:53 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef enum {
 	RPL_CREATIONTIME = 329,
 	RPL_WHOISACCOUNT = 330,
 	RPL_NOTOPIC = 331,
-	RPL_TOPIC = 332,
+	RPL_TOPIC = 332, // Ok
 	RPL_TOPICWHOTIME = 333,
 	RPL_INVITELIST = 336,
 	RPL_ENDOFINVITELIST = 337,
@@ -72,10 +72,10 @@ typedef enum {
 	RPL_ENDOFEXCEPTLIST = 349,
 	RPL_VERSION = 351,
 	RPL_WHOREPLY = 352,
-	RPL_NAMREPLY = 353,
+	RPL_NAMREPLY = 353, // Ok
 	RPL_LINKS = 364,
 	RPL_ENDOFLINKS = 365,
-	RPL_ENDOFNAMES = 366,
+	RPL_ENDOFNAMES = 366, // Ok
 	RPL_BANLIST = 367,
 	RPL_ENDOFBANLIST = 368,
 	RPL_ENDOFWHOWAS = 369,

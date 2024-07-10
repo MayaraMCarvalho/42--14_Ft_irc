@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 03:38:06 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/10 03:45:30 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
 #include "MsgHandler.hpp"
-#include "Codes.hpp"
 
 class	Channel;
 
 class IRCServer
 {
 	private:
+
 		std::string					_port;
 		std::string					_password;
 		int 						_serverFd;
@@ -41,6 +41,8 @@ class IRCServer
 		void handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
+		static const int MAX_MSG_LENGTH = 512;
+
 	// Constructor & Destructor ===============================================
 		IRCServer(const std::string &port, const std::string &password);
 		~IRCServer( void );
@@ -59,12 +61,14 @@ class IRCServer
 
 		void				setupServer(void);
 		void				run(void);
-		t_numCode			authenticate(int userFD, std::string password);
 		void				acceptNewClient(void);
-		void				handleClientMessage(int clientFd);
+		bool				handleClientMessage(int clientFd);
 		void				removeClient(int clientFd);
 		static void			signalHandler(int signal);
 		static void			setupSignalHandlers(void);
+		void				disconnectClient(int fd, size_t fdIdx);
+		void				disconnectClient(int fd);
+		void				handleClientSideDisconnect(int fd);
 		static std::string	getHostName(const char *ip, const char *port);
 };
 

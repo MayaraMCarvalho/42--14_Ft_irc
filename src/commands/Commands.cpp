@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 16:41:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/10 06:03:42 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,40 @@ Commands::~Commands(void) {}
 // Setters ====================================================================
 
 // Methods ====================================================================
+
+bool Commands::extractCommands(int clientFd) {
+	MsgHandler &msgHandler = _server.getMsgHandler();
+
+	if (msgHandler.recvLength(clientFd) < 1)
+		return true;
+	try {
+		std::string &str = msgHandler.recvPop(clientFd);
+
+		size_t startIdx = 0;
+		size_t endIdx = str.find("\r\n");
+
+		while (endIdx != std::string::npos) {
+			if (!isCommand(clientFd, str.substr(startIdx, endIdx - startIdx)))
+				return false;
+			startIdx = endIdx + 2;
+			endIdx = str.find("\r\n", startIdx);
+		}
+
+		if (startIdx < str.length())
+			str = str.substr(startIdx);
+		else
+			str.clear();
+
+	} catch(std::out_of_range &e) {
+		std::cerr << RED
+			<< "Out of range exception caught while processing client messages"
+			<< RESET << std::endl;
+		return true;
+	}
+
+	return true;
+}
+
 bool Commands::isCommand(int clientFd, const std::string &message)
 {
 	std::map<std::string, void (Commands::*)()> cmdFuncs;

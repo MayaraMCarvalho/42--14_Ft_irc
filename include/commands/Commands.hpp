@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 11:00:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/10 06:02:52 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class Commands
 	// Methods ================================================================
 
 		// Commands.cpp
+		bool		extractCommands(int clientFd);
 		bool		isCommand(int clientFd, const std::string &message);
 		void		parsingArgs(const std::string &message);
 		// Mover?

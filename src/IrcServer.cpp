@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/10 06:03:57 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 05:20:18 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,19 +133,21 @@ void IRCServer::run(void)
 				throw std::runtime_error("Poll error");
 		}
 
-
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
 
-		for (size_t fdIdx = 1; fdIdx < _pollFds.size();) {
+		size_t fdIdx = 1;
+		size_t pollFdsSize = _pollFds.size();
+
+		while (fdIdx < pollFdsSize) {
 			int fd = _pollFds[fdIdx].fd;
+			_isFdDisconnected = false;
+
 			if (_pollFds[fdIdx].revents & POLLIN &&
 					!handleClientMessage(_pollFds[fdIdx].fd)) {
 				disconnectClient(fd, fdIdx);
-				continue;
 			}
-
-			if (_pollFds[fdIdx].revents & POLLOUT) {
+			else if (_pollFds[fdIdx].revents & POLLOUT) {
 				ssize_t strLen = _msgHandler.sendLength(fd);
 
 				if (strLen > 0) {
@@ -157,9 +159,9 @@ void IRCServer::run(void)
 							std::cerr << RED << "Write error on client "
 								<< BYELLOW << fd << std::endl << RESET;
 							disconnectClient(fd, fdIdx);
-							continue;
 						}
-						_msgHandler.removeSendChars(fd, nbytes);
+						else
+							_msgHandler.removeSendChars(fd, nbytes);
 					} catch (std::out_of_range &e) {
 						std::cerr << RED
 						<< "Out of range exception caught while processing "
@@ -167,7 +169,10 @@ void IRCServer::run(void)
 					}
 				}
 			}
-			++fdIdx;
+			if (_isFdDisconnected)
+				pollFdsSize = _pollFds.size();
+			else
+				++fdIdx;
 		}
 	}
 }
@@ -206,8 +211,7 @@ bool IRCServer::handleClientMessage(int clientFd)
 	char	buffer[MAX_MSG_LENGTH + 1];
 	ssize_t	nbytes;
 
-	std::memset(buffer, 0, sizeof(buffer));
-	nbytes = recv(clientFd, buffer, sizeof(buffer) - 1, 0); // read client data
+	nbytes = read(clientFd, buffer, sizeof(buffer) - 1); // read client data
 
 	if (nbytes < 0) {
 		std::cerr << RED << "Read error on client: " << BYELLOW << clientFd
@@ -221,9 +225,6 @@ bool IRCServer::handleClientMessage(int clientFd)
 	}
 
 	buffer[nbytes] = '\0';
-	std::cout << CYAN;
-	std::cout << "Received message from client " << clientFd;
-	std::cout << ": " << BYELLOW << buffer << RESET << std::endl;
 
 	if (!_msgHandler.recvPush(clientFd, buffer))
 	{
@@ -233,7 +234,8 @@ bool IRCServer::handleClientMessage(int clientFd)
 
 	Commands	commands(*this);
 
-	return commands.extractCommands(clientFd);
+	commands.extractCommands(clientFd);
+	return true;
 }
 
 void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
@@ -267,14 +269,20 @@ void IRCServer::disconnectClient(int fd) {
 			break;
 		}
 	}
-	disconnectClient(fd, _pollFds[fdIdx].fd);
+	if (fdIdx >= _pollFds.size())
+		std::cerr << RED << "Could not find fd in _pollfds: " << BYELLOW << fd
+			<< RESET << std::endl;
+	else
+		disconnectClient(fd, fdIdx);
 }
 
 void IRCServer::disconnectClient(int fd, size_t fdIdx) {
 	_clients.removeClientFD(fd);
 	_channels.partDisconnectedClient(fd);
+	_msgHandler.resetQueues(fd);
 	_pollFds.erase(_pollFds.begin() + fdIdx);
 	close(fd);
+	_isFdDisconnected = true;
 }
 
 void IRCServer::handleClientSideDisconnect(int fd) {
@@ -282,5 +290,7 @@ void IRCServer::handleClientSideDisconnect(int fd) {
 }
 
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
+
+bool IRCServer::getIsFdDisconnected(void) { return _isFdDisconnected; }
 
 // Exceptions =================================================================

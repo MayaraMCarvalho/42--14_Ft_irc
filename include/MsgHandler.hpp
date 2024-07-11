@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 02:44:02 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/10 05:37:58 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 04:08:19 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class MsgHandler {
 		std::string &recvPop(int fd);
 		bool recvPush(int fd, std::string msg);
 		ssize_t recvLength(int fd);
+		void resetQueues(int fd);
 
 		// Numeric error replies
 		std::string errAlreadyRegistered(const std::string &client);
@@ -121,7 +122,6 @@ class MsgHandler {
 
 	private:
 		std::string _host;
-		std::string _tmpMsg;
 		std::map<int, std::string> _sendQueues;
 		std::map<int, std::string> _recvQueues;
 };

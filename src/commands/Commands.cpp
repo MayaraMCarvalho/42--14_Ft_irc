@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/10 06:03:42 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 05:35:15 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,45 @@ Commands::~Commands(void) {}
 
 // Methods ====================================================================
 
-bool Commands::extractCommands(int clientFd) {
+void Commands::extractCommands(int clientFd) {
 	MsgHandler &msgHandler = _server.getMsgHandler();
 
 	if (msgHandler.recvLength(clientFd) < 1)
-		return true;
+		return;
 	try {
 		std::string &str = msgHandler.recvPop(clientFd);
 
 		size_t startIdx = 0;
 		size_t endIdx = str.find("\r\n");
 
+		if (endIdx == std::string::npos &&
+				(str.find('\n') != std::string::npos ||
+					str.find('\r') != std::string::npos)) {
+			std::cerr << RED << "Message contains invalid line end characters: "
+			<< BYELLOW << str << RESET << std::endl;
+			str.clear();
+			return;
+		}
+
 		while (endIdx != std::string::npos) {
-			if (!isCommand(clientFd, str.substr(startIdx, endIdx - startIdx)))
-				return false;
+			if (!isCommand(clientFd,
+					str.substr(startIdx, endIdx - startIdx))) {
+				sendMessage(clientFd,
+					_server.getMsgHandler().errUnknownCommand(
+						_clients.getNick(clientFd),
+						str.substr(startIdx, endIdx - startIdx),
+						"unknown command"));
+			}
+
+			if (_server.getIsFdDisconnected())
+				return;
+
 			startIdx = endIdx + 2;
 			endIdx = str.find("\r\n", startIdx);
 		}
+
+		if (startIdx == 0 || _server.getIsFdDisconnected())
+			return;
 
 		if (startIdx < str.length())
 			str = str.substr(startIdx);
@@ -53,10 +75,7 @@ bool Commands::extractCommands(int clientFd) {
 		std::cerr << RED
 			<< "Out of range exception caught while processing client messages"
 			<< RESET << std::endl;
-		return true;
 	}
-
-	return true;
 }
 
 bool Commands::isCommand(int clientFd, const std::string &message)
@@ -76,7 +95,11 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[MODE] = &Commands::commandMode;
 	cmdFuncs[QUIT] = &Commands::commandQuit; //
 
+	std::cout << CYAN << "Received message from client " << clientFd
+				<< ": " << BYELLOW << message << RESET << std::endl;
+
 	parsingArgs(message);
+	strToUpper(_args[0]);
 	std::map<std::string, void (Commands::*)()>::iterator it =
 		cmdFuncs.find(_args[0]);
 	if (it != cmdFuncs.end())

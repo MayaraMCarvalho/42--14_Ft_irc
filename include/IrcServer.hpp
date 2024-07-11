@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/10 03:45:30 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 04:36:26 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class IRCServer
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
+		bool						_isFdDisconnected;
 
 		bool						_shouldExit;
 		static IRCServer*			_instance;
@@ -54,6 +55,8 @@ class IRCServer
 		ChannelList			&getChannels( void );
 		const std::string	&getPassword( void );
 		MsgHandler			&getMsgHandler(void);
+		bool				getIsFdDisconnected(void);
+		static std::string	getHostName(const char *ip, const char *port);
 
 	// Setters ================================================================
 
@@ -69,7 +72,6 @@ class IRCServer
 		void				disconnectClient(int fd, size_t fdIdx);
 		void				disconnectClient(int fd);
 		void				handleClientSideDisconnect(int fd);
-		static std::string	getHostName(const char *ip, const char *port);
 };
 
 #endif

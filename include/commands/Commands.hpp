@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/10 06:02:52 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 02:29:59 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class Commands
 	// Methods ================================================================
 
 		// Commands.cpp
-		bool		extractCommands(int clientFd);
+		void		extractCommands(int clientFd);
 		bool		isCommand(int clientFd, const std::string &message);
 		void		parsingArgs(const std::string &message);
 		// Mover?
@@ -127,6 +127,7 @@ class Commands
 		std::string	toString(t_numCode code);
 		std::string	toString(int num);
 		void		printInfo(const std::string &info);
+		static void	strToUpper(std::string &str);
 
 		// validations.cpp
 		bool		initValidation(size_t numArgs);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 10:37:32 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/11 02:30:06 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,9 @@ void Commands::printInfo(const std::string &info)
 {
 	_clients.getClient(_fd)->second.sendMessage(info);
 	std::cout << info << std::endl;
+}
+
+void Commands::strToUpper(std::string &str) {
+	for (std::string::iterator it = str.begin(); it != str.end(); ++it)
+		*it = std::toupper(*it);
 }

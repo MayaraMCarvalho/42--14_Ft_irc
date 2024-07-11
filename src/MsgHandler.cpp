@@ -6,10 +6,11 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 03:32:58 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/10 05:38:39 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 05:11:20 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include <sstream>
 #include "MsgHandler.hpp"
 #include "Client.hpp"
@@ -44,10 +45,10 @@ void MsgHandler::sendMessage(int fd, const std::string &msg) {
 }
 
 void MsgHandler::sendMessage(int fd, const std::string &from,
-			const std::string &msg)
-{
+		const std::string &msg) {
+	std::string fullMsg(":" + from + " " + msg + "\r\n");
 
-	sendPush(fd, ":" + from + " " + msg + "\r\n");
+	sendPush(fd, fullMsg);
 }
 
 std::string &MsgHandler::sendPop(int fd) {
@@ -72,10 +73,12 @@ bool MsgHandler::sendPush(int fd, std::string msg) {
 
 		if (!inserted.second)
 			return false;
+
+		return true;
 	}
 
 	if (it->second.length() + msg.length() > MAX_SEND_QUEUE_LENGTH)
-			return false;
+		return false;
 
 	it->second += msg;
 	return true;
@@ -110,12 +113,14 @@ bool MsgHandler::recvPush(int fd, std::string msg) {
 
 		if (!inserted.second)
 			return false;
+
+		return true;
 	}
 
 	if (it->second.length() + msg.length() > MAX_RECV_QUEUE_LENGTH)
 			return false;
 
-	it->second += msg;
+	(it->second) += msg;
 	return true;
 }
 
@@ -135,6 +140,17 @@ ssize_t MsgHandler::recvLength(int fd) {
 		return 0;
 
 	return it->second.length();
+}
+
+void MsgHandler::resetQueues(int fd) {
+	std::map<int, std::string>::iterator recvIt = _recvQueues.find(fd);
+	std::map<int, std::string>::iterator sendIt = _sendQueues.find(fd);
+
+	if (recvIt != _recvQueues.end())
+		_recvQueues.erase(recvIt);
+
+	if (sendIt != _sendQueues.end())
+		_sendQueues.erase(sendIt);
 }
 
 // Numeric error replies

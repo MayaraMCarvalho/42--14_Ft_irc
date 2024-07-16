@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 10:37:32 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:38:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ std::string Commands::toString(t_numCode code)
 {
 	std::ostringstream	oss;
 
-	oss << static_cast<int>(code);
+	oss << std::setw(3) << std::setfill('0') << static_cast<int>(code);
 	return oss.str();
 }
 

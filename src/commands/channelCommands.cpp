@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 16:31:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 17:21:38 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,15 @@ void Commands::commandJoin( void )
 
 void Commands::printJoin(std::string channelName)
 {
-	std::string nick = _clients.getNick(_fd);
-	std::string message = ":" + nick + "!" + _clients.getUser(_fd) + "@" +
-		_clients.getHost(_fd) + " " + _args[0] + " :#" + channelName + "";
+	Client client = _clients.getClient(_fd)->second;
+	std::string message = ":" + client.getFullId() + " " + _args[0] + " :" + channelName + "";
 	std::string topic = getTopic(channelName);
 
 	sendMessage(_channels.get(channelName), message);
 	if (!topic.empty())
 		printInfo(topic);
 	printInfo(getUsersInChannel(channelName));
-	printInfo(CYAN + toString(RPL_ENDOFNAMES) + " " + nick
+	printInfo(CYAN + toString(RPL_ENDOFNAMES) + " " + client.getNick()
 		+ " " + channelName + " :End of /NAMES list." + RESET);
 }
 

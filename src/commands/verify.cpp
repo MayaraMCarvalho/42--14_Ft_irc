@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 16:21:26 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:06:36 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,16 @@ bool Commands::verifyChannel(std::string &channelName)
 
 bool Commands::verifyJoin(std::string &channelName, std::string &key)
 {
-	std::string	nick = _clients.getNick(_fd);
+	Client client = _clients.getClient(_fd)->second;
 	std::map<std::string, Channel>::iterator it = _channels.get(channelName);
-	int	numChannels = _clients.getClient(_fd)->second.getChannelList().size();
+	int	numChannels = client.getChannelList().size();
 
 	if (it != _channels.end())
 	{
 		int	limit = it->second.getUserLimit();
 		if (limit > -1 && numChannels >= limit)
 		{
-			printInfo(RED + toString(ERR_TOOMANYCHANNELS) + " " + nick +
-				" " + channelName + " :You have joined too many channels" + RESET);
+			printInfo(errorTooManyChannels(channelName));
 			return false;
 		}
 		else
@@ -47,32 +46,28 @@ bool Commands::verifyJoin(std::string &channelName, std::string &key)
 bool Commands::verifyJoinChannel(std::string &channelName, std::string &key)
 {
 	std::string	nick = _clients.getNick(_fd);
-	std::string	error =  " " + nick + " " + channelName
-						+ " :Cannot join channel ";
 	Channel		channel = _channels.get(channelName)->second;
-	int	numClients = channel.getNumUsers();
-
+	int			numClients = channel.getNumUsers();
 
 	if (false)// TO DO
-		printInfo(RED + toString(ERR_BANNEDFROMCHAN) + error + "(+b)" + RESET);
+		printInfo(errorBannedFromChan(nick, channelName));
 	else if (channel.getChannelModeFlags() == Channel::INVITEONLY &&
 		!channel.userHasInvite(nick))
-		printInfo(RED + toString(ERR_INVITEONLYCHAN) + error + "(+i)" + RESET);
+		printInfo(errorInviteOnlyChan(nick, channelName));
 	else if (channel.getKey() != key)
-		printInfo(RED + toString(ERR_BADCHANNELKEY) + error + "(+k)" + RESET);
+		printInfo(errorBadChannelKey(nick, channelName));
 	else if (channel.getUserLimit() > -1 && numClients >= channel.getUserLimit())
-		printInfo(RED + toString(ERR_CHANNELISFULL) + error + "(+l)" + RESET);
+		printInfo(errorChannelIsFull(nick, channelName));
 	else
 		return true;
 	return false;
 }
 
-bool Commands::verifyKick (std::string &channel)
+bool Commands::verifyKick (std::string &channelName)
 {
 	if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
 	{
-		printInfo(RED + toString(ERR_CHANOPRIVSNEEDED) +
-			": #" + channel + ":You're not channel operator" + RESET);
+		printInfo(errorChanPrivsNeeded(channelName));
 		return false;
 	}
 	return true;

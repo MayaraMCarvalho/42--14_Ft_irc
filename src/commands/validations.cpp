@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 15:49:45 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 18:55:14 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,14 @@ bool Commands::initValidation(size_t numArgs)
 	{
 		error = errorNeedMoreParams("Not enough parameters");
 		if (_args[0] == NICK)
-			error = toString(ERR_NONICKNAMEGIVEN) +
-				": No nickname given";
+			error = errorNoNicknameGiven();
 		else if (_args[0] == PRIVMSG)
 		{
-			error = toString(ERR_NOTEXTTOSEND) + ": No text to send";
+			error = errorNoTextToSend();
 			if (_args.size() < 2)
-				error = toString(ERR_NORECIPIENT) +
-					": No recipient given (" + _args[0] + ")";
+				error = errorNoRecipient();
 		}
-		printInfo(RED + error + RESET);
+		printInfo(error);
 		return false;
 	}
 	else if (_args[0] != QUIT && setupDone())
@@ -53,7 +51,7 @@ bool Commands::setupDone(void)
 		&& ((isUser && !isGotNick) || (isNick && !isGotUser)))
 		printInfo(RED + "Error: Registration must be completed" + RESET);
 	else if (!isUser && !isNick && !isReg)
-		printInfo(RED + "Error: You need to register the client first" + RESET);
+		printInfo(errorNotRegistered());
 	else
 		return false;
 	return true;
@@ -71,8 +69,7 @@ bool Commands::validArg(std::string &arg)
 	else if (invalidChar(arg))
 	{
 		if (_args[0] == NICK)
-			printInfo(RED + toString(ERR_ERRONEUSNICKNAME) + " * " +
-			arg + " : Erroneus nickname" + RESET);
+			printInfo(errorErroneusNickname(arg));
 		else if (_args[0] == PRIVMSG)
 			printInfo(errorCannotSendToChan(arg));
 		else
@@ -98,8 +95,7 @@ bool Commands::validChannelName(std::string &channel)
 		((channel[0] == '#' || channel[0] != '&')
 		&& channel.find_first_not_of(ALPHA_NUM_SET, 1) != std::string::npos))
 	{
-		printInfo(RED + toString(ERR_BADCHANMASK) + " " +
-		_clients.getNick(_fd) + " " + channel + " :Bad Channel Mask" + RESET);
+		printInfo(errorBadChanMask(channel));
 		return false;
 	}
 	return true;

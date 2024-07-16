@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 10:38:21 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 18:37:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,8 @@ void Commands::commandPass( void )
 		std::string	pass = _args[1];
 
 		if (pass != _serverPass)
-			printInfo(RED + toString(ERR_PASSWDMISMATCH)
-				+ " * :Password incorrect" + RESET);
-		else
+			printInfo(errorPassMismatch());
+		else if (client.getStatus() == Client::CONNECTED)
 		{
 			client.setStatus(Client::AUTHENTICATED);
 			printInfo(GREEN + _args[0] +
@@ -47,27 +46,19 @@ void Commands::commandNick( void )
 			return ;
 
 		std::map<int, Client>::iterator	exist = _clients.getClientByNick(nick);
+		t_numCode	errorCode = NO_CODE;
+
 		if (exist != _clients.end())
-		{
-			printInfo(RED + toString(ERR_NICKNAMEINUSE) + " " +
-				nick + " :Nickname is already in use" + RESET);
-		}
+			printInfo(errorNicknameInUse(nick));
 		else
-			saveNick(nick);
-
+		{
+			errorCode = _clients.setNick(_fd, nick);
+			if (errorCode == NO_CODE)
+				printInfo(GREEN + ":NICK " + nick + RESET);
+			else
+				printInfo(RED + toString(errorCode) + RESET);
+		}
 	}
-}
-
-void Commands::saveNick(std::string &nick)
-{
-	std::string	message;
-	t_numCode	errorCode = NO_CODE;
-
-	errorCode = _clients.setNick(_fd, nick);
-	message = GREEN + ":" + _args[0] + " " + nick + RESET;
-	if (errorCode != NO_CODE)
-		message = RED + toString(errorCode) + RESET;
-	printInfo(message);
 }
 
 void Commands::commandUser( void )
@@ -79,28 +70,31 @@ void Commands::commandUser( void )
 
 		if (!validArg(user) || !validMessage(userName))
 			return ;
-		if (_clients.getClient(_fd)->second.getStatus() == Client::REGISTERED)
+
+		int	status = _clients.getClient(_fd)->second.getStatus();
+		if (status == Client::REGISTERED)
 			printInfo(errorAlredyRegister());
-		else
+		else if (status == Client::GOT_NICK)
 			saveUser(user, userName);
+		else
+			printInfo(errorNotRegistered());
 	}
 }
 
 void Commands::saveUser(std::string &user, std::string &userName)
 {
-	std::string	message;
 	t_numCode	errorCode = NO_CODE;
+	Client &client = _clients.getClient(_fd)->second;
 
 	errorCode = _clients.setUser(_fd, user);
-	Client client = _clients.getClient(_fd)->second;
 	if (errorCode == NO_CODE)
 	{
-		message = GREEN + "001 " + user + " :Welcome to the IRC server" + RESET;
+		printInfo(GREEN + toString(RPL_WELCOME) + " " + client.getNick() +
+		" :Welcome to IRC server " + client.getFullId() + RESET);
 		client.setUserHost(_args[2]);
 		client.setUserServer(_args[3]);
 		client.setUserName(userName);
 	}
 	else
-		message = RED + toString(errorCode) + RESET;
-	printInfo(message);
+		printInfo(RED + toString(errorCode) + RESET);
 }

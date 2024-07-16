@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 16:33:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 18:09:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 // Constructor & Destructor ===================================================
 Commands::Commands( IRCServer& server ) : _server(server),
 	_clients(_server.getClients()), _channels(_server.getChannels()),
-	_serverPass(_server.getPassword()) {}
+	_serverPass(_server.getPassword()),
+	_host(_server.getMsgHandler().getHost()) {}
 
 Commands::~Commands(void) {}
 

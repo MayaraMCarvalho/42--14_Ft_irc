@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/05 16:40:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:11:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 # define CODES_HPP
 
 typedef enum {
-	NO_CODE = 000,
-	RPL_WELCOME = 001,
-	RPL_YOURHOST = 002,
-	RPL_CREATED = 003,
-	RPL_MYINFO = 004,
+	NO_CODE = 000, // Ok
+	RPL_WELCOME = 001, // Ok
+	RPL_YOURHOST = 002, // ? USER
+	RPL_CREATED = 003, // ? USER
+	RPL_MYINFO = 004, // ? USER
 	RPL_ISUPPORT = 005,
 	RPL_BOUNCE = 010,
 	RPL_STATSCOMMANDS = 212,
@@ -90,28 +90,28 @@ typedef enum {
 	RPL_REHASHING = 382,
 	RPL_TIME = 391,
 	ERR_UNKNOWNERROR = 400,
-	ERR_NOSUCHNICK = 401, //
+	ERR_NOSUCHNICK = 401, // Ok
 	ERR_NOSUCHSERVER = 402,
-	ERR_NOSUCHCHANNEL = 403, //
-	ERR_CANNOTSENDTOCHAN = 404, //
-	ERR_TOOMANYCHANNELS = 405, //
+	ERR_NOSUCHCHANNEL = 403, // Ok
+	ERR_CANNOTSENDTOCHAN = 404, // Ok
+	ERR_TOOMANYCHANNELS = 405, // Ok
 	ERR_WASNOSUCHNICK = 406,
 	ERR_NOORIGIN = 409,
-	ERR_NORECIPIENT = 411, //
-	ERR_NOTEXTTOSEND = 412, //
+	ERR_NORECIPIENT = 411, // Ok
+	ERR_NOTEXTTOSEND = 412, // Ok
 	ERR_INPUTTOOLONG = 417,
 	ERR_UNKNOWNCOMMAND = 421,
 	ERR_NOMOTD = 422,
-	ERR_NONICKNAMEGIVEN = 431, //
+	ERR_NONICKNAMEGIVEN = 431, // Ok
 	ERR_ERRONEUSNICKNAME = 432, // Ok
-	ERR_NICKNAMEINUSE = 433, //
+	ERR_NICKNAMEINUSE = 433, // Ok
 	ERR_NICKCOLLISION = 436,
 	ERR_USERNOTINCHANNEL = 441,
-	ERR_NOTONCHANNEL = 442, //
+	ERR_NOTONCHANNEL = 442, // Ok
 	ERR_USERONCHANNEL = 443,
-	ERR_NOTREGISTERED = 451,
+	ERR_NOTREGISTERED = 451,// Ok
 	ERR_NEEDMOREPARAMS = 461, // Ok
-	ERR_ALREADYREGISTERED = 462, //
+	ERR_ALREADYREGISTERED = 462, // Ok
 	ERR_PASSWDMISMATCH = 464, // Ok
 	ERR_YOUREBANNEDCREEP = 465,
 	ERR_CHANNELISFULL = 471, // Ok
@@ -121,7 +121,7 @@ typedef enum {
 	ERR_BADCHANNELKEY = 475, // Ok
 	ERR_BADCHANMASK = 476, // Ok
 	ERR_NOPRIVILEGES = 481,
-	ERR_CHANOPRIVSNEEDED = 482, //
+	ERR_CHANOPRIVSNEEDED = 482, // Ok
 	ERR_CANTKILLSERVER = 483,
 	ERR_NOOPERHOST = 491,
 	ERR_UMODEUNKNOWNFLAG = 501,

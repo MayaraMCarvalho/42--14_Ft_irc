@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:23:51 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:32:28 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void Commands::commandPass( void )
 		{
 			client.setStatus(Client::AUTHENTICATED);
 			printInfo(GREEN + _args[0] +
-				": Your access has been approved!" + RESET);//Retirar?
+				": Your access has been approved!" + RESET);// Verificar
 		}
 
 	}

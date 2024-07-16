@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 18:09:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:46:03 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; // Ok c/ ressalvas
+	cmdFuncs[PASS] = &Commands::commandPass; // Ok
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; // F2 (RPL_TOPIC E condição do ERR_BANNEDFROMCHAN)
-	cmdFuncs[PART] = &Commands::commandPart; //
+	cmdFuncs[JOIN] = &Commands::commandJoin; // Ok
+	cmdFuncs[PART] = &Commands::commandPart; // Ok
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // F1 (RPL_AWAY)
-	cmdFuncs[KICK] = &Commands::commandKick; //
+	cmdFuncs[KICK] = &Commands::commandKick; // Ok
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
 	cmdFuncs[MODE] = &Commands::commandMode;

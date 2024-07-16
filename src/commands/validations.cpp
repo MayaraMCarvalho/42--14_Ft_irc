@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:24:34 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:31:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ bool Commands::initValidation(size_t numArgs)
 {
 	std::string	error;
 
-	if (_args.size() < numArgs) // verificar se melhor usar !=
+	if (_args.size() < numArgs)
 	{
 		error = errorNeedMoreParams("Not enough parameters");
 		if (_args[0] == NICK)

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 15:53:11 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 18:36:47 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,6 +257,8 @@ void IRCServer::handleClientMessage(int clientFd)
 
 	Commands	commands(*this);
 	bool		isCommand = false;
+
+	commands.tests(commands);//
 
 	if (!message.empty() && commands.isCommand(clientFd, message))
 		isCommand = true;

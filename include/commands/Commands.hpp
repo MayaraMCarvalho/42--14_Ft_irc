@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 11:00:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 18:36:59 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,13 @@ class Commands
 		void		commandUser( void );
 		void		saveUser(std::string &user, std::string &userName);
 
-		// errorsCode.cpp
+		// errorsCode.cpp (Depois ordenar pelo numero do erro)
 		std::string	errorNeedMoreParams(std::string suffix);
 		std::string	errorNoSuchNick(std::string &recipient, std::string who);
 		std::string	errorAlredyRegister( void );
+		std::string	errorNotOnChannel(std::string &channelName);
+		std::string	errorNoSuchChannel(std::string &channelName);
+		std::string	errorCannotSendToChan(std::string &channelName);
 
 		// infos.cpp
 		std::string	getTopic(std::string &channelName);
@@ -130,14 +133,20 @@ class Commands
 		// validations.cpp
 		bool		initValidation(size_t numArgs);
 		bool		validArg(std::string &arg);
-		bool		validChannel(std::string &channel);
+		bool		validChannelName(std::string &channel);
 		bool		validMessage(std::string &message);
 		bool		setupDone( void );
+		bool		invalidChar(std::string &arg);
 
 		// verify.cpp
 		bool		verifyChannel(std::string &channelName);
 		bool		verifyJoin(std::string &channelName, std::string &key);
+		bool		verifyJoinChannel(std::string &channelName, std::string &key);
 		bool		verifyKick (std::string &channel);
+
+		//
+		// tests.cpp
+		void		tests(Commands commands); //
 };
 
 #endif

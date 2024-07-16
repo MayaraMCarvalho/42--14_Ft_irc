@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/05 11:19:53 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:40:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ typedef enum {
 	ERR_UNKNOWNCOMMAND = 421,
 	ERR_NOMOTD = 422,
 	ERR_NONICKNAMEGIVEN = 431, //
-	ERR_ERRONEUSNICKNAME = 432,
+	ERR_ERRONEUSNICKNAME = 432, // Ok
 	ERR_NICKNAMEINUSE = 433, //
 	ERR_NICKCOLLISION = 436,
 	ERR_USERNOTINCHANNEL = 441,
@@ -114,12 +114,12 @@ typedef enum {
 	ERR_ALREADYREGISTERED = 462, //
 	ERR_PASSWDMISMATCH = 464, // Ok
 	ERR_YOUREBANNEDCREEP = 465,
-	ERR_CHANNELISFULL = 471, //
+	ERR_CHANNELISFULL = 471, // Ok
 	ERR_UNKNOWNMODE = 472,
-	ERR_INVITEONLYCHAN = 473, //
-	ERR_BANNEDFROMCHAN = 474, //
-	ERR_BADCHANNELKEY = 475, //
-	ERR_BADCHANMASK = 476,
+	ERR_INVITEONLYCHAN = 473, // Ok
+	ERR_BANNEDFROMCHAN = 474, // Ok
+	ERR_BADCHANNELKEY = 475, // Ok
+	ERR_BADCHANMASK = 476, // Ok
 	ERR_NOPRIVILEGES = 481,
 	ERR_CHANOPRIVSNEEDED = 482, //
 	ERR_CANTKILLSERVER = 483,

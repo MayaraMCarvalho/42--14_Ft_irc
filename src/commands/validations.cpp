@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 10:38:21 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 15:49:45 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,32 +68,40 @@ bool Commands::validArg(std::string &arg)
 		printInfo(RED + "Error: Empty parameter" + RESET);
 	else if (arg.size() > MAX_LENGTH)
 		printInfo(RED + "Error: Too long" + RESET);
-	else if (!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
+	else if (invalidChar(arg))
 	{
 		if (_args[0] == NICK)
-			error = RED + toString(ERR_ERRONEUSNICKNAME) +
-			arg + ": Erroneus nickname" + RESET;
+			printInfo(RED + toString(ERR_ERRONEUSNICKNAME) + " * " +
+			arg + " : Erroneus nickname" + RESET);
+		else if (_args[0] == PRIVMSG)
+			printInfo(errorCannotSendToChan(arg));
 		else
-			error = RED + "Error: Prohibited characters found" + RESET;
-		printInfo(error);
+			printInfo(RED + "Error: Prohibited characters found" + RESET); // Verificar para cada comando
 	}
 	else
 		return true;
 	return false;
 }
 
-bool Commands::validChannel(std::string &channel)
+bool Commands::invalidChar(std::string &arg)
 {
+	if ((_args[0] == INVITE || _args[0] == TOPIC || _args[0] == MODE ||
+		(_args[0] == PRIVMSG && arg[0] != '#' && arg[0] != '&')) &&
+		!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
+			return true;
+	return false;
+}
 
-	if (channel[0] != '#')
+bool Commands::validChannelName(std::string &channel)
+{
+	if ((_args[0] != PRIVMSG && channel[0] != '#' && channel[0] != '&') ||
+		((channel[0] == '#' || channel[0] != '&')
+		&& channel.find_first_not_of(ALPHA_NUM_SET, 1) != std::string::npos))
 	{
-		if (_args[0] != PRIVMSG)
-			printInfo(RED + toString(ERR_NOSUCHCHANNEL) + " " +
-			_clients.getNick(_fd) + " " +  channel + " :No such channel" + RESET);
+		printInfo(RED + toString(ERR_BADCHANMASK) + " " +
+		_clients.getNick(_fd) + " " + channel + " :Bad Channel Mask" + RESET);
 		return false;
 	}
-	else
-		channel.erase(0, 1);
 	return true;
 }
 

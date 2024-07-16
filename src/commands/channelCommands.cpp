@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 11:24:56 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:31:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ void Commands::commandJoin( void )
 		if (_args.size() > 2)
 			key = _args[2];
 
-		if (validChannel(channel) && validArg(channel) && verifyJoin(channel, key))
+		if (validChannelName(channel) && validArg(channel)
+			&& verifyJoin(channel, key))
 		{
 			_channels.join(_fd, channel, key);
 			printJoin(channel);
@@ -35,14 +36,15 @@ void Commands::printJoin(std::string channelName)
 	std::string nick = _clients.getNick(_fd);
 	std::string message = ":" + nick + "!" + _clients.getUser(_fd) + "@" +
 		_clients.getHost(_fd) + " " + _args[0] + " :#" + channelName + "";
+	std::string topic = getTopic(channelName);
 
 	sendMessage(_channels.get(channelName), message);
-	printInfo(getTopic(channelName));
+	if (!topic.empty())
+		printInfo(topic);
 	printInfo(getUsersInChannel(channelName));
 	printInfo(CYAN + toString(RPL_ENDOFNAMES) + " " + nick
-		+ " #" + channelName + " :End of /NAMES list." + RESET);
+		+ " " + channelName + " :End of /NAMES list." + RESET);
 }
-
 
 void Commands::commandPart( void )
 {
@@ -50,7 +52,8 @@ void Commands::commandPart( void )
 	{
 		std::string channel = _args[1];
 
-		if (validChannel(channel) && validArg(channel) && verifyChannel(channel))
+		if (validChannelName(channel) && validArg(channel)
+			&& verifyChannel(channel))
 		{
 			_channels.part(_fd, channel);
 			printInfo(GREEN + "User successfully part the channel " +
@@ -69,7 +72,7 @@ void Commands::commandKick( void )
 		if (_args.size() > 3)
 			std::string	comment = getMessage(3);
 
-		if (validChannel(channel) && validArg(channel) &&
+		if (validChannelName(channel) && validArg(channel) &&
 			validArg(user) && verifyChannel(channel) && verifyKick(channel))
 		{
 			_channels.part(_clients.getFDByUser(user), channel);

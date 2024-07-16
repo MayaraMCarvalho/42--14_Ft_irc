@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/04 16:41:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 16:33:54 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[PASS] = &Commands::commandPass; // Ok c/ ressalvas
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; //	F4
+	cmdFuncs[JOIN] = &Commands::commandJoin; // F2 (RPL_TOPIC E condição do ERR_BANNEDFROMCHAN)
 	cmdFuncs[PART] = &Commands::commandPart; //
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //	F1
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // F1 (RPL_AWAY)
 	cmdFuncs[KICK] = &Commands::commandKick; //
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
 	cmdFuncs[MODE] = &Commands::commandMode;
-	cmdFuncs[QUIT] = &Commands::commandQuit; //
+	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
 
 	parsingArgs(message);
 	std::map<std::string, void (Commands::*)()>::iterator it =

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/05 11:27:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 16:23:08 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 std::string Commands::getTopic(std::string &channelName)
 {
-	// if (topic)
+	std::string topic = _channels.get(channelName)->second.getTopic();
+
+	if (!topic.empty())
 	return (CYAN + toString(RPL_TOPIC) + " " + _clients.getNick(_fd)
-		+ " #" + channelName + " :Print topic se houver" + RESET);
-	// else
-	// 	return "";
+		+ " " + channelName + " :" + topic + RESET);
+	else
+		return "";
 }
 
 std::string Commands::getUsersInChannel(std::string &channelName)
@@ -34,5 +36,5 @@ std::string Commands::getUsersInChannel(std::string &channelName)
 		listUsers.append(_clients.getNick(it->first));
 	}
 	return (CYAN + toString(RPL_NAMREPLY) + " " + _clients.getNick(_fd)
-		+ " = #" + channelName + " :" + listUsers + "" + RESET);
+		+ " = " + channelName + " :" + listUsers + "" + RESET);
 }

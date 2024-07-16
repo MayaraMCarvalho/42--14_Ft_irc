@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:07:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:22:08 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,8 +137,10 @@ class Commands
 		std::string	errorChanPrivsNeeded(std::string &channelName);
 
 		// infos.cpp
+		std::string	getWelcome(Client &client);
 		std::string	getTopic(std::string &channelName);
-		std::string	getUsersInChannel(std::string &channelName);
+		std::string	getNamReply(std::string &channelName);
+		std::string	getEndOfNames(std::string &channelName);
 
 		// utils.cpp
 		std::string	getMessage(int index);

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 18:37:39 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:23:51 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,10 @@ void Commands::saveUser(std::string &user, std::string &userName)
 	errorCode = _clients.setUser(_fd, user);
 	if (errorCode == NO_CODE)
 	{
-		printInfo(GREEN + toString(RPL_WELCOME) + " " + client.getNick() +
-		" :Welcome to IRC server " + client.getFullId() + RESET);
 		client.setUserHost(_args[2]);
 		client.setUserServer(_args[3]);
 		client.setUserName(userName);
+		printInfo(getWelcome(client));
 	}
 	else
 		printInfo(RED + toString(errorCode) + RESET);

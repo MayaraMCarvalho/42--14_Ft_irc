@@ -6,11 +6,17 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 16:23:08 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:21:59 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+
+std::string Commands::getWelcome(Client &client)
+{
+	return (GREEN + toString(RPL_WELCOME) + " " + client.getNick() +
+		" :Welcome to IRC server " + client.getFullId() + RESET);
+}
 
 std::string Commands::getTopic(std::string &channelName)
 {
@@ -23,7 +29,7 @@ std::string Commands::getTopic(std::string &channelName)
 		return "";
 }
 
-std::string Commands::getUsersInChannel(std::string &channelName)
+std::string Commands::getNamReply(std::string &channelName)
 {
 	Channel		channel = _channels.get(channelName)->second;
 	std::string	listUsers = "";
@@ -37,4 +43,10 @@ std::string Commands::getUsersInChannel(std::string &channelName)
 	}
 	return (CYAN + toString(RPL_NAMREPLY) + " " + _clients.getNick(_fd)
 		+ " = " + channelName + " :" + listUsers + "" + RESET);
+}
+
+std::string Commands::getEndOfNames(std::string &channelName)
+{
+	return (CYAN + toString(RPL_ENDOFNAMES) + " " + _clients.getNick(_fd)
+			+ " " + channelName + " :End of /NAMES list." + RESET);
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 18:55:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:24:34 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,10 @@ bool Commands::setupDone(void)
 	bool	isReg = (status == Client::REGISTERED);
 
 	if ((isUser || isNick) && !isAuth && !isGotNick && !isGotUser && !isReg)
-		printInfo(RED + "Error: Unauthenticated client" + RESET);
+		printInfo(RED + "Error: Unauthenticated client" + RESET);// Verificar
 	else if ((!isAuth && !isReg)
 		&& ((isUser && !isGotNick) || (isNick && !isGotUser)))
-		printInfo(RED + "Error: Registration must be completed" + RESET);
+		printInfo(RED + "Error: Registration must be completed" + RESET);// Verificar
 	else if (!isUser && !isNick && !isReg)
 		printInfo(errorNotRegistered());
 	else
@@ -63,9 +63,9 @@ bool Commands::validArg(std::string &arg)
 	std::string	error;
 
 	if (arg.empty())
-		printInfo(RED + "Error: Empty parameter" + RESET);
+		printInfo(RED + "Error: Empty parameter" + RESET);// Verificar
 	else if (arg.size() > MAX_LENGTH)
-		printInfo(RED + "Error: Too long" + RESET);
+		printInfo(RED + "Error: Too long" + RESET);// Verificar
 	else if (invalidChar(arg))
 	{
 		if (_args[0] == NICK)
@@ -107,7 +107,7 @@ bool Commands::validMessage(std::string &message)
 
 	if (message[0] != ':')
 	{
-		printInfo(RED + "Error: Non-standard message" + RESET);
+		printInfo(RED + "Error: Non-standard message" + RESET);// Verificar
 		return false;
 	}
 	message.erase(0, 1);

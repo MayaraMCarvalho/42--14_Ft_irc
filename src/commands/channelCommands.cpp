@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 17:21:38 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/16 19:23:37 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,8 @@ void Commands::printJoin(std::string channelName)
 	sendMessage(_channels.get(channelName), message);
 	if (!topic.empty())
 		printInfo(topic);
-	printInfo(getUsersInChannel(channelName));
-	printInfo(CYAN + toString(RPL_ENDOFNAMES) + " " + client.getNick()
-		+ " " + channelName + " :End of /NAMES list." + RESET);
+	printInfo(getNamReply(channelName));
+	printInfo(getEndOfNames(channelName));
 }
 
 void Commands::commandPart( void )
@@ -56,7 +55,7 @@ void Commands::commandPart( void )
 		{
 			_channels.part(_fd, channel);
 			printInfo(GREEN + "User successfully part the channel " +
-				channel + "!" + RESET);
+				channel + "!" + RESET);// Verificar
 		}
 	}
 }
@@ -78,7 +77,7 @@ void Commands::commandKick( void )
 			printInfo(PURPLE + "The user " + BYELLOW + user +
 				PURPLE + " have been removed from the channel " +
 				BYELLOW + channel + PURPLE + "by the operator " +
-				BYELLOW + _clients.getUser(_fd) + "!" + RESET);
+				BYELLOW + _clients.getUser(_fd) + "!" + RESET);// Verificar
 		}
 	}
 }

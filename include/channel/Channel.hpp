@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:54 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/05 13:47:23 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <string>
 # include <map>
-# include "Client.hpp"
+# include "../client/Client.hpp"
 
 class Channel
 {

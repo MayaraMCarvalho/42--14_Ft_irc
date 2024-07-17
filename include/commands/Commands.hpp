@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 14:37:06 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:33:05 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,14 @@ class Commands
 	// Exceptions =============================================================
 
 	// Getters ================================================================
-
+		std::vector<std::string>	getArgs(void) const;
+		ClientList&					getClients(void) const;
+		ChannelList&				getChannels(void) const;
+		int							getFd(void) const;
+		
 	// Setters ================================================================
+		void						setArgs(const std::vector<std::string> &args);
+		void						setFd(int fd);
 
 	// Methods ================================================================
 		bool		isCommand(const std::string &message);

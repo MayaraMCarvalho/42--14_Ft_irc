@@ -3,23 +3,33 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/06/25 04:56:09 by gmachado         ###   ########.fr        #
+#    Updated: 2024/07/12 15:54:06 by lucperei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
+TEST_NAME	= test_runner
 
 SRCS		= main.cpp Bot.cpp Channel.cpp ChannelList.cpp Client.cpp \
 			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp \
 			utils.cpp validations.cpp
 
+TESTS_SRCS  = tests/UnitTests/IRCServerTest.cpp tests/UnitTests/ClientTest.cpp \
+			tests/UnitTests/ClientListTest.cpp tests/UnitTests/mainTest.cpp 
+# tests/UnitTests/CommandsTest.cpp
+			
+INTEG_TESTS = tests/IntegrationTests/IRCServerIntegrationTest.cpp
+
 VPATH		= src/ src/bonus src/channel src/client src/commands
-OBJS_PATH	= obj
 INCLUDE		= -I./include -I./include/bonus -I./include/channel \
-			-I./include/client -I./include/commands
+			  -I./include/client -I./include/commands
+
+OBJS_PATH	= obj
+OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
+TESTS_OBJS  = $(addprefix $(OBJS_PATH)/, $(TESTS_SRCS:.cpp=.o))
 
 FLAGS		= -g3 -Wall -Wextra -Werror -g -std=c++98 -Wpedantic
 CC			= c++
@@ -47,9 +57,7 @@ BRANCH_FILE = .branch_name
 DEVELOP_BRANCH = develop
 MAIN_BRANCH = master
 
-OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
-
-all: 		$(NAME)
+all: 		$(NAME) 
 
 $(NAME): 	$(OBJS_PATH) $(OBJS)
 			@$(CC) $(FLAGS) $(OBJS) -o $(NAME)
@@ -58,14 +66,29 @@ $(NAME): 	$(OBJS_PATH) $(OBJS)
 $(OBJS_PATH):
 			@mkdir -p $(OBJS_PATH)
 
+$(OBJS_PATH)/tests/UnitTests:
+	@mkdir -p $(OBJS_PATH)/tests/UnitTests
+
 $(OBJS_PATH)/%.o: %.cpp
 			@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
 			@echo -n "$(YELLOW)Generating $(CYAN)$(NAME) $(YELLOW)objects..." $@
 			@echo -n "\n"
 
+$(OBJS_PATH)/%.o: tests/UnitTests/%.cpp | $(OBJS_PATH)/tests/UnitTests
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
+	@echo -n "\n"
+
+# Compile and run tests
+test: $(OBJS_PATH) $(OBJS_PATH)/tests/UnitTests $(OBJS) $(TESTS_OBJS)
+	@$(CC) $(FLAGS) $(INCLUDE) $(filter-out $(OBJS_PATH)/main.o, $(OBJS)) $(TESTS_OBJS) -o $(TEST_NAME)
+	@./$(TEST_NAME)
+	@rm -f $(TEST_NAME)
+
 clean:
 			@rm -rf $(OBJS_PATH)
 			@echo "$(CYAN)$(NAME): $(GREEN)Clean done!$(RESET)"
+			@rm -f test_runner
 
 fclean:		clean
 			@rm -f $(NAME)

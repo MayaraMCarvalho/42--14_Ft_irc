@@ -18,6 +18,18 @@ Bot::Bot() {}
 
 Bot::Bot(const std::string &name) : _name(name) {}
 
+// Getters ====================================================================
+
+const std::string& Bot::getName(void) const {
+    return _name;
+}
+
+// Setters ====================================================================
+
+void Bot::setName(const std::string& name) {
+    _name = name;
+}
+
 // Methods ====================================================================
 
 void Bot::respondToMessage(int clientFd, const std::string &message)

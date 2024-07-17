@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/17 12:34:43 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 # include <map>
 # include <iostream>
 # include "Channel.hpp"
-# include "ClientList.hpp"
-# include "Colors.hpp"
+# include "../client/ClientList.hpp"
+# include "../Colors.hpp"
 
 class ChannelList
 {
@@ -26,7 +26,6 @@ class ChannelList
 		ClientList *_clients;
 		static const int _DEFAULT_FLAGS = Channel::NO_UMODE;
 
-		std::map<std::string, Channel>::iterator add(Channel channel);
 		std::map<std::string, Channel>::size_type remove(std::string name);
 
 	public:
@@ -39,9 +38,12 @@ class ChannelList
 		ChannelList &operator=(ChannelList &src);
 
 		// Getters
+		std::map<std::string, Channel>::iterator add(Channel channel);
 		std::map<std::string, Channel>::iterator get(std::string name);
+		std::map<std::string, Channel>::const_iterator get(std::string name) const;
 		std::map<std::string, Channel>::iterator end(void);
-
+    	std::map<std::string, Channel>::const_iterator end(void) const;
+		
 		void join(int userFD, const std::string &chanName, const std::string &key);
 		void part(int userFD, std::string chanName);
 		void partDisconnectedClient(int userFD);

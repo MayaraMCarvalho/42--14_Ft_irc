@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/25 15:07:04 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/14 14:45:02 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ ClientList &ClientList::operator=(ClientList &src) {
 std::map<int, Client>::iterator ClientList::getClient(int fd) {
 	return _clients.find(fd);
 }
+
 std::map<int, Client>::iterator ClientList::getClientByNick(std::string nick) {
 	std::map<std::string, std::map<int, Client>::iterator>::iterator it;
 
@@ -196,6 +197,7 @@ void ClientList::removeByNick(std::string &nick) {
 	_userToClient.erase(fdIt->second.getUser());
 	_clients.erase(fdIt);
 }
+
 void ClientList::removeByUser(std::string &user) {
 	std::map<int, Client>::iterator fdIt = getClientByUser(user);
 
@@ -242,6 +244,7 @@ t_numCode ClientList::updateNick(int fd, std::string &newNick) {
 
 	_nickToClient.insert(std::pair<std::string,
 		std::map<int, Client>::iterator>(newNick, it));
+	it->second.setNick(newNick); // <- Atualização do nick
 	return NO_CODE;
 }
 
@@ -280,6 +283,7 @@ t_numCode ClientList::updateUser(int fd, std::string &newUser) {
 
 	_userToClient.insert(std::pair<std::string,
 		std::map<int, Client>::iterator>(newUser, it));
+	it->second.setUser(newUser); // Atualiza o nome de usuário do cliente
 	return NO_CODE;
 }
 
@@ -319,8 +323,6 @@ bool ClientList::isValidUser(std::string user) {
 
 	return true;
 }
-
-
 
 bool ClientList::isSpecialChar(char ch) {
 	return (ch >= 0x5B && ch <= 0x60) || (ch >= 0x7B && ch <= 0x7D);

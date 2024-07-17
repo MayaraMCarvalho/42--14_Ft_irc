@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/25 15:08:05 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:23:15 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
+#include <stdexcept>
 #include <unistd.h>
 #include <cstring>
 #include <cstdlib>
@@ -26,12 +27,12 @@
 #include <string>
 #include <vector>
 #include <poll.h>
-#include "ClientList.hpp"
-#include "ChannelList.hpp"
-#include "FileTransfer.hpp"
-#include "Bot.hpp"
+#include "./client/ClientList.hpp"
+#include "./channel/ChannelList.hpp"
+#include "./bonus/FileTransfer.hpp"
+#include "./bonus/Bot.hpp"
 #include "Colors.hpp"
-#include "numCode.hpp"
+#include "./numCode.hpp"
 
 class	Channel;
 
@@ -42,12 +43,12 @@ class IRCServer
 		std::string						_password;
 		int 							_serverFd;
 		std::vector<struct pollfd>		_pollFds;
-		FileTransfer 					_fileTransfer;
+		FileTransfer 					*_fileTransfer;
 		Bot 							_bot;
 		ClientList						_clients;
 		ChannelList						_channels;
 
-		void handleFileTransfer(int clientFd, const std::string &command);
+		void		handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
 	// Constructor & Destructor ===============================================
@@ -57,10 +58,29 @@ class IRCServer
 	// Exceptions =============================================================
 
 	// Getters ================================================================
+		const		std::string& getPort(void);
+		const		std::string& getPassword(void);
+		int			getServerFd(void);
+		const		std::vector<struct pollfd>& getPollFds(void);
+		const		FileTransfer& getFileTransfer(void);
+		const		Bot& getBot(void);
+		const		ClientList& getClients(void);
+		const		ChannelList& getChannels(void);
 
 	// Setters ================================================================
+		void		setPort(const std::string& port);
+		void		setPassword(const std::string& password);
+		void		setServerFd(int serverFd);
+		void		setPollFds(const std::vector<struct pollfd>& pollFds);
+		void		setFileTransfer(FileTransfer& fileTransfer);
+		void		setBot(const Bot& bot);
+		void		setClients(ClientList& clients);
+		void		setChannels(ChannelList& channels);
 
 	// Methods ================================================================
+		static bool isEmptyString(const std::string& str);
+		bool		containsOnlyDigits(const std::string& str);
+		bool 		validateArguments(int argc, char *argv[], std::string &port, std::string &password);
 		IRCServer(const std::string &port, const std::string &password);
 		void		setupServer(void);
 		void		run(void);
@@ -68,9 +88,9 @@ class IRCServer
 		void		acceptNewClient(void);
 		void		handleClientMessage(int clientFd);
 		void		removeClient(int clientFd);
-		static void	sendMessage(int clientFd, const std::string &message);
 		static void	signalHandler(int signal);
-		static void	setupSignalHandlers(void);
+		static void	sendMessage(int clientFd, const std::string &message);
+		void		setupSignalHandlers(void);
 };
 
 #endif

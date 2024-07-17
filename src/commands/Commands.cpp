@@ -7,8 +7,29 @@ Commands::Commands(ClientList &clients, ChannelList &channels, int fd) :
 Commands::~Commands(void) {}
 
 // Getters ====================================================================
+std::vector<std::string> Commands::getArgs(void) const {
+	return _args;
+}
 
+ClientList& Commands::getClients(void) const {
+	return _clients;
+}
+
+ChannelList& Commands::getChannels(void) const {
+	return _channels;
+}
+
+int Commands::getFd(void) const {
+	return _fd;
+}
 // Setters ====================================================================
+void Commands::setArgs(const std::vector<std::string> &args) {
+	_args = args;
+}
+
+void Commands::setFd(int fd) {
+	_fd = fd;
+}
 
 // Methods ====================================================================
 bool Commands::isCommand(const std::string &message)

@@ -31,6 +31,10 @@ class	Bot
 		Bot(void);
 		Bot(const std::string &name);
 
+	// Getters ================================================================
+		const	std::string& getName(void) const;
+	// Setters ================================================================
+		void	setName(const std::string& name);
 	// Methods ================================================================
 		void	respondToMessage(int clientFd, const std::string &message);
 

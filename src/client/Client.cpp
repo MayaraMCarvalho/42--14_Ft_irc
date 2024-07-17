@@ -49,7 +49,13 @@ std::string Client::getUser(void) { return _user; }
 std::string Client::getHost(void) { return _host; }
 
 std::string Client::getFullId(void) {
-	return _nick + '!' + _user + '@' + _host;
+    std::string cleanUser;
+    for (std::string::iterator it = _user.begin(); it != _user.end(); ++it) {
+        if (*it != '@') {
+            cleanUser += *it;
+        }
+    }
+    return _nick + '!' + cleanUser + '@' + _host;
 }
 
 int Client::getFD(void) { return _fd; }
@@ -71,6 +77,8 @@ void Client::setNick(std::string nick) { _nick = nick; }
 void Client::setUser(std::string user) { _user = user; }
 
 void Client::setHost(std::string host) { _host = host; }
+
+void Client::setFD(int fd) { _fd = fd; }
 
 void Client::setModeFlags(int modeFlags) { _modeFlags = modeFlags; }
 
@@ -103,16 +111,19 @@ void Client::setMode(std::string modeStr) {
 	else if (modeStr[0] == '-')
 		_modeFlags &= (~newModeFlags);
 }
+
 void Client::setStatus(t_status status) { _status = status; }
 
 // Channel functions
 bool Client::isInChannel(std::string channelStr) {
 	return _channels.find(channelStr) != _channels.end();
 }
+
 void Client::addChannel(std::string channelStr)
 {
 	_channels.insert(channelStr);
 }
+
 void Client::removeChannel(std::string channelStr) {
 	_channels.erase(channelStr);
 }

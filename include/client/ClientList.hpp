@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/20 04:02:40 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/07 16:24:33 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 # define CLIENT_LIST_HPP
 
 # include <map>
-# include "Client.hpp"
+# include "./Client.hpp"
 # include <stdexcept>
 # include <sys/socket.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
-# include "numCode.hpp"
+# include "../numCode.hpp"
 
 class ClientList {
 	public:
@@ -29,7 +29,6 @@ class ClientList {
 		~ClientList(void);
 
 		ClientList &operator=(ClientList &src);
-
 		// Getters
 		std::map<int, Client>::iterator getClient(int fd);
 		std::map<int, Client>::iterator getClientByNick(std::string nick);

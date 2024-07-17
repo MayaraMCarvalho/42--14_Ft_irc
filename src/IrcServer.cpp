@@ -12,10 +12,133 @@ IRCServer::IRCServer(const std::string &port, const std::string &password)
 	_clients(), _channels(&_clients) {}
 
 // Getters ====================================================================
+const std::string& IRCServer::getPort(void) {
+    return _port;
+}
+
+const	std::string& IRCServer::getPassword(void) {
+    return _password;
+}
+
+int		IRCServer::getServerFd(void) {
+    return _serverFd;
+}
+
+const	std::vector<struct pollfd>& IRCServer::getPollFds(void) {
+    return _pollFds;
+}
+
+const	FileTransfer& IRCServer::getFileTransfer(void) {
+	return *this->_fileTransfer;
+}
+
+const	Bot& IRCServer::getBot(void) {
+	return _bot;
+}
+
+const	ClientList& IRCServer::getClients(void) {
+	return _clients;
+}
+
+const	ChannelList& IRCServer::getChannels(void) {
+	return _channels;
+}
 
 // Setters ====================================================================
+void	IRCServer::setPort(const std::string& port) {
+	_port = port;
+}
+
+void	IRCServer::setPassword(const std::string& password) {
+     _password = password;
+}
+
+void	IRCServer::setServerFd(int serverFd) {
+    _serverFd = serverFd;
+}
+
+void	IRCServer::setPollFds(const std::vector<struct pollfd>& pollFds) {
+    _pollFds = pollFds;
+}
+
+void	IRCServer::setFileTransfer(FileTransfer& fileTransfer) {
+	this->_fileTransfer = &fileTransfer;
+}
+
+void	IRCServer::setBot(const Bot& bot) {
+	_bot = bot;
+}
+
+void	IRCServer::setClients(ClientList& clients) {
+	_clients = clients;
+}
+
+void	IRCServer::setChannels(ChannelList& channels) {
+	_channels = channels;
+}
 
 // Methods ====================================================================
+bool	IRCServer::isEmptyString(const std::string& str) {
+    return str.empty();
+}
+
+
+bool	IRCServer::containsOnlyDigits(const std::string& str)
+{
+    for (size_t i = 0; i < str.length(); ++i)
+    {
+        if (!std::isdigit(str[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool	IRCServer::validateArguments(int argc, char *argv[], std::string &port, std::string &password)
+{
+	int portNum;
+	std::string portStr;
+
+	if (argc != 3)
+	{
+		std::cerr << RED;
+		std::cerr << "Usage: " << argv[0] << " <port> <password>" << std::endl;
+		std::cout << RESET;
+		return (false);
+	}
+
+	port = argv[1];
+    portStr = argv[1];
+    if (!containsOnlyDigits(portStr))
+	{
+		std::cerr << RED;
+		std::cerr << "Error: Invalid port number: " << argv[1] << std::endl;
+		std::cout << RESET;
+		return (false);
+	} else {
+		std::istringstream iss(portStr);
+		iss >> portNum;
+		if (portNum <= 1024 || portNum > 65535)
+		{
+			std::cerr << RED;
+			std::cerr << "Error: Port number out of range" << std::endl;
+			std::cout << RESET;
+			return (false);
+		}
+	}
+
+	password = argv[2];
+	if (password.empty())
+	{
+		std::cerr << RED;
+		std::cerr << "Invalid password! "<< YELLOW << "('" << argv[2] << "')." << std::endl;
+		std::cout << RESET;
+		return (false);
+	}
+
+	return (true);
+}
 
 void IRCServer::setupServer(void)
 {
@@ -136,8 +259,10 @@ void IRCServer::acceptNewClient(void)
 t_numCode IRCServer::authenticate(int userFD, std::string password) {
 	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
-	if (userIt == _clients.end())
-		throw std::invalid_argument("Unknown user");
+	if (userIt == _clients.end()){
+		// throw std::invalid_argument("Unknown user"); retorna Aborted (core dumped)
+		return ERR_UNKNOWNERROR;
+	}
 
 	Client::t_status status = userIt->second.getStatus();
 
@@ -250,7 +375,7 @@ void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
 	int					receiverFd;
 
 	iss >> cmd >> receiverFd >> fileName;
-	_fileTransfer.requestTransfer(clientFd, receiverFd, fileName); // starts file transfer
+	_fileTransfer->requestTransfer(clientFd, receiverFd, fileName); // starts file transfer
 }
 
 // Exceptions =================================================================

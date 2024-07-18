@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:46:03 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:22:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,6 @@ Commands::Commands( IRCServer& server ) : _server(server),
 	_host(_server.getMsgHandler().getHost()) {}
 
 Commands::~Commands(void) {}
-
-// Getters ====================================================================
-
-// Setters ====================================================================
 
 // Methods ====================================================================
 bool Commands::isCommand(int clientFd, const std::string &message)
@@ -65,7 +61,30 @@ void Commands::parsingArgs(const std::string &message)
 
 void Commands::commandInvite( void )
 {
- std::cout << "Command Invite" << std::endl;
+	if (initValidation(3))
+	{
+		std::string	nick = _args[1];
+		std::string	channelName = _args[2];
+
+		if (validArg(channelName) && validArg(nick)
+			&& verifyChannel(channelName) && verifyChanOp(channelName)
+			&& verifyInvite(nick, channelName))
+		{
+			_channels.get(channelName)->second.addInvite(nick);
+			printInfo(getInviting(nick, channelName));
+			printInfo(sendInviting(nick, channelName));
+
+		}
+
+	}
+}
+
+std::string Commands::sendInviting(std::string &nick, std::string &channelName)
+{
+	std::string	user = _clients.getNick(_fd);
+
+	return (CYAN + ":" + user + "!" + user + "@" + _host + " INVITE "
+			+ nick + " :" + channelName + "");
 }
 
 void Commands::commandTopic( void )

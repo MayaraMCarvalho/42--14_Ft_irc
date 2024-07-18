@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:22:08 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:22:51 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,6 @@ class Commands
 	// Constructor & Destructor ===============================================
 		Commands( IRCServer& server );
 		~Commands( void );
-
-	// Exceptions =============================================================
-
-	// Getters ================================================================
-
-	// Setters ================================================================
-
 	// Methods ================================================================
 
 		// Commands.cpp
@@ -86,6 +79,7 @@ class Commands
 		void		parsingArgs(const std::string &message);
 		// Mover?
 		void		commandInvite( void );
+		std::string	sendInviting(std::string &nick, std::string &channelName);
 		void		commandTopic( void );
 		void		commandMode( void );
 		//
@@ -100,7 +94,7 @@ class Commands
 		void		commandPrivMsg( void );
 		bool		sendMessage(int clientFd, const std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
-						std::string &message);
+								std::string &message);
 		std::string	getFullMessage(const std::string &message);
 
 		// quitCommand.cpp
@@ -115,7 +109,7 @@ class Commands
 		void		saveUser(std::string &user, std::string &userName);
 
 		// errorsCode.cpp
-		std::string	errorNoSuchNick(std::string &recipient, std::string who);
+		std::string	errorNoSuchNick(std::string &recipient);
 		std::string	errorNoSuchChannel(std::string &channelName);
 		std::string	errorCannotSendToChan(std::string &channelName);
 		std::string	errorTooManyChannels(std::string &channelName);
@@ -125,20 +119,27 @@ class Commands
 		std::string	errorErroneusNickname(std::string &arg);
 		std::string	errorNicknameInUse(std::string &nick);
 		std::string	errorNotOnChannel(std::string &channelName);
+		std::string	errorUserOnChannel(std::string &nick,
+									   std::string &channelName);
 		std::string	errorNotRegistered( void );
 		std::string	errorNeedMoreParams(std::string suffix);
 		std::string	errorAlredyRegister( void );
 		std::string	errorPassMismatch( void );
-		std::string	errorChannelIsFull(std::string &nick, std::string &channel);
-		std::string	errorInviteOnlyChan(std::string &nick, std::string &channel);
-		std::string	errorBannedFromChan(std::string &nick, std::string &channel);
-		std::string	errorBadChannelKey(std::string &nick, std::string &channel);
+		std::string	errorChannelIsFull(std::string &nick,
+									   std::string &channel);
+		std::string	errorInviteOnlyChan(std::string &nick,
+										std::string &channel);
+		std::string	errorBannedFromChan(std::string &nick,
+										std::string &channel);
+		std::string	errorBadChannelKey(std::string &nick,
+									   std::string &channel);
 		std::string	errorBadChanMask(std::string &channelName);
 		std::string	errorChanPrivsNeeded(std::string &channelName);
 
 		// infos.cpp
 		std::string	getWelcome(Client &client);
 		std::string	getTopic(std::string &channelName);
+		std::string	getInviting(std::string &nickname, std::string &channelName);
 		std::string	getNamReply(std::string &channelName);
 		std::string	getEndOfNames(std::string &channelName);
 
@@ -153,14 +154,16 @@ class Commands
 		bool		validArg(std::string &arg);
 		bool		validChannelName(std::string &channel);
 		bool		validMessage(std::string &message);
-		bool		setupDone( void );
+		bool		validSetup( void );
 		bool		invalidChar(std::string &arg);
 
 		// verify.cpp
 		bool		verifyChannel(std::string &channelName);
 		bool		verifyJoin(std::string &channelName, std::string &key);
-		bool		verifyJoinChannel(std::string &channelName, std::string &key);
-		bool		verifyKick (std::string &channelName);
+		bool		verifyJoinChannel(std::string &channelName,
+									  std::string &key);
+		bool		verifyChanOp(std::string &channelName);
+		bool		verifyInvite(std::string &nick, std::string &channelName);
 
 		//
 		// tests.cpp

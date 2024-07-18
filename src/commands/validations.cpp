@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:31:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:21:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ bool Commands::initValidation(size_t numArgs)
 		printInfo(error);
 		return false;
 	}
-	else if (_args[0] != QUIT && setupDone())
+	else if (_args[0] != QUIT && validSetup())
 		return false;
 	return true;
 }
 
-bool Commands::setupDone(void)
+bool Commands::validSetup(void)
 {
 	bool	isUser = (_args[0] == USER);
 	bool	isNick = (_args[0] == NICK);
@@ -70,7 +70,7 @@ bool Commands::validArg(std::string &arg)
 	{
 		if (_args[0] == NICK)
 			printInfo(errorErroneusNickname(arg));
-		else if (_args[0] == PRIVMSG)
+		else if (_args[0] == PRIVMSG || _args[0] == INVITE)
 			printInfo(errorCannotSendToChan(arg));
 		else
 			printInfo(RED + "Error: Prohibited characters found" + RESET); // Verificar para cada comando
@@ -82,9 +82,10 @@ bool Commands::validArg(std::string &arg)
 
 bool Commands::invalidChar(std::string &arg)
 {
-	if ((_args[0] == INVITE || _args[0] == TOPIC || _args[0] == MODE ||
-		(_args[0] == PRIVMSG && arg[0] != '#' && arg[0] != '&')) &&
-		!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
+	if ((_args[0] == TOPIC || _args[0] == MODE ||
+		((_args[0] == PRIVMSG || _args[0] == INVITE)
+			&& arg[0] != '#' && arg[0] != '&')) &&
+			!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
 			return true;
 	return false;
 }

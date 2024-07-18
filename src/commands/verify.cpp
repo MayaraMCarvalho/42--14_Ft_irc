@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:06:36 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/18 16:22:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,31 @@ bool Commands::verifyJoinChannel(std::string &channelName, std::string &key)
 	return false;
 }
 
-bool Commands::verifyKick (std::string &channelName)
+bool Commands::verifyChanOp(std::string &channelName)
 {
 	if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
 	{
 		printInfo(errorChanPrivsNeeded(channelName));
 		return false;
 	}
+	return true;
+}
+
+bool Commands::verifyInvite(std::string &nick, std::string &channelName)
+{
+	std::map<int, Client>::iterator	guest;
+
+	guest = _clients.getClientByNick(nick);
+
+	if (guest == _clients.end())
+		printInfo(errorNoSuchNick(nick));
+	else if (guest->second.getChannelList().find(channelName)
+			!= guest->second.getChannelList().end())
+		printInfo(errorUserOnChannel(nick, channelName));
+	else if (!_clients.getClient(_fd)->second.isInChannel(channelName))
+		printInfo(errorNotOnChannel(channelName));
+	else
+		return false;
 	return true;
 }
 

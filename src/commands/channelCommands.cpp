@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:23:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:55:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void Commands::commandKick( void )
 			std::string	comment = getMessage(3);
 
 		if (validChannelName(channel) && validArg(channel) &&
-			validArg(user) && verifyChannel(channel) && verifyKick(channel))
+			validArg(user) && verifyChannel(channel) && verifyChanOp(channel))
 		{
 			_channels.part(_clients.getFDByUser(user), channel);
 			printInfo(PURPLE + "The user " + BYELLOW + user +

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 12:28:15 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 12:34:10 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void Commands::sendInviting(std::string &nick, std::string &channelName)
 			+ nick + " :" + channelName + "" + RES;
 
 	_clients.getClientByNick(nick)->second.sendMessage(info);
-	std::cout << info << std::endl; 
+	std::cout << info << std::endl;
 }
 
 void Commands::commandTopic( void )

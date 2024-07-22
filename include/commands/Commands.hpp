@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/18 18:22:51 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 12:24:32 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class Commands
 		void		parsingArgs(const std::string &message);
 		// Mover?
 		void		commandInvite( void );
-		std::string	sendInviting(std::string &nick, std::string &channelName);
+		void		sendInviting(std::string &nick, std::string &channelName);
 		void		commandTopic( void );
 		void		commandMode( void );
 		//

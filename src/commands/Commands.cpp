@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/18 18:22:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 12:26:12 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,19 +72,21 @@ void Commands::commandInvite( void )
 		{
 			_channels.get(channelName)->second.addInvite(nick);
 			printInfo(getInviting(nick, channelName));
-			printInfo(sendInviting(nick, channelName));
-
+			sendInviting(nick, channelName);
 		}
-
 	}
 }
 
-std::string Commands::sendInviting(std::string &nick, std::string &channelName)
+void Commands::sendInviting(std::string &nick, std::string &channelName)
 {
 	std::string	user = _clients.getNick(_fd);
+	std::string	info;
 
-	return (CYAN + ":" + user + "!" + user + "@" + _host + " INVITE "
-			+ nick + " :" + channelName + "");
+	info = CYAN + ":" + user + "!" + user + "@" + _host + " INVITE "
+			+ nick + " :" + channelName + "" + RES;
+
+	_clients.getClientByNick(nick)->second.sendMessage(info);
+	std::cout << info << std::endl;
 }
 
 void Commands::commandTopic( void )

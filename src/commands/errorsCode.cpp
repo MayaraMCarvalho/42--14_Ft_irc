@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/17 17:41:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 12:16:08 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ std::string Commands::errorBadChanMask(std::string &channelName)
 std::string Commands::errorChanPrivsNeeded(std::string &channelName)
 {
 	return (RED + toString(ERR_CHANOPRIVSNEEDED) +
-			": #" + channelName + ":You're not channel operator" + RESET);
+			": " + channelName + ":You're not channel operator" + RESET);
 }
 
 // std::string Commands::error...( void )

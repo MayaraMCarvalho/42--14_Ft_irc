@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 17:38:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:30:03 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,5 @@ std::string Commands::toString(int num)
 void Commands::printInfo(const std::string &info)
 {
 	_clients.getClient(_fd)->second.sendMessage(info);
-	std::cout << info << std::endl;
+	// std::cout << info << std::endl; // VERIFICAR O QUE DEVE SER RETORNAR PARA O SERVIDOR
 }

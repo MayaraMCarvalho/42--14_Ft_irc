@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/18 18:21:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:04:14 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ bool Commands::validArg(std::string &arg)
 	{
 		if (_args[0] == NICK)
 			printInfo(errorErroneusNickname(arg));
-		else if (_args[0] == PRIVMSG || _args[0] == INVITE)
+		else if (_args[0] == PRIVMSG || _args[0] == INVITE || _args[0] == TOPIC)
 			printInfo(errorCannotSendToChan(arg));
 		else
 			printInfo(RED + "Error: Prohibited characters found" + RESET); // Verificar para cada comando
@@ -82,8 +82,8 @@ bool Commands::validArg(std::string &arg)
 
 bool Commands::invalidChar(std::string &arg)
 {
-	if ((_args[0] == TOPIC || _args[0] == MODE ||
-		((_args[0] == PRIVMSG || _args[0] == INVITE)
+	if ((_args[0] == MODE ||
+		((_args[0] == PRIVMSG || _args[0] == INVITE || _args[0] == TOPIC)
 			&& arg[0] != '#' && arg[0] != '&')) &&
 			!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
 			return true;

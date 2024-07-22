@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/16 19:11:49 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:17:21 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef enum {
 	RPL_CHANNELMODEIS = 324,
 	RPL_CREATIONTIME = 329,
 	RPL_WHOISACCOUNT = 330,
-	RPL_NOTOPIC = 331,
+	RPL_NOTOPIC = 331, // Ok
 	RPL_TOPIC = 332, // Ok
 	RPL_TOPICWHOTIME = 333,
 	RPL_INVITELIST = 336,

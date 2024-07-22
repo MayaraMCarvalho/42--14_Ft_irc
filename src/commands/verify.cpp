@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 12:21:39 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:19:53 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ bool Commands::verifyChanOp(std::string &channelName)
 	if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
 	{
 		printInfo(errorChanPrivsNeeded(channelName));
-		// return false;
+		return false;
 	}
 	return true;
 }

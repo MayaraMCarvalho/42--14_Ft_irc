@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/18 15:55:39 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:23:47 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,11 @@ void Commands::commandJoin( void )
 void Commands::printJoin(std::string channelName)
 {
 	Client client = _clients.getClient(_fd)->second;
-	std::string message = ":" + client.getFullId() + " " + _args[0] + " :" + channelName + "";
-	std::string topic = getTopic(channelName);
+	std::string message = ":" + client.getFullId() + " " + _args[0] + " :" + channelName;
 
 	sendMessage(_channels.get(channelName), message);
-	if (!topic.empty())
-		printInfo(topic);
+
+	printInfo(getTopic(channelName));
 	printInfo(getNamReply(channelName));
 	printInfo(getEndOfNames(channelName));
 }

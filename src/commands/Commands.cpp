@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 13:30:15 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:31:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,27 +87,6 @@ void Commands::sendInviting(std::string &nick, std::string &channelName)
 
 	_clients.getClientByNick(nick)->second.sendMessage(info);
 	// std::cout << info << std::endl; // VERIFICAR O QUE DEVE SER RETORNAR PARA O SERVIDOR
-}
-
-void Commands::commandTopic( void )
-{
-	if (initValidation(2))
-	{
-		std::string	channelName = _args[1];
-		std::string	topic = "";
-
-		if (validArg(channelName) && verifyChannel(channelName))
-		{
-			if (_args.size() > 2)
-			{
-				topic = getMessage(2);
-				if (verifyChanOp(channelName) && validMessage(topic))
-					_channels.get(channelName)->second.setTopic(topic);
-			}
-			else
-				printInfo(getTopic(channelName));
-		}
-	}
 }
 
 void Commands::commandMode( void )

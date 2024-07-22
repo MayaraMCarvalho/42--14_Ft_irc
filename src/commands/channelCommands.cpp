@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 13:23:47 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:31:10 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,27 @@ void Commands::commandKick( void )
 				PURPLE + " have been removed from the channel " +
 				BYELLOW + channel + PURPLE + "by the operator " +
 				BYELLOW + _clients.getUser(_fd) + "!" + RESET);// Verificar
+		}
+	}
+}
+
+void Commands::commandTopic( void )
+{
+	if (initValidation(2))
+	{
+		std::string	channelName = _args[1];
+		std::string	topic = "";
+
+		if (validArg(channelName) && verifyChannel(channelName))
+		{
+			if (_args.size() > 2)
+			{
+				topic = getMessage(2);
+				if (verifyChanOp(channelName) && validMessage(topic))
+					_channels.get(channelName)->second.setTopic(topic);
+			}
+			else
+				printInfo(getTopic(channelName));
 		}
 	}
 }

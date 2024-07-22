@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 12:24:32 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:32:10 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ class Commands
 		// Mover?
 		void		commandInvite( void );
 		void		sendInviting(std::string &nick, std::string &channelName);
-		void		commandTopic( void );
 		void		commandMode( void );
 		//
 
@@ -89,6 +88,7 @@ class Commands
 		void		printJoin(std::string channelName);
 		void		commandPart( void );
 		void		commandKick( void );
+		void		commandTopic( void );
 
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
@@ -164,10 +164,6 @@ class Commands
 									  std::string &key);
 		bool		verifyChanOp(std::string &channelName);
 		bool		verifyInvite(std::string &nick, std::string &channelName);
-
-		//
-		// tests.cpp
-		void		tests(Commands commands); //
 };
 
 #endif

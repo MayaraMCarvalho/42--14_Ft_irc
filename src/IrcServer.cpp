@@ -1,15 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   IrcServer.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
+/*   Updated: 2024/07/17 15:17:59 by lucperei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "IrcServer.hpp"
 #include "Channel.hpp"
 #include "Commands.hpp"
+#include <cerrno>
+#include <cstdio>
+#include <sys/types.h>
+#include <netdb.h>
+
+
+IRCServer* IRCServer::_instance = NULL;
 
 // Constructor & Destructor ===================================================
-IRCServer::IRCServer(void) {}
-
 IRCServer::~IRCServer(void) {}
 
 IRCServer::IRCServer(const std::string &port, const std::string &password)
 	: _port(port), _password(password), _serverFd(-1), _bot("ChatBot"),
-	_clients(), _channels(&_clients) {}
+	_msgHandler(), _clients(_msgHandler, _pollFds), _channels(_clients,
+	_msgHandler), _shouldExit(false)
+{
+	_instance = this;
+}
 
 // Getters ====================================================================
 const std::string& IRCServer::getPort(void) {
@@ -36,11 +57,11 @@ const	Bot& IRCServer::getBot(void) {
 	return _bot;
 }
 
-const	ClientList& IRCServer::getClients(void) {
+ClientList& IRCServer::getClients(void) {
 	return _clients;
 }
 
-const	ChannelList& IRCServer::getChannels(void) {
+ChannelList& IRCServer::getChannels(void) {
 	return _channels;
 }
 
@@ -78,67 +99,6 @@ void	IRCServer::setChannels(ChannelList& channels) {
 }
 
 // Methods ====================================================================
-bool	IRCServer::isEmptyString(const std::string& str) {
-    return str.empty();
-}
-
-
-bool	IRCServer::containsOnlyDigits(const std::string& str)
-{
-    for (size_t i = 0; i < str.length(); ++i)
-    {
-        if (!std::isdigit(str[i]))
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool	IRCServer::validateArguments(int argc, char *argv[], std::string &port, std::string &password)
-{
-	int portNum;
-	std::string portStr;
-
-	if (argc != 3)
-	{
-		std::cerr << RED;
-		std::cerr << "Usage: " << argv[0] << " <port> <password>" << std::endl;
-		std::cout << RESET;
-		return (false);
-	}
-
-	port = argv[1];
-    portStr = argv[1];
-    if (!containsOnlyDigits(portStr))
-	{
-		std::cerr << RED;
-		std::cerr << "Error: Invalid port number: " << argv[1] << std::endl;
-		std::cout << RESET;
-		return (false);
-	} else {
-		std::istringstream iss(portStr);
-		iss >> portNum;
-		if (portNum <= 1024 || portNum > 65535)
-		{
-			std::cerr << RED;
-			std::cerr << "Error: Port number out of range" << std::endl;
-			std::cout << RESET;
-			return (false);
-		}
-	}
-
-	password = argv[2];
-	if (password.empty())
-	{
-		std::cerr << RED;
-		std::cerr << "Invalid password! "<< YELLOW << "('" << argv[2] << "')." << std::endl;
-		std::cout << RESET;
-		return (false);
-	}
-
-	return (true);
-}
 
 void IRCServer::setupServer(void)
 {
@@ -167,8 +127,8 @@ void IRCServer::setupServer(void)
 
 	if (listen(_serverFd, 10) < 0)
 		throw std::runtime_error("Failed to listen on socket");
-		
-	struct pollfd pfd = {_serverFd, POLLIN, STDIN_FILENO};
+
+	struct pollfd pfd = {_serverFd, POLLIN | POLLOUT, STDIN_FILENO};
 	_pollFds.push_back(pfd);
 }
 
@@ -176,8 +136,13 @@ void IRCServer::signalHandler(int signal)
 {
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
-		std::cout << "\nExiting gracefully." << std::endl;
-		exit(EXIT_SUCCESS); // <-memory leak
+		_instance->_shouldExit = true;
+		ChannelList channels = _instance->_channels;
+
+		std::cout << std::endl;
+		for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
+			it->second.sendToAll(BRED + "The server was disconnected!" + RESET);
+		std::cout << BGREEN << "Exiting gracefully." << RESET << std::endl;
 	}
 }
 
@@ -205,19 +170,58 @@ void IRCServer::run(void)
 	std::cout << GREEN << "Server running on port ";
 	std::cout << BYELLOW << _port << RESET << std::endl;
 
-	while (true)
+	while (!_shouldExit)
 	{
-		pollCount = poll(_pollFds.data(), _pollFds.size(), -1);
+		sigset_t		pendingSignals;
+
+		if (sigpending(&pendingSignals) == 0)
+		{
+			if (sigismember(&pendingSignals, SIGINT)
+			|| sigismember(&pendingSignals, SIGTERM)
+			|| sigismember(&pendingSignals, SIGTSTP))
+				break;
+		}
+
+		pollCount = poll(_pollFds.data(), _pollFds.size(), 0);
 		if (pollCount < 0)
-			throw std::runtime_error("Poll error");
+		{
+			if (errno == EINTR)
+				continue;
+			else
+				throw std::runtime_error("Poll error");
+		}
+
 
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
 
-		for (size_t i = 1; i < _pollFds.size(); ++i)
+		for (size_t fdIdx = 1; fdIdx < _pollFds.size(); ++fdIdx)
 		{
-			if (_pollFds[i].revents & POLLIN)
-				handleClientMessage(_pollFds[i].fd);
+			unsigned long	mustRetrySize = 0;
+			if (_pollFds[fdIdx].revents & POLLOUT)
+			{
+				int fd = _pollFds[fdIdx].fd;
+				while (_msgHandler.size(fd) > mustRetrySize)
+				{
+					MsgHandler::t_msg msg = _msgHandler.pop(fd);
+					if (msg.error == -1 || msg.retries > MsgHandler::MAX_RETRIES)
+						break;
+
+					ssize_t	nbytes = send(fd, msg.msgStr.c_str(),
+						msg.msgStr.length(), 0);
+
+					if (nbytes < 0)
+					{
+						std::cerr << RED << "Write error on client "
+							<< BYELLOW << fd << std::endl << RESET;
+						++msg.retries;
+						_msgHandler.push(fd, msg);
+					}
+				}
+			}
+
+			if (_pollFds[fdIdx].revents & POLLIN)
+				handleClientMessage(_pollFds[fdIdx].fd);
 		}
 	}
 }
@@ -240,19 +244,17 @@ void IRCServer::acceptNewClient(void)
 		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
 	}
 
-	_clients.add(clientFd, &clientAddress.sin_addr);
-
-	_channels.join(clientFd, "default", "");
-	struct pollfd pfd = {clientFd, POLLIN, 0};
+	_clients.add(clientFd);
+	struct pollfd pfd = {clientFd, POLLIN | POLLOUT, 0};
 	_pollFds.push_back(pfd);
 
 	std::cout << BLUE << "New client connected: ";
 	std::cout << BYELLOW << clientFd << RESET << std::endl;
 
 	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
-	std::string message = BPURPLE + "-------------------------------\n" +
-		"------ Welcome to ft_IRC ------\n" +
-		"-------------------------------\n" + RESET;
+	std::string message = BPURPLE + "-----------------------------------\n" +
+		"------ Welcome to IRC server ------\n" +
+		"-----------------------------------\n" + RESET;
 	it->second.sendMessage(message);
 }
 
@@ -291,45 +293,45 @@ void IRCServer::handleClientMessage(int clientFd)
 	{
 		std::cout << RED;
 		if (nbytes < 0 && errno != EWOULDBLOCK)
-			std::cerr << "Read error on client " << clientFd << std::endl;
+			std::cerr << "Read error on client: ";
 		else if (nbytes == 0)
-			std::cout << "Client disconnected: " << BYELLOW << clientFd << std::endl;
+			std::cout << "Client disconnected: ";
+		std::cout << BYELLOW << clientFd << std::endl;
 		std::cout << RESET;
-		removeClient(clientFd);
+
+		_clients.removeClientFD(clientFd);
+		_channels.partDisconnectedClient(clientFd);
+
 		return;
 	}
 
 	buffer[nbytes] = '\0';
 	std::string message(buffer);
 
-	//
 	if (!message.empty() && message[message.length() - 1] == '\n')
 		message.erase(message.length() - 1);
-	//
 
 	std::cout << CYAN;
 	std::cout << "Received message from client " << clientFd;
 	std::cout << ": " << BYELLOW << message << RESET << std::endl;
 
 	//
-	//
-	//
-	Commands commands(this->_clients, this->_channels, clientFd);
+	Commands commands(*this);
+
 	bool isCommand = false;
-	if (!message.empty() && commands.isCommand(message))
-	{
+
+	if (!message.empty() && commands.isCommand(clientFd, message))
 		isCommand = true;
-	}
 	//
 	else if (message.substr(0, 5) == "/file")
 		handleFileTransfer(clientFd, message);
 	else
 		_bot.respondToMessage(clientFd, message); // call for the bot to respond
 
-	std::map<std::string, Channel>::iterator it = _channels.get("default");
-
 	if (!isCommand)
 	{
+		std::map<std::string, Channel>::iterator it = _channels.get("default");
+
 		if (it != _channels.end())
 			it->second.sendToAll(message);
 		else
@@ -337,45 +339,28 @@ void IRCServer::handleClientMessage(int clientFd)
 	}
 }
 
-void IRCServer::removeClient(int clientFd)
-{
-	close(clientFd);
-
-	_channels.partDisconnectedClient(clientFd);
-
-	for (std::vector<struct pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it)
-	{
-		if (it->fd == clientFd)
-		{
-			_pollFds.erase(it);
-			break;
-		}
-	}
-
-	_clients.remove(clientFd);
-}
-
-void IRCServer::sendMessage(int clientFd, const std::string &message)
-{
-	ssize_t	nbytes;
-
-	std::string fullMessage = message + "\n";
-	nbytes = send(clientFd, fullMessage.c_str(), fullMessage.length(), 0);
-	if (nbytes < 0)
-	{
-		std::cerr << RED << "Write error on client " << clientFd << std::endl;
-		std::cout << RESET;
-	}
-}
-
 void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
 {
 	std::istringstream	iss(command);
-	std::string			cmd, fileName;
-	int					receiverFd;
+	std::string			cmd, file_name;
+	int					receiver_fd;
 
-	iss >> cmd >> receiverFd >> fileName;
-	_fileTransfer->requestTransfer(clientFd, receiverFd, fileName); // starts file transfer
+	iss >> cmd >> receiver_fd >> file_name;
+	_fileTransfer->requestTransfer(clientFd, receiver_fd, file_name); // starts file transfer
 }
+
+std::string IRCServer::getHostName(const char *ip, const char *port) {
+	struct addrinfo *addrInfo;
+	std::string hostName;
+
+	if (getaddrinfo(ip, port, NULL, &addrInfo))
+		return ip;
+
+	hostName = addrInfo->ai_canonname;
+	freeaddrinfo(addrInfo);
+	return hostName;
+}
+
+MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
 
 // Exceptions =================================================================

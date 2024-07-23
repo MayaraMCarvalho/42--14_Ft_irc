@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/09 12:33:05 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/17 13:55:51 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,15 @@
 #include <string>
 #include <vector>
 #include <poll.h>
+
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
 #include "Colors.hpp"
+#include "Codes.hpp"
 
+class	IRCServer;
 class	Channel;
 
 # define MAX_LENGTH 30
@@ -40,23 +43,31 @@ class	Channel;
 # define NUM_SET "0123456789_"
 # define ALPHA_NUM_SET ALPHA_SET NUM_SET
 
+# define PASS "PASS"
 # define NICK "NICK"
 # define USER "USER"
 # define JOIN "JOIN"
 # define PART "PART"
 # define PRIVMSG "PRIVMSG"
+# define KICK "KICK"
+# define INVITE "INVITE"
+# define TOPIC "TOPIC"
+# define MODE "MODE"
+# define QUIT "QUIT"
 
 class Commands
 {
 	private:
 		std::vector<std::string>	_args;
+		IRCServer					&_server;
 		ClientList					&_clients;
 		ChannelList					&_channels;
+		const std::string			&_serverPass;
 		int							_fd;
 
 	public:
 	// Constructor & Destructor ===============================================
-		Commands( ClientList &clients, ChannelList &channels, int fd );
+		Commands( IRCServer& server );
 		~Commands( void );
 
 	// Exceptions =============================================================
@@ -72,28 +83,62 @@ class Commands
 		void						setFd(int fd);
 
 	// Methods ================================================================
-		bool		isCommand(const std::string &message);
-		void		parsingArgs(const std::string &message);
 
 		// Commands.cpp
-		void		commandNick( void );
-		void		commandUser( void );
+		bool		isCommand(int clientFd, const std::string &message);
+		void		parsingArgs(const std::string &message);
+		// Mover?
+		void		commandInvite( void );
+		void		commandTopic( void );
+		void		commandMode( void );
+		//
+
+		// channelCommands.cpp
 		void		commandJoin( void );
 		void		commandPart( void );
-		void		commandPrivMsg( void );
+		void		commandKick( void );
 
-		// validations.cpp
-		bool		initialVerify(std::string &error, size_t num, std::string usage);
-		bool		validArg(std::string &arg);
-		bool		validChannel(std::string &channel, std::string &error);
-		bool		validMessage(std::string &message);
+		// privmsgCommands.cpp
+		void		commandPrivMsg( void );
+		bool		sendMessage(int clientFd, const std::string &message);
+		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
+						std::string &message);
+		std::string	getFullMessage(const std::string &message);
+
+		// quitCommand.cpp
+		void		commandQuit( void );
+		void		quitServer( void );
+		std::string	getQuitMessage( void );
+
+		// setupCommands.cpp
+		void		commandPass( void );
+		void		commandNick( void );
+		void		saveNick(std::string &nick);
+		void		commandUser( void );
+		void		saveUser(std::string &user);
+
+		// errorsCode.cpp
+		std::string	errorNeedMoreParams(std::string suffix);
+		std::string	errorNoSuchNick(std::string &recipient, std::string who);
+		std::string	errorAlredyRegister( void );
 
 		// utils.cpp
-		std::string	getMessage( void );
-		void		save(std::string &nick);
-		void		save(std::string &user, std::string &host);
-		bool		sendMessage(int clientFd, const std::string &message);
-		bool		sendMessage(std::map<std::string, Channel>::iterator channel, std::string &message);
+		std::string	getMessage(int index);
+		std::string	toString(t_numCode code);
+		std::string	toString(int num);
+		void		printError(const std::string &errorMessage);
+
+		// validations.cpp
+		bool		initialVerify(size_t num, const std::string &usage);
+		bool		getErrors( void );
+		bool		validArg(std::string &arg);
+		bool		validChannel(std::string &channel);
+		bool		validMessage(std::string &message);
+
+		// verify.cpp
+		bool		verifyChannel(std::string &channelName);
+		bool		verifyJoin(std::string &channelName, std::string &key);
+		bool		verifyKick (std::string &channel);
 };
 
 #endif

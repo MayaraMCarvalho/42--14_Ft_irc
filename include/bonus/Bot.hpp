@@ -15,9 +15,7 @@
 
 #include <string>
 #include <unistd.h>
-#include <cstring>
-#include <iostream>
-#include <sys/socket.h> 
+#include <sys/socket.h>
 
 class	Bot
 {

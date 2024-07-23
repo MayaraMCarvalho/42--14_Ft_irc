@@ -3,86 +3,108 @@
 /*                                                        :::      ::::::::   */
 /*   validations.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 20:37:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/03 05:08:57 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
 
-bool Commands::initialVerify(std::string &message, size_t num, std::string usage)
+bool Commands::initialVerify(size_t num, const std::string &usage)
 {
-	if (_args.size() < num) // verificar se melhor usar =!
+	std::string	pre = RED + "Error ";
+	std::string	error;
+
+	if (_args.size() < num) // verificar se melhor usar !=
 	{
-		message = RED + "Error: Number of invalid arguments\n" +
-			usage + RESET;
+		error = errorNeedMoreParams("Not enough parameters\n");
+		if (_args[0] == NICK)
+			error = pre + toString(ERR_NONICKNAMEGIVEN) +
+				"\n: No nickname given\n";
+		if (_args[0] == PRIVMSG)
+		{
+			error = pre + toString(ERR_NOTEXTTOSEND) + "\n: No text to send\n";
+			if (_args.size() < 2)
+				error = pre + toString(ERR_NORECIPIENT) +
+					"\n: No recipient given (" + _args[0] + ")\n";
+		}
+		printError(error + BBLUE + "Usage: " + usage + RESET);
+		return false;
 	}
-	// else if (it->second.getStatus() != 2)
-	// 	message = RED + "Error: Unauthenticated clients\n" + RESET;
+	else if (_args[0] != QUIT && getErrors())
+		return false;
+	return true;
+}
+
+bool Commands::getErrors(void)
+{
+	bool	isUser = (_args[0] == USER);
+	bool	isNick = (_args[0] == NICK);
+	int		status = _clients.getClient(_fd)->second.getStatus();
+	bool	isAuth = (status == Client::AUTHENTICATED);
+	bool	isGotNick = (status == Client::GOT_NICK);
+	bool	isGotUser = (status == Client::GOT_USER);
+	bool	isReg = (status == Client::REGISTERED);
+
+	if ((isUser || isNick) && !isAuth && !isGotNick && !isGotUser && !isReg)
+		printError(RED + "Error: Unauthenticated client\n" + RESET);
+	else if ((!isAuth && !isReg)
+		&& ((isUser && !isGotNick) || (isNick && !isGotUser)))
+		printError(RED + "Error: Registration must be completed\n" + RESET);
+	else if (!isUser && !isNick && !isReg)
+		printError(RED + "Error: You need to register the client first\n" + RESET);
 	else
-		return true;
-	return false;
+		return false;
+	return true;
+
 }
 
 bool Commands::validArg(std::string &arg)
 {
-	std::map<int, Client>::iterator it = _clients.getClientByNick(arg);
-	std::string error = "";
+	std::string	error;
 
 	if (arg.empty())
-		error = RED + "Error: Empty parameter\n" + RESET;
+		printError(RED + "Error: Empty parameter\n" + RESET);
 	else if (arg.size() > MAX_LENGTH)
-		error = RED + "Error: Too long\n" + RESET;
+		printError(RED + "Error: Too long\n" + RESET);
 	else if (!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
-		error = RED + "Error: Prohibited characters found\n" + RESET;
-	else if (_args[0] == NICK && it != _clients.end())
-		error = RED + "Error: Nickname already exists\n" + RESET;
+	{
+		if (_args[0] == NICK)
+			error = RED + "Error " + toString(ERR_ERRONEUSNICKNAME) +
+			"\n" + arg + ": Erroneus nickname\n" + RESET;
+		else
+			error = RED + "Error: Prohibited characters found\n" + RESET;
+		printError(error);
+	}
 	else
 		return true;
-
-	it = _clients.getClient(_fd);
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
-
 	return false;
 }
 
-bool Commands::validChannel(std::string &channel, std::string &error)
+bool Commands::validChannel(std::string &channel)
 {
-	if (!channel.empty())
+	if (channel[0] != '#')
 	{
-		if (channel[0] != '#')
-		{
-			error = RED + "Error: Non-standard channel name\n" + RESET;
-			return false;
-		}
-		else
-			channel.erase(0, 1);
+		if (_args[0] != PRIVMSG)
+			printError(RED + "Error: Non-standard channel name\n" + RESET);
+		return false;
 	}
+	else
+		channel.erase(0, 1);
 	return true;
 }
 
 bool Commands::validMessage(std::string &message)
 {
-	std::string error = "";
-	std::map<int, Client>::iterator it = _clients.getClient(_fd);
+	std::string	error = "";
 
-	if (!message.empty())
+	if (message[0] != ':')
 	{
-		if (message[0] != ':')
-		{
-			error = RED + "Error: Non-standard message\n" + RESET;
-		}
-		else
-		{
-			message.erase(0, 1);
-			return true;
-		}
+		printError(RED + "Error: Non-standard message\n" + RESET);
+		return false;
 	}
-	it->second.sendMessage(error);
-	std::cout << error << std::endl;
-
-	return false;
+	message.erase(0, 1);
+	return true;
 }

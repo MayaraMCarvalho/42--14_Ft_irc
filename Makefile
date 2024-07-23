@@ -6,16 +6,24 @@
 #    By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/12 15:54:06 by lucperei         ###   ########.fr        #
+#    Updated: 2024/07/17 14:10:56 by lucperei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME		= ircserv
 TEST_NAME	= test_runner
 
-SRCS		= main.cpp Bot.cpp Channel.cpp ChannelList.cpp Client.cpp \
-			ClientList.cpp Commands.cpp FileTransfer.cpp IrcServer.cpp \
-			utils.cpp validations.cpp
+SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
+			\
+			Bot.cpp FileTransfer.cpp \
+			\
+			Channel.cpp ChannelList.cpp \
+			\
+			Client.cpp ClientList.cpp \
+			\
+			Commands.cpp channelCommands.cpp commandPrivmsg.cpp \
+			commandQuit.cpp setupCommands.cpp \
+			errorsCode.cpp utils.cpp validations.cpp verify.cpp
 
 TESTS_SRCS  = tests/UnitTests/IRCServerTest.cpp tests/UnitTests/ClientTest.cpp \
 			tests/UnitTests/ClientListTest.cpp tests/UnitTests/mainTest.cpp 
@@ -25,7 +33,7 @@ INTEG_TESTS = tests/IntegrationTests/IRCServerIntegrationTest.cpp
 
 VPATH		= src/ src/bonus src/channel src/client src/commands
 INCLUDE		= -I./include -I./include/bonus -I./include/channel \
-			  -I./include/client -I./include/commands
+			-I./include/client -I./include/commands -I./include/utils
 
 OBJS_PATH	= obj
 OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))

@@ -6,19 +6,19 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/17 12:36:08 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/17 16:12:15 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChannelList.hpp"
+#include "Colors.hpp"
+#include <iostream>
 
-ChannelList::ChannelList(void) : _channels(), _clients(NULL) { }
-
-ChannelList::ChannelList(ClientList *clients) : _channels(),
-	_clients(clients) { }
+ChannelList::ChannelList(ClientList &clients, MsgHandler &msgHandler) :
+	_channels(), _clients(clients), _msgHandler(msgHandler) { }
 
 ChannelList::ChannelList(ChannelList &src) : _channels(src._channels),
-	_clients(src._clients) { }
+	_clients(src._clients), _msgHandler(src._msgHandler) { }
 
 ChannelList::~ChannelList(void) { }
 
@@ -37,6 +37,10 @@ std::map<std::string, Channel>::iterator ChannelList::get(std::string name) {
 
 std::map<std::string, Channel>::const_iterator ChannelList::get(std::string name) const {
     return _channels.find(name);
+}
+
+std::map<std::string, Channel>::iterator ChannelList::begin(void) {
+	return _channels.begin();
 }
 
 std::map<std::string, Channel>::iterator ChannelList::end(void) {
@@ -70,21 +74,18 @@ std::map<std::string, Channel>::size_type ChannelList::remove(std::string name)
 }
 
 void ChannelList::join(int userFD, const std::string &chanName,
-	const std::string &key) {
-	if (!_clients)
-		return;
-
-	std::map<int, Client>::iterator userIt = _clients->getClient(userFD);
+		const std::string &key) {
+	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
 	// TODO: add exception
-	if (userIt == _clients->end())
+	if (userIt == _clients.end())
 		return;
 
 	std::map<std::string, Channel>::iterator chanIt = get(chanName);
 
 	try {
 		if (chanIt == end())
-			chanIt = add(Channel(chanName));
+			chanIt = add(Channel(chanName, _msgHandler));
 
 		Channel& chan = chanIt->second;
 		chan.addUser(userFD, _DEFAULT_FLAGS);
@@ -108,14 +109,11 @@ void ChannelList::join(int userFD, const std::string &chanName,
 }
 
 void ChannelList::part(int userFD, std::string chanName) {
-	if (!_clients)
-		return;
-
 	std::map<std::string, Channel>::iterator chanIt = get(chanName);
-	std::map<int, Client>::iterator userIt = _clients->getClient(userFD);
+	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
 	// TODO: add exception
-	if (chanIt == end() || userIt == _clients->end())
+	if (chanIt == end() || userIt == _clients.end())
 		return;
 
 	chanIt->second.removeUser(userFD);
@@ -135,19 +133,16 @@ void ChannelList::part(int userFD, std::string chanName) {
 
 void ChannelList::partDisconnectedClient(int userFD)
 {
-	if (!_clients)
-		return;
-
 	std::set<std::string>::iterator chanIt;
-	std::map<int, Client>::iterator userIt = _clients->getClient(userFD);
+	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
-	if (userIt == _clients->end())
+	if (userIt == _clients.end())
 		return;
 
 	std::set<std::string> &chanRef = userIt->second.getChannelList();
 	;
 
-	for (chanIt = chanRef.begin();chanIt != chanRef.end();)
+	for (chanIt = chanRef.begin(); chanIt != chanRef.end();)
 	{
 		std::set<std::string>::iterator oldChanIt = chanIt++;
 		part(userFD, oldChanIt->data());
@@ -155,10 +150,10 @@ void ChannelList::partDisconnectedClient(int userFD)
 }
 
 bool ChannelList::userCanJoin(int userFD, Channel &chan,
-	const std::string &key) {
-	std::map<int, Client>::iterator userIt = _clients->getClient(userFD);
+		const std::string &key) {
+	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
-	if (userIt == _clients->end())
+	if (userIt == _clients.end())
 		return false;
 
 	if (chan.userIsInChannel(userFD))
@@ -171,8 +166,85 @@ bool ChannelList::userCanJoin(int userFD, Channel &chan,
 		return false;
 
 	if (chan.getChannelMode(Channel::INVITEONLY) &&
-		!chan.userHasInvite(userIt->second.getNick()))
+		!userHasInvite(userIt->second.getNick(), chan.getName()))
 		return false;
 
 	return true;
+}
+
+bool ChannelList::userHasInvite(const std::string &nick,
+		const std::string &chan) {
+	std::map<std::string, std::set<std::string> >::iterator chanIt;
+
+	chanIt = _invites.find(chan);
+
+	if (chanIt == _invites.end())
+		return false;
+
+	if (chanIt->second.find(nick) == chanIt->second.end())
+		return false;
+
+	return true;
+}
+
+void ChannelList::addInvite(const std::string &nick,
+		const std::string &chan) {
+	std::map<std::string, std::set<std::string> >::iterator chanIt;
+	std::pair<std::string, std::set<std::string> > newSetPair;
+
+	chanIt = _invites.find(chan);
+
+	if (chanIt == _invites.end())
+	{
+		newSetPair = std::make_pair(chan, std::set<std::string>());
+		newSetPair.second.insert(nick);
+		_invites.insert(newSetPair); //TODO: add exception in case of failure to insert
+		return;
+	}
+
+	chanIt->second.insert(nick);
+}
+
+void ChannelList::removeInvite(const std::string &nick,
+		const std::string &chan) {
+	std::map<std::string, std::set<std::string> >::iterator chanIt;
+
+	chanIt = _invites.find(chan);
+
+	if (chanIt == _invites.end())
+		return;
+
+	chanIt->second.erase(nick);
+
+	if (chanIt->second.empty())
+		_invites.erase(chanIt);
+}
+
+t_numCode ChannelList::inviteUser(const std::string &inviter,
+		const std::string &invitee, const std::string &chan) {
+	if (inviter.empty() || invitee.empty() || chan.empty())
+		return ERR_NEEDMOREPARAMS;
+
+	std::map<std::string, Channel>::iterator chanIt;
+
+	if (chanIt != _channels.end())
+	{
+		int inviteeFD = _clients.getFDByNick(invitee);
+		Channel &chanRef = chanIt->second;
+
+		if (chanRef.userIsInChannel(inviteeFD))
+			return ERR_USERONCHANNEL;
+
+		int inviterFD = _clients.getFDByNick(inviter);
+
+		if (chanRef.userIsInChannel(inviterFD))
+			return ERR_NOTONCHANNEL;
+
+		if (chanRef.getChannelMode(Channel::INVITEONLY) &&
+			chanRef.getUserMode(inviterFD, Channel::CHANOP))
+			return ERR_CHANOPRIVSNEEDED;
+	}
+
+	addInvite(invitee, chan);
+	return RPL_INVITING;
 }

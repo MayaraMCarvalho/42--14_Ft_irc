@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/02 18:20:29 by gmachado         ###   ########.fr        #
+#    Updated: 2024/07/05 10:59:57 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
 			Commands.cpp channelCommands.cpp commandPrivmsg.cpp \
 			commandQuit.cpp setupCommands.cpp \
-			errorsCode.cpp utils.cpp validations.cpp verify.cpp
+			errorsCode.cpp infos.cpp utils.cpp validations.cpp verify.cpp
 
 VPATH		= src/ src/bonus src/channel src/client src/commands
 OBJS_PATH	= obj

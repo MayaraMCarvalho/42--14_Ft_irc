@@ -6,18 +6,16 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 03:38:54 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 05:20:18 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
-#include "Channel.hpp"
 #include "Commands.hpp"
 #include <cerrno>
 #include <cstdio>
 #include <sys/types.h>
 #include <netdb.h>
-
 
 IRCServer* IRCServer::_instance = NULL;
 
@@ -64,7 +62,6 @@ void IRCServer::setupServer(void)
 
 	if (fcntl(_serverFd, F_SETFL, O_NONBLOCK) == -1)
 		throw std::runtime_error("Unable to set non-blocking mode on client file descriptor (fcntl)");
-
 	if (bind(_serverFd, (struct sockaddr *)&address, sizeof(address)) < 0)
 		throw std::runtime_error("Failed to bind socket");
 
@@ -79,13 +76,15 @@ void IRCServer::signalHandler(int signal)
 {
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGTSTP)
 	{
+		ChannelList	channels = _instance->_channels;
+		ClientList	clients = _instance->_clients;
 		_instance->_shouldExit = true;
-		ChannelList channels = _instance->_channels;
 
-		std::cout << std::endl;
-		for (std::map<std::string, Channel>::iterator it = channels.begin(); it != channels.end(); ++it)
-			it->second.sendToAll(BRED + "The server was disconnected!" + RESET);
-		std::cout << BGREEN << "Exiting gracefully." << RESET << std::endl;
+		for (std::map<int, Client>::iterator it = clients.begin();
+			it != clients.end(); ++it)
+			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
+		std::cout << BGREEN << std::endl;
+		std::cout << "Exiting gracefully!" << RESET << std::endl;
 	}
 }
 
@@ -134,37 +133,46 @@ void IRCServer::run(void)
 				throw std::runtime_error("Poll error");
 		}
 
-
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
 
-		for (size_t fdIdx = 1; fdIdx < _pollFds.size(); ++fdIdx)
-		{
-			unsigned long	mustRetrySize = 0;
-			if (_pollFds[fdIdx].revents & POLLOUT)
-			{
-				int fd = _pollFds[fdIdx].fd;
-				while (_msgHandler.size(fd) > mustRetrySize)
-				{
-					MsgHandler::t_msg msg = _msgHandler.pop(fd);
-					if (msg.error == -1 || msg.retries > MsgHandler::MAX_RETRIES)
-						break;
+		size_t fdIdx = 1;
+		size_t pollFdsSize = _pollFds.size();
 
-					ssize_t	nbytes = send(fd, msg.msgStr.c_str(),
-						msg.msgStr.length(), 0);
+		while (fdIdx < pollFdsSize) {
+			int fd = _pollFds[fdIdx].fd;
+			_isFdDisconnected = false;
 
-					if (nbytes < 0)
-					{
-						std::cerr << RED << "Write error on client "
-							<< BYELLOW << fd << std::endl << RESET;
-						++msg.retries;
-						_msgHandler.push(fd, msg);
+			if (_pollFds[fdIdx].revents & POLLIN &&
+					!handleClientMessage(_pollFds[fdIdx].fd)) {
+				disconnectClient(fd, fdIdx);
+			}
+			else if (_pollFds[fdIdx].revents & POLLOUT) {
+				ssize_t strLen = _msgHandler.sendLength(fd);
+
+				if (strLen > 0) {
+					try {
+						ssize_t	nbytes = send(fd,
+							_msgHandler.sendPop(fd).c_str(),strLen, 0);
+
+						if (nbytes <= 0) {
+							std::cerr << RED << "Write error on client "
+								<< BYELLOW << fd << std::endl << RESET;
+							disconnectClient(fd, fdIdx);
+						}
+						else
+							_msgHandler.removeSendChars(fd, nbytes);
+					} catch (std::out_of_range &e) {
+						std::cerr << RED
+						<< "Out of range exception caught while processing "
+						<< "message queue" << RESET << std::endl;
 					}
 				}
 			}
-
-			if (_pollFds[fdIdx].revents & POLLIN)
-				handleClientMessage(_pollFds[fdIdx].fd);
+			if (_isFdDisconnected)
+				pollFdsSize = _pollFds.size();
+			else
+				++fdIdx;
 		}
 	}
 }
@@ -176,10 +184,8 @@ void IRCServer::acceptNewClient(void)
 	socklen_t clientLen = sizeof(clientAddress);
 	clientFd = accept(_serverFd, (struct sockaddr *)&clientAddress, &clientLen);
 
-	if (clientFd < 0)
-	{
-		if (errno != EWOULDBLOCK)
-			std::cerr << "Failed to accept new client" << std::endl;
+	if (clientFd < 0) {
+		std::cerr << "Failed to accept new client" << std::endl;
 		return;
 	}
 
@@ -195,89 +201,41 @@ void IRCServer::acceptNewClient(void)
 	std::cout << BYELLOW << clientFd << RESET << std::endl;
 
 	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
-	std::string message = BPURPLE + "-----------------------------------\n" +
-		"------ Welcome to IRC server ------\n" +
-		"-----------------------------------\n" + RESET;
+	std::string message = BPURPLE +
+		"NOTICE * :*** Welcome to the IRC server ***" + RESET;
 	it->second.sendMessage(message);
 }
 
-t_numCode IRCServer::authenticate(int userFD, std::string password) {
-	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
-
-	if (userIt == _clients.end())
-		throw std::invalid_argument("Unknown user");
-
-	Client::t_status status = userIt->second.getStatus();
-
-	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
-		throw std::invalid_argument("Invalid user status");
-
-	if (status != Client::CONNECTED)
-		throw std::invalid_argument("Already authenticated");
-
-	if (password != _password)
-		return ERR_PASSWDMISMATCH;
-
-	userIt->second.setStatus(Client::AUTHENTICATED);
-	return NO_CODE;
-}
-
-void IRCServer::handleClientMessage(int clientFd)
+bool IRCServer::handleClientMessage(int clientFd)
 {
-	char	buffer[512];
+	char	buffer[MAX_MSG_LENGTH + 1];
 	ssize_t	nbytes;
 
-	std::memset(buffer, 0, sizeof(buffer));
-	nbytes = recv(clientFd, buffer, sizeof(buffer) - 1, 0); // read client data
+	nbytes = read(clientFd, buffer, sizeof(buffer) - 1); // read client data
 
-	if (nbytes <= 0)
-	{
-		std::cout << RED;
-		if (nbytes < 0 && errno != EWOULDBLOCK)
-			std::cerr << "Read error on client: ";
-		else if (nbytes == 0)
-			std::cout << "Client disconnected: ";
-		std::cout << BYELLOW << clientFd << std::endl;
-		std::cout << RESET;
-
-		_clients.removeClientFD(clientFd);
-		_channels.partDisconnectedClient(clientFd);
-
-		return;
+	if (nbytes < 0) {
+		std::cerr << RED << "Read error on client: " << BYELLOW << clientFd
+			<< RESET << std::endl;
+		return false;
+	}
+	else if (nbytes == 0) {
+		std::cerr << "Client disconnected: " << BYELLOW << clientFd
+			<< RESET << std::endl;
+		return false;
 	}
 
 	buffer[nbytes] = '\0';
-	std::string message(buffer);
 
-	if (!message.empty() && message[message.length() - 1] == '\n')
-		message.erase(message.length() - 1);
-
-	std::cout << CYAN;
-	std::cout << "Received message from client " << clientFd;
-	std::cout << ": " << BYELLOW << message << RESET << std::endl;
-
-	//
-	Commands commands(*this);
-
-	bool isCommand = false;
-
-	if (!message.empty() && commands.isCommand(clientFd, message))
-		isCommand = true;
-	//
-	else if (message.substr(0, 5) == "/file")
-		handleFileTransfer(clientFd, message);
-	else
-		_bot.respondToMessage(clientFd, message); // call for the bot to respond
-
-	if (!isCommand)
+	if (!_msgHandler.recvPush(clientFd, buffer))
 	{
-		std::map<std::string, Channel>::iterator it = _channels.get("default");
-
-		if (it != _channels.end())
-			it->second.sendToAll(message);
-		else
-			std::cerr << "Failed to send message to channel default" << std::endl;
+		std::cerr << "Receive message queue is full" << RESET << std::endl;
+		return false;
 	}
+
+	Commands	commands(*this);
+
+	commands.extractCommands(clientFd);
+	return true;
 }
 
 void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
@@ -302,6 +260,37 @@ std::string IRCServer::getHostName(const char *ip, const char *port) {
 	return hostName;
 }
 
+void IRCServer::disconnectClient(int fd) {
+	size_t fdIdx;
+
+	for (fdIdx = 1; fdIdx < _pollFds.size(); ++fdIdx) {
+
+		if (fd == _pollFds[fdIdx].fd) {
+			break;
+		}
+	}
+	if (fdIdx >= _pollFds.size())
+		std::cerr << RED << "Could not find fd in _pollfds: " << BYELLOW << fd
+			<< RESET << std::endl;
+	else
+		disconnectClient(fd, fdIdx);
+}
+
+void IRCServer::disconnectClient(int fd, size_t fdIdx) {
+	_clients.removeClientFD(fd);
+	_channels.partDisconnectedClient(fd);
+	_msgHandler.resetQueues(fd);
+	_pollFds.erase(_pollFds.begin() + fdIdx);
+	close(fd);
+	_isFdDisconnected = true;
+}
+
+void IRCServer::handleClientSideDisconnect(int fd) {
+	disconnectClient(fd);
+}
+
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
+
+bool IRCServer::getIsFdDisconnected(void) { return _isFdDisconnected; }
 
 // Exceptions =================================================================

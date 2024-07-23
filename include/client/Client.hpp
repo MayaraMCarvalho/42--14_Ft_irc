@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/01 03:32:22 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:02:32 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,11 @@ class Client {
 
 		// Setters
 		void setNick(const std::string &nick);
-		void setUser(const std::string &user);
 		void setHost(const std::string &host);
+		void setUser(const std::string &user);
+		void setUserHost(const std::string &userHost);
+		void setUserServer(const std::string &userServer);
+		void setUserName(const std::string &userName);
 		void setFD(int fd);//
 		void setModeFlags(int modeFlags);
 		void setMode(const std::string &modeStr);
@@ -85,6 +88,9 @@ class Client {
 		std::string _nick;
 		std::string _user;
 		std::string _host;
+		std::string _userHost;
+		std::string _userServer;
+		std::string _userName;
 		int _fd;
 		std::set<std::string> _channels;
 		int _modeFlags;

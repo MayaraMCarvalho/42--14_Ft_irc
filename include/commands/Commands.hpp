@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 18:30:37 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/11 02:29:59 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class Commands
 	// Methods ================================================================
 
 		// Commands.cpp
+		void		extractCommands(int clientFd);
 		bool		isCommand(int clientFd, const std::string &message);
 		void		parsingArgs(const std::string &message);
 		// Mover?
@@ -89,6 +90,7 @@ class Commands
 
 		// channelCommands.cpp
 		void		commandJoin( void );
+		void		printJoin(std::string channelName);
 		void		commandPart( void );
 		void		commandKick( void );
 
@@ -102,32 +104,37 @@ class Commands
 		// quitCommand.cpp
 		void		commandQuit( void );
 		void		quitServer( void );
-		std::string	getQuitMessage( void );
+		bool		getQuitMessage(std::string &messageQuit);
 
 		// setupCommands.cpp
 		void		commandPass( void );
 		void		commandNick( void );
 		void		saveNick(std::string &nick);
 		void		commandUser( void );
-		void		saveUser(std::string &user);
+		void		saveUser(std::string &user, std::string &userName);
 
 		// errorsCode.cpp
 		std::string	errorNeedMoreParams(std::string suffix);
 		std::string	errorNoSuchNick(std::string &recipient, std::string who);
 		std::string	errorAlredyRegister( void );
 
+		// infos.cpp
+		std::string	getTopic(std::string &channelName);
+		std::string	getUsersInChannel(std::string &channelName);
+
 		// utils.cpp
 		std::string	getMessage(int index);
 		std::string	toString(t_numCode code);
 		std::string	toString(int num);
-		void		printError(const std::string &errorMessage);
+		void		printInfo(const std::string &info);
+		static void	strToUpper(std::string &str);
 
 		// validations.cpp
-		bool		initialVerify(size_t num, const std::string &usage);
-		bool		getErrors( void );
+		bool		initValidation(size_t numArgs);
 		bool		validArg(std::string &arg);
 		bool		validChannel(std::string &channel);
 		bool		validMessage(std::string &message);
+		bool		setupDone( void );
 
 		// verify.cpp
 		bool		verifyChannel(std::string &channelName);

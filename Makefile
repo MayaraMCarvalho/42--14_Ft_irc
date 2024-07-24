@@ -6,7 +6,7 @@
 #    By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/23 21:34:52 by lucperei         ###   ########.fr        #
+#    Updated: 2024/07/24 13:45:42 by lucperei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,9 +25,9 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			commandQuit.cpp setupCommands.cpp \
 			errorsCode.cpp infos.cpp utils.cpp validations.cpp verify.cpp
 
-TESTS_SRCS  = tests/UnitTests/IRCServerTest.cpp tests/UnitTests/ClientTest.cpp \
-			tests/UnitTests/ClientListTest.cpp tests/UnitTests/mainTest.cpp 
-# tests/UnitTests/CommandsTest.cpp
+TESTS_SRCS  = src/tests/UnitTests/IRCServerTest.cpp src/tests/UnitTests/ClientTest.cpp \
+			src/tests/UnitTests/ClientListTest.cpp src/tests/UnitTests/mainTest.cpp 
+# src/tests/UnitTests/CommandsTest.cpp
 			
 INTEG_TESTS = tests/IntegrationTests/IRCServerIntegrationTest.cpp
 
@@ -74,21 +74,21 @@ $(NAME): 	$(OBJS_PATH) $(OBJS)
 $(OBJS_PATH):
 			@mkdir -p $(OBJS_PATH)
 
-$(OBJS_PATH)/tests/UnitTests:
-	@mkdir -p $(OBJS_PATH)/tests/UnitTests
+$(OBJS_PATH)/src/tests/UnitTests:
+	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests
 
 $(OBJS_PATH)/%.o: %.cpp
 			@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
 			@echo -n "$(YELLOW)Generating $(CYAN)$(NAME) $(YELLOW)objects..." $@
 			@echo -n "\n"
 
-$(OBJS_PATH)/%.o: tests/UnitTests/%.cpp | $(OBJS_PATH)/tests/UnitTests
+$(OBJS_PATH)/%.o: src/tests/UnitTests/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
 	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
 	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
 	@echo -n "\n"
 
 # Compile and run tests
-test: $(OBJS_PATH) $(OBJS_PATH)/tests/UnitTests $(OBJS) $(TESTS_OBJS)
+test: $(OBJS_PATH) $(OBJS_PATH)/src/tests/UnitTests $(OBJS) $(TESTS_OBJS)
 	@$(CC) $(FLAGS) $(INCLUDE) $(filter-out $(OBJS_PATH)/main.o, $(OBJS)) $(TESTS_OBJS) -o $(TEST_NAME)
 	@./$(TEST_NAME)
 	@rm -f $(TEST_NAME)

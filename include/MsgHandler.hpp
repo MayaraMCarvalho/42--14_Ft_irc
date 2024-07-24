@@ -6,20 +6,21 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 02:44:02 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/16 17:06:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:03:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MSG_HANDLER
 # define MSG_HANDLER
 
-#include <list>
 #include <map>
 # include <string>
+#include <sys/types.h>
 
 class MsgHandler {
 	public:
-		static const int MAX_RETRIES = 3;
+		static const int MAX_SEND_QUEUE_LENGTH = 2600;
+		static const int MAX_RECV_QUEUE_LENGTH = 2600;
 
 		MsgHandler(void);
 		MsgHandler(MsgHandler &src);
@@ -41,9 +42,13 @@ class MsgHandler {
 		void sendMessage(int fd, const std::string &msg);
 		void sendMessage(int fd, const std::string &from,
 			const std::string &msg);
-		t_msg pop(int fd);
-		void push(int fd, t_msg msg);
-		unsigned long size(int fd);
+		std::string &sendPop(int fd);
+		bool sendPush(int fd, std::string msg);
+		ssize_t sendLength(int fd);
+		std::string &recvPop(int fd);
+		bool recvPush(int fd, std::string msg);
+		ssize_t recvLength(int fd);
+		void resetQueues(int fd);
 
 		// Numeric error replies
 		std::string errAlreadyRegistered(const std::string &client);
@@ -123,8 +128,8 @@ class MsgHandler {
 
 	private:
 		std::string _host;
-		std::map<int, std::list<t_msg> > _msgQueues;
+		std::map<int, std::string> _sendQueues;
+		std::map<int, std::string> _recvQueues;
 };
-
 
 #endif

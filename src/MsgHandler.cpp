@@ -6,21 +6,25 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 03:32:58 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/16 17:06:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:04:32 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include <sstream>
 #include "MsgHandler.hpp"
 #include "Client.hpp"
 #include "Channel.hpp"
 # include "Codes.hpp"
 
-MsgHandler::MsgHandler(void) : _host("defaulthost"), _msgQueues() { }
+MsgHandler::MsgHandler(void) : _host("defaulthost"), _sendQueues(),
+	_recvQueues() { }
 
-MsgHandler::MsgHandler(MsgHandler &src) : _host(src._host) , _msgQueues() { }
+MsgHandler::MsgHandler(MsgHandler &src) : _host(src._host) , _sendQueues(),
+	_recvQueues() { }
 
-MsgHandler::MsgHandler(std::string host) : _host(host), _msgQueues() { }
+MsgHandler::MsgHandler(std::string host) : _host(host), _sendQueues(),
+	_recvQueues() { }
 
 MsgHandler::~MsgHandler(void) { }
 
@@ -29,7 +33,8 @@ MsgHandler &MsgHandler::operator=(MsgHandler &src) {
 		return *this;
 
 	_host = src._host;
-	_msgQueues = src._msgQueues;
+	_recvQueues = src._recvQueues;
+	_sendQueues = src._sendQueues;
 	return *this;
 }
 
@@ -40,61 +45,112 @@ void MsgHandler::sendMessage(int fd, const std::string &msg) {
 }
 
 void MsgHandler::sendMessage(int fd, const std::string &from,
-			const std::string &msg)
-{
-	t_msg msgToQueue;
+		const std::string &msg) {
+	std::string fullMsg(":" + from + " " + msg + "\r\n");
 
-	msgToQueue.msgStr = ":" + from + " " + msg + "\r\n";
-	msgToQueue.retries = 0;
-
-	push(fd, msgToQueue);
+	sendPush(fd, fullMsg);
 }
 
-MsgHandler::t_msg MsgHandler::pop(int fd) {
-	std::map<int, std::list<t_msg> >::iterator it = _msgQueues.find(fd);
-	t_msg poppedMsg;
+std::string &MsgHandler::sendPop(int fd) {
+	std::map<int, std::string>::iterator it = _sendQueues.find(fd);
 
-	if (it == _msgQueues.end() || it->second.empty())
-	{
-		poppedMsg.error = -1;
-		return poppedMsg;
-	}
+	if (it == _sendQueues.end() || it->second.empty())
+		throw std::out_of_range("");
 
-	std::list<t_msg> &listRef = it->second;
-	t_msg front = listRef.front();
-	listRef.pop_front();
-
-	if (listRef.empty())
-		_msgQueues.erase(fd);
-
-	return front;
+	return it->second;
 }
 
-void MsgHandler::push(int fd, MsgHandler::t_msg msg) {
-	std::map<int, std::list<t_msg> >::iterator it = _msgQueues.find(fd);
-	std::pair<std::map<int, std::list<t_msg> >::iterator, bool> inserted;
+bool MsgHandler::sendPush(int fd, std::string msg) {
+	std::map<int, std::string>::iterator it = _sendQueues.find(fd);
+	std::pair<std::map<int, std::string>::iterator, bool> inserted;
 
-	if (it == _msgQueues.end())
+	if (it == _sendQueues.end())
 	{
-		inserted = _msgQueues.insert(
-			std::pair<int, std::list<t_msg> >(fd, std::list<t_msg>()));
+		if (msg.length() > MAX_SEND_QUEUE_LENGTH)
+			return false;
+		inserted = _sendQueues.insert(
+			std::make_pair<int, std::string>(fd, msg));
 
-		// TODO: Add exception
 		if (!inserted.second)
-			return;
+			return false;
 
-		it = inserted.first;
+		return true;
 	}
 
-	it->second.push_back(msg);
+	if (it->second.length() + msg.length() > MAX_SEND_QUEUE_LENGTH)
+		return false;
+
+	it->second += msg;
+	return true;
 }
 
-unsigned long MsgHandler::size(int fd) {
-	std::map<int, std::list<t_msg> >::iterator it = _msgQueues.find(fd);
-	if (it == _msgQueues.end())
+void MsgHandler::removeSendChars(int fd, ssize_t numChars) {
+	std::map<int, std::string>::iterator it = _sendQueues.find(fd);
+
+	if (it != _sendQueues.end())
+		it->second = it->second.substr(numChars);
+}
+
+ssize_t MsgHandler::sendLength(int fd) {
+	std::map<int, std::string>::iterator it = _sendQueues.find(fd);
+
+	if (it == _sendQueues.end())
 		return 0;
 
-	return it->second.size();
+	return it->second.length();
+}
+
+bool MsgHandler::recvPush(int fd, std::string msg) {
+	std::map<int, std::string>::iterator it = _recvQueues.find(fd);
+	std::pair<std::map<int, std::string>::iterator, bool> inserted;
+
+	if (it == _recvQueues.end())
+	{
+		if (msg.length() > MAX_RECV_QUEUE_LENGTH)
+			return false;
+		inserted = _recvQueues.insert(
+			std::make_pair<int, std::string>(fd, msg));
+
+		if (!inserted.second)
+			return false;
+
+		return true;
+	}
+
+	if (it->second.length() + msg.length() > MAX_RECV_QUEUE_LENGTH)
+			return false;
+
+	(it->second) += msg;
+	return true;
+}
+
+std::string &MsgHandler::recvPop(int fd) {
+	std::map<int, std::string>::iterator it = _recvQueues.find(fd);
+
+	if (it == _recvQueues.end() || it->second.empty())
+		throw std::out_of_range("");
+
+	return it->second;
+}
+
+ssize_t MsgHandler::recvLength(int fd) {
+	std::map<int, std::string>::iterator it = _recvQueues.find(fd);
+
+	if (it == _recvQueues.end())
+		return 0;
+
+	return it->second.length();
+}
+
+void MsgHandler::resetQueues(int fd) {
+	std::map<int, std::string>::iterator recvIt = _recvQueues.find(fd);
+	std::map<int, std::string>::iterator sendIt = _sendQueues.find(fd);
+
+	if (recvIt != _recvQueues.end())
+		_recvQueues.erase(recvIt);
+
+	if (sendIt != _sendQueues.end())
+		_sendQueues.erase(sendIt);
 }
 
 // Numeric error replies

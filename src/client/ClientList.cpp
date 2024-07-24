@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/05 10:47:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/11 03:18:15 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,20 +288,7 @@ void ClientList::removeByUser(const std::string &user) {
 	_clients.erase(fdIt);
 }
 
-void ClientList::removeClientFD(int clientFd)
-{
-	close(clientFd);
-
-	for (std::vector<struct pollfd>::iterator it = _pollFds.begin();
-		it != _pollFds.end(); ++it)
-	{
-		if (it->fd == clientFd)
-		{
-			_pollFds.erase(it);
-			break;
-		}
-	}
-
+void ClientList::removeClientFD(int clientFd) {
 	remove(clientFd);
 }
 

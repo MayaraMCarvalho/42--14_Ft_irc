@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 15:56:47 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:59:38 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,10 @@ class Commands
 		// ADICIONAR CONST E & ONDE NECESSÁRIO E RETESTAR TODOS OS COMANDOS
 
 		// Commands.cpp
+		void		extractCommands(int clientFd);
 		bool		isCommand(int clientFd, const std::string &message);
 		void		parsingArgs(const std::string &message);
-		
+
 		void		commandInvite( void );
 		void		sendInviting(std::string &nick, std::string &channelName);
 
@@ -170,6 +171,7 @@ class Commands
 		std::string	toString(int num);
 		int			toInt(std::string &str);
 		void		printInfo(const std::string &info);
+		static void	strToUpper(std::string &str);
 
 		// validations.cpp
 		bool		initValidation(size_t numArgs);

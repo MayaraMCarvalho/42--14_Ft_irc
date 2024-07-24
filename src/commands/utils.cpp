@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 15:39:06 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:02:04 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,9 @@ int Commands::toInt(std::string &str)
 void Commands::printInfo(const std::string &info)
 {
 	_clients.getClient(_fd)->second.sendMessage(info);
+}
+
+void Commands::strToUpper(std::string &str) {
+	for (std::string::iterator it = str.begin(); it != str.end(); ++it)
+		*it = std::toupper(*it);
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/16 19:32:28 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/23 14:17:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void Commands::commandPass( void )
 	Client	&client = _clients.getClient(_fd)->second;
 
 	if (_args.size() != 2)
-		printInfo(errorNeedMoreParams("Not enough parameters"));
+		printInfo(errorNeedMoreParams());
 	else if (client.getStatus() == Client::REGISTERED)
 		printInfo(errorAlredyRegister());
 	else
@@ -32,7 +32,6 @@ void Commands::commandPass( void )
 			printInfo(GREEN + _args[0] +
 				": Your access has been approved!" + RESET);// Verificar
 		}
-
 	}
 }
 

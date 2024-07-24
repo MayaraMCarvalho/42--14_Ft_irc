@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 13:31:10 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:52:13 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void Commands::commandJoin( void )
 	}
 }
 
-void Commands::printJoin(std::string channelName)
+void Commands::printJoin(std::string &channelName)
 {
 	Client client = _clients.getClient(_fd)->second;
 	std::string message = ":" + client.getFullId() + " " + _args[0] + " :" + channelName;
@@ -69,8 +69,8 @@ void Commands::commandKick( void )
 		if (_args.size() > 3)
 			std::string	comment = getMessage(3);
 
-		if (validChannelName(channel) && validArg(channel) &&
-			validArg(user) && verifyChannel(channel) && verifyChanOp(channel))
+		if (validArg(user) && validChannelName(channel) && validArg(channel)
+			&& verifyChannel(channel) && verifyChanOp(channel))
 		{
 			_channels.part(_clients.getFDByUser(user), channel);
 			printInfo(PURPLE + "The user " + BYELLOW + user +
@@ -88,7 +88,8 @@ void Commands::commandTopic( void )
 		std::string	channelName = _args[1];
 		std::string	topic = "";
 
-		if (validArg(channelName) && verifyChannel(channelName))
+		if (validArg(channelName)&& validChannelName(channelName)
+			&& verifyChannel(channelName))
 		{
 			if (_args.size() > 2)
 			{

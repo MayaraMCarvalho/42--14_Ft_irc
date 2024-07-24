@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/22 13:17:21 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 15:34:12 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,7 @@ typedef enum {
 	ERR_ALREADYREGISTERED = 462, // Ok
 	ERR_PASSWDMISMATCH = 464, // Ok
 	ERR_YOUREBANNEDCREEP = 465,
+	ERR_KEYSET = 467,
 	ERR_CHANNELISFULL = 471, // Ok
 	ERR_UNKNOWNMODE = 472,
 	ERR_INVITEONLYCHAN = 473, // Ok

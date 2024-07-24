@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 13:04:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 09:59:36 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ bool Commands::initValidation(size_t numArgs)
 
 	if (_args.size() < numArgs)
 	{
-		error = errorNeedMoreParams("Not enough parameters");
+		error = errorNeedMoreParams();
 		if (_args[0] == NICK)
 			error = errorNoNicknameGiven();
 		else if (_args[0] == PRIVMSG)
@@ -70,8 +70,6 @@ bool Commands::validArg(std::string &arg)
 	{
 		if (_args[0] == NICK)
 			printInfo(errorErroneusNickname(arg));
-		else if (_args[0] == PRIVMSG || _args[0] == INVITE || _args[0] == TOPIC)
-			printInfo(errorCannotSendToChan(arg));
 		else
 			printInfo(RED + "Error: Prohibited characters found" + RESET); // Verificar para cada comando
 	}
@@ -82,24 +80,25 @@ bool Commands::validArg(std::string &arg)
 
 bool Commands::invalidChar(std::string &arg)
 {
-	if ((_args[0] == MODE ||
-		((_args[0] == PRIVMSG || _args[0] == INVITE || _args[0] == TOPIC)
-			&& arg[0] != '#' && arg[0] != '&')) &&
-			!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
+	if ((_args[0] == MODE || _args[0] == PRIVMSG || _args[0] == JOIN
+		|| _args[0] == INVITE || _args[0] == TOPIC)
+		&& (arg[0] == '#' || arg[0] == '&'))
+		return false;
+	if (arg.find_first_not_of(ALPHA_NUM_SET) != std::string::npos)
 			return true;
 	return false;
 }
 
 bool Commands::validChannelName(std::string &channel)
 {
-	if ((_args[0] != PRIVMSG && channel[0] != '#' && channel[0] != '&') ||
-		((channel[0] == '#' || channel[0] != '&')
-		&& channel.find_first_not_of(ALPHA_NUM_SET, 1) != std::string::npos))
-	{
+	if ((channel[0] == '#' || channel[0] == '&')
+		&& channel.find_first_not_of(ALPHA_NUM_SET, 1) != std::string::npos)
 		printInfo(errorBadChanMask(channel));
-		return false;
-	}
-	return true;
+	else if (channel[0] != '#' && channel[0] != '&')
+		printInfo(errorCannotSendToChan(channel));
+	else
+		return true;
+	return false;
 }
 
 bool Commands::validMessage(std::string &message)

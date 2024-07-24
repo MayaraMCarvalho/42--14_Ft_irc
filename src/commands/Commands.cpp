@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 13:31:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 13:52:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // F1 (RPL_AWAY)
 	cmdFuncs[KICK] = &Commands::commandKick; // Ok
-	cmdFuncs[INVITE] = &Commands::commandInvite;
-	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[INVITE] = &Commands::commandInvite; // Ok
+	cmdFuncs[TOPIC] = &Commands::commandTopic; // Ok
 	cmdFuncs[MODE] = &Commands::commandMode;
 	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
 
@@ -66,9 +66,9 @@ void Commands::commandInvite( void )
 		std::string	nick = _args[1];
 		std::string	channelName = _args[2];
 
-		if (validArg(channelName) && validArg(nick)
+		if (validArg(channelName) && validChannelName(channelName)
 			&& verifyChannel(channelName) && verifyChanOp(channelName)
-			&& verifyInvite(nick, channelName))
+			&& validArg(nick) && verifyInvite(nick, channelName))
 		{
 			_channels.get(channelName)->second.addInvite(nick);
 			printInfo(getInviting(nick, channelName));
@@ -86,10 +86,4 @@ void Commands::sendInviting(std::string &nick, std::string &channelName)
 			+ nick + " :" + channelName + "" + RESET;
 
 	_clients.getClientByNick(nick)->second.sendMessage(info);
-	// std::cout << info << std::endl; // VERIFICAR O QUE DEVE SER RETORNAR PARA O SERVIDOR
-}
-
-void Commands::commandMode( void )
-{
-	std::cout << "Command Mode" << std::endl;
 }

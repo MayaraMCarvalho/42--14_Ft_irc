@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/22 13:20:10 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/24 10:06:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,45 @@ std::string Commands::getWelcome(Client &client)
 			" :Welcome to IRC server " + BYELLOW + client.getFullId() + RESET);
 }
 
+std::string Commands::getUserModeIs(std::string &who) //REFAZER RETORNANDO NADA
+{
+	int			modeFlags;
+	std::string	mode;
+
+	if (isItChannel(who))
+		modeFlags = _channels.get(who)->second.getChannelModeFlags();
+	else
+		modeFlags = _clients.getClientByNick(who)->second.getModeFlags();
+	if (modeFlags & Client::AWAY)
+		mode += "a";
+	if (modeFlags & Client::INVISIBLE)
+		mode += "i";
+	if (modeFlags & Client::WALLOPS)
+		mode += "w";
+	if (modeFlags & Client::RESTRICTED)
+		mode += "r";
+	if (modeFlags & Client::OPERATOR)
+		mode += "o";
+	if (modeFlags & Client::LOCAL_OP)
+		mode += "O";
+	if (modeFlags & Client::RECV_NOTICES)
+		mode += "s";
+
+	return (CYAN + toString(RPL_UMODEIS) + " " + who + " "
+			+ mode + RESET);
+}
+
 std::string Commands::getTopic(std::string &channelName)
 {
 	std::string topic = _channels.get(channelName)->second.getTopic();
 
-	if (!topic.empty())
+	if (topic.empty())
+		return (CYAN + toString(RPL_NOTOPIC) + " " + _clients.getNick(_fd)
+				+ " " + channelName + " :No topic is set" + RESET);
+	else
 		return (CYAN + toString(RPL_TOPIC) + " " + _clients.getNick(_fd)
 				+ " " + channelName + " :" + topic + RESET);
-	else
-		return (CYAN + toString(RPL_NOTOPIC) + " " + _clients.getNick(_fd)
-				+ " " + channelName + " :No topic is set" + RESET);;
+
 }
 
 std::string Commands::getInviting(std::string &nickname,
@@ -36,7 +65,6 @@ std::string Commands::getInviting(std::string &nickname,
 	return (CYAN + toString(RPL_INVITING) + " " + _clients.getNick(_fd)
 			+ " " + nickname + " " + channelName);
 }
-
 
 std::string Commands::getNamReply(std::string &channelName)
 {
@@ -59,3 +87,5 @@ std::string Commands::getEndOfNames(std::string &channelName)
 	return (CYAN + toString(RPL_ENDOFNAMES) + " " + _clients.getNick(_fd)
 			+ " " + channelName + " :End of /NAMES list." + RESET);
 }
+
+

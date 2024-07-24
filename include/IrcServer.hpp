@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/17 15:13:34 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:34:22 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class	Channel;
 class IRCServer
 {
 	private:
+
 		std::string					_port;
 		std::string					_password;
 		int 						_serverFd;
@@ -50,6 +51,7 @@ class IRCServer
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
+		bool						_isFdDisconnected;
 
 		bool						_shouldExit;
 		static IRCServer*			_instance;
@@ -57,6 +59,8 @@ class IRCServer
 		void		handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
+		static const int MAX_MSG_LENGTH = 512;
+
 	// Constructor & Destructor ===============================================
 	
 		IRCServer(const std::string &port, const std::string &password);
@@ -66,18 +70,18 @@ class IRCServer
 
 	// Getters ================================================================
 	
-		const		std::string& getPort(void);
-		const		std::string& getPassword(void);
-		int			getServerFd(void);
-		const		std::vector<struct pollfd>& getPollFds(void);
-		const		FileTransfer& getFileTransfer(void);
-		const		Bot& getBot(void);
-		//const		ClientList& getClients(void);
-		//const		ChannelList& getChannels(void);
-
-		ClientList	&getClients( void );
-		ChannelList	&getChannels( void );
-		MsgHandler	&getMsgHandler(void);
+		const				std::string& getPort(void);
+		const				std::string& getPassword(void);
+		int					getServerFd(void);
+		const				std::vector<struct pollfd>& getPollFds(void);
+		const				FileTransfer& getFileTransfer(void);
+		const				Bot& getBot(void););
+		ClientList			&getClients( void );
+		ChannelList			&getChannels( void );
+		const std::string	&getPassword( void );
+		MsgHandler			&getMsgHandler(void);
+		bool				getIsFdDisconnected(void);
+		static std::string	getHostName(const char *ip, const char *port);
 
 	// Setters ================================================================
 	
@@ -92,16 +96,19 @@ class IRCServer
 
 	// Methods ================================================================
 
-		void		setupServer(void);
 		void		run(void);
-		t_numCode	authenticate(int userFD, std::string password);
+		void		setupServer(void);
 		void		acceptNewClient(void);
 		void		handleClientMessage(int clientFd);
 		void		removeClient(int clientFd);
+		void		setupSignalHandlers(void);
+		void		disconnectClient(int fd, size_t fdIdx);
+		void		disconnectClient(int fd);
+		void		handleClientSideDisconnect(int fd);
+		t_numCode	authenticate(int userFD, std::string password);
+		static std::string	getHostName(const char *ip, const char *port);
 		static void	signalHandler(int signal);
 		static void	sendMessage(int clientFd, const std::string &message);
-		void		setupSignalHandlers(void);
-		static std::string	getHostName(const char *ip, const char *port);
 };
 
 #endif

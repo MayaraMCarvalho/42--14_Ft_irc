@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/02 16:27:40 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:24:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Commands::commandJoin( void )
 {
-	if (initialVerify(2, "JOIN <#channel_name> <key (optional)>\n"))
+	if (initValidation(2))
 	{
 		std::string	channel = _args[1];
 		std::string	key = "";
@@ -22,34 +22,46 @@ void Commands::commandJoin( void )
 		if (_args.size() > 2)
 			key = _args[2];
 
-		if (validChannel(channel) && validArg(channel)
-			&& verifyChannel(channel) && verifyJoin(channel, key))
+		if (validChannel(channel) && validArg(channel) && verifyJoin(channel, key))
 		{
 			_channels.join(_fd, channel, key);
-			printError(GREEN + "User successfully join the channel " +
-				channel + "!\n" + RESET);
+			printJoin(channel);
 		}
 	}
 }
 
+void Commands::printJoin(std::string channelName)
+{
+	std::string nick = _clients.getNick(_fd);
+	std::string message = ":" + nick + "!" + _clients.getUser(_fd) + "@" +
+		_clients.getHost(_fd) + " " + _args[0] + " :#" + channelName + "";
+
+	sendMessage(_channels.get(channelName), message);
+	printInfo(getTopic(channelName));
+	printInfo(getUsersInChannel(channelName));
+	printInfo(CYAN + toString(RPL_ENDOFNAMES) + " " + nick
+		+ " #" + channelName + " :End of /NAMES list." + RESET);
+}
+
+
 void Commands::commandPart( void )
 {
-	if (initialVerify(2, "PART <#channel_name>\n"))
+	if (initValidation(2))
 	{
 		std::string channel = _args[1];
 
 		if (validChannel(channel) && validArg(channel) && verifyChannel(channel))
 		{
 			_channels.part(_fd, channel);
-			printError(GREEN + "User successfully part the channel " +
-				channel + "!\n" + RESET);
+			printInfo(GREEN + "User successfully part the channel " +
+				channel + "!" + RESET);
 		}
 	}
 }
 
 void Commands::commandKick( void )
 {
-	if (initialVerify(3, "KICK <channel> <user> <comment(Optional)>\n"))
+	if (initValidation(3))
 	{
 		std::string	channel = _args[1];
 		std::string	user = _args[2];
@@ -61,10 +73,10 @@ void Commands::commandKick( void )
 			validArg(user) && verifyChannel(channel) && verifyKick(channel))
 		{
 			_channels.part(_clients.getFDByUser(user), channel);
-			printError(PURPLE + "The user " + BYELLOW + user +
+			printInfo(PURPLE + "The user " + BYELLOW + user +
 				PURPLE + " have been removed from the channel " +
 				BYELLOW + channel + PURPLE + "by the operator " +
-				BYELLOW + _clients.getUser(_fd) + "!\n" + RESET);
+				BYELLOW + _clients.getUser(_fd) + "!" + RESET);
 		}
 	}
 }

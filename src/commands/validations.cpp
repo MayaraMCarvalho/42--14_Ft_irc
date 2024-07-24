@@ -3,42 +3,41 @@
 /*                                                        :::      ::::::::   */
 /*   validations.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 05:08:57 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:38:21 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
 
-bool Commands::initialVerify(size_t num, const std::string &usage)
+bool Commands::initValidation(size_t numArgs)
 {
-	std::string	pre = RED + "Error ";
 	std::string	error;
 
-	if (_args.size() < num) // verificar se melhor usar !=
+	if (_args.size() < numArgs) // verificar se melhor usar !=
 	{
-		error = errorNeedMoreParams("Not enough parameters\n");
+		error = errorNeedMoreParams("Not enough parameters");
 		if (_args[0] == NICK)
-			error = pre + toString(ERR_NONICKNAMEGIVEN) +
-				"\n: No nickname given\n";
-		if (_args[0] == PRIVMSG)
+			error = toString(ERR_NONICKNAMEGIVEN) +
+				": No nickname given";
+		else if (_args[0] == PRIVMSG)
 		{
-			error = pre + toString(ERR_NOTEXTTOSEND) + "\n: No text to send\n";
+			error = toString(ERR_NOTEXTTOSEND) + ": No text to send";
 			if (_args.size() < 2)
-				error = pre + toString(ERR_NORECIPIENT) +
-					"\n: No recipient given (" + _args[0] + ")\n";
+				error = toString(ERR_NORECIPIENT) +
+					": No recipient given (" + _args[0] + ")";
 		}
-		printError(error + BBLUE + "Usage: " + usage + RESET);
+		printInfo(RED + error + RESET);
 		return false;
 	}
-	else if (_args[0] != QUIT && getErrors())
+	else if (_args[0] != QUIT && setupDone())
 		return false;
 	return true;
 }
 
-bool Commands::getErrors(void)
+bool Commands::setupDone(void)
 {
 	bool	isUser = (_args[0] == USER);
 	bool	isNick = (_args[0] == NICK);
@@ -49,12 +48,12 @@ bool Commands::getErrors(void)
 	bool	isReg = (status == Client::REGISTERED);
 
 	if ((isUser || isNick) && !isAuth && !isGotNick && !isGotUser && !isReg)
-		printError(RED + "Error: Unauthenticated client\n" + RESET);
+		printInfo(RED + "Error: Unauthenticated client" + RESET);
 	else if ((!isAuth && !isReg)
 		&& ((isUser && !isGotNick) || (isNick && !isGotUser)))
-		printError(RED + "Error: Registration must be completed\n" + RESET);
+		printInfo(RED + "Error: Registration must be completed" + RESET);
 	else if (!isUser && !isNick && !isReg)
-		printError(RED + "Error: You need to register the client first\n" + RESET);
+		printInfo(RED + "Error: You need to register the client first" + RESET);
 	else
 		return false;
 	return true;
@@ -66,17 +65,17 @@ bool Commands::validArg(std::string &arg)
 	std::string	error;
 
 	if (arg.empty())
-		printError(RED + "Error: Empty parameter\n" + RESET);
+		printInfo(RED + "Error: Empty parameter" + RESET);
 	else if (arg.size() > MAX_LENGTH)
-		printError(RED + "Error: Too long\n" + RESET);
+		printInfo(RED + "Error: Too long" + RESET);
 	else if (!(arg.find_first_not_of(ALPHA_NUM_SET) == std::string::npos))
 	{
 		if (_args[0] == NICK)
-			error = RED + "Error " + toString(ERR_ERRONEUSNICKNAME) +
-			"\n" + arg + ": Erroneus nickname\n" + RESET;
+			error = RED + toString(ERR_ERRONEUSNICKNAME) +
+			arg + ": Erroneus nickname" + RESET;
 		else
-			error = RED + "Error: Prohibited characters found\n" + RESET;
-		printError(error);
+			error = RED + "Error: Prohibited characters found" + RESET;
+		printInfo(error);
 	}
 	else
 		return true;
@@ -85,10 +84,12 @@ bool Commands::validArg(std::string &arg)
 
 bool Commands::validChannel(std::string &channel)
 {
+
 	if (channel[0] != '#')
 	{
 		if (_args[0] != PRIVMSG)
-			printError(RED + "Error: Non-standard channel name\n" + RESET);
+			printInfo(RED + toString(ERR_NOSUCHCHANNEL) + " " +
+			_clients.getNick(_fd) + " " +  channel + " :No such channel" + RESET);
 		return false;
 	}
 	else
@@ -102,7 +103,7 @@ bool Commands::validMessage(std::string &message)
 
 	if (message[0] != ':')
 	{
-		printError(RED + "Error: Non-standard message\n" + RESET);
+		printInfo(RED + "Error: Non-standard message" + RESET);
 		return false;
 	}
 	message.erase(0, 1);

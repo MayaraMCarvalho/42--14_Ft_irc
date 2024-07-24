@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:12:12 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/17 16:11:28 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:37:14 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,17 @@
 class ChannelList
 {
 	private:
-		std::map<std::string, Channel> _channels;
 		ClientList &_clients;
 		MsgHandler &_msgHandler;
-		static const int _DEFAULT_FLAGS = Channel::NO_UMODE;
-		std::map<std::string, std::set<std::string> > _invites;
 
+		std::map<std::string, Channel> _channels;
+		std::map<std::string, std::set<std::string> > _invites;
 		std::map<std::string, Channel>::size_type remove(std::string name);
 
 		void addInvite(const std::string &nick, const std::string &chan);
 		void removeInvite(const std::string &nick, const std::string &chan);
+
+		static const int _DEFAULT_FLAGS = Channel::NO_UMODE;
 
 	public:
 		ChannelList(ClientList &clients, MsgHandler &msgHandler);
@@ -50,12 +51,13 @@ class ChannelList
 		std::map<std::string, Channel>::iterator end(void);
     	std::map<std::string, Channel>::const_iterator end(void) const;
 		
-		void join(int userFD, const std::string &chanName, const std::string &key);
-		void part(int userFD, std::string chanName);
-		void partDisconnectedClient(int userFD);
-		bool userCanJoin(int userFD, Channel &chan, const std::string &key);
-		bool userHasInvite(const std::string &nick, const std::string &chan);
-		t_numCode inviteUser(const std::string &inviter,
+		int			size(void);
+		void		join(int userFD, const std::string &chanName, const std::string &key);
+		void		part(int userFD, std::string chanName);
+		void		partDisconnectedClient(int userFD);
+		bool		userCanJoin(int userFD, Channel &chan, const std::string &key);
+		bool		userHasInvite(const std::string &nick, const std::string &chan);
+		t_numCode	inviteUser(const std::string &inviter,
 		const std::string &invitee, const std::string &chan);
 };
 

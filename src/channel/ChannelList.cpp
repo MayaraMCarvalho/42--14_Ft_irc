@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/17 16:12:15 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:39:42 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,11 @@ std::map<std::string, Channel>::iterator ChannelList::end(void) {
 	return _channels.end();
 }
 
-std::map<std::string, Channel>::const_iterator ChannelList::end(void) const {
-    return _channels.end();
+int ChannelList::size(void) {
+	int count = 0;
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it)
+		++count;
+	return count;
 }
 
 std::map<std::string, Channel>::iterator ChannelList::add(Channel channel) {

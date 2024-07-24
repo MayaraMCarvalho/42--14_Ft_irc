@@ -6,7 +6,7 @@
 #    By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/17 14:10:56 by lucperei         ###   ########.fr        #
+#    Updated: 2024/07/23 21:34:52 by lucperei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
 			Commands.cpp channelCommands.cpp commandPrivmsg.cpp \
 			commandQuit.cpp setupCommands.cpp \
-			errorsCode.cpp utils.cpp validations.cpp verify.cpp
+			errorsCode.cpp infos.cpp utils.cpp validations.cpp verify.cpp
 
 TESTS_SRCS  = tests/UnitTests/IRCServerTest.cpp tests/UnitTests/ClientTest.cpp \
 			tests/UnitTests/ClientListTest.cpp tests/UnitTests/mainTest.cpp 

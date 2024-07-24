@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/17 14:04:53 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:39:53 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,15 @@ const std::string ClientList::getUser(int fd) {
 	return it->second.getUser();
 }
 
+const std::string ClientList::getHost(int fd) {
+	std::map<int, Client>::iterator it = getClient(fd);
+
+	if (it == end())
+		return "";
+
+	return it->second.getHost();
+}
+
 int ClientList::getFDByNick(const std::string &nick) {
 	std::map<int, Client>::iterator it = getClientByNick(nick);
 
@@ -100,6 +109,8 @@ int ClientList::getFDByUser(const std::string &user) {
 
 	return it->second.getFD();
 }
+
+std::map<int, Client>::iterator ClientList::begin(void) { return _clients.begin(); }
 
 std::map<int, Client>::iterator ClientList::end(void) { return _clients.end(); }
 
@@ -277,20 +288,7 @@ void ClientList::removeByUser(const std::string &user) {
 	_clients.erase(fdIt);
 }
 
-void ClientList::removeClientFD(int clientFd)
-{
-	close(clientFd);
-
-	for (std::vector<struct pollfd>::iterator it = _pollFds.begin();
-		it != _pollFds.end(); ++it)
-	{
-		if (it->fd == clientFd)
-		{
-			_pollFds.erase(it);
-			break;
-		}
-	}
-
+void ClientList::removeClientFD(int clientFd) {
 	remove(clientFd);
 }
 

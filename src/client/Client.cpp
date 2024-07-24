@@ -76,9 +76,15 @@ int Client::getModeFlags(void) { return _modeFlags; }
 
 void Client::setNick(const std::string &nick) { _nick = nick; }
 
+void Client::setHost(const std::string &host) { _host = host; }
+
 void Client::setUser(const std::string &user) { _user = user; }
 
-void Client::setHost(const std::string &host) { _host = host; }
+void Client::setUserHost(const std::string &userHost) { _userHost = userHost; }
+
+void Client::setUserServer(const std::string &userServer) { _userServer = userServer; }
+
+void Client::setUserName(const std::string &userName) { _userName = userName; }
 
 void Client::setFD(int fd) { _fd = fd; }
 

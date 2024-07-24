@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandPrivmsg.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/03 03:39:35 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:29:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void Commands::commandPrivMsg( void )
 {
-	if (initialVerify(3, "PRIVMSG <recipient> :<message>\n"))
+	if (initValidation(3))
 	{
 		std::string recipient = _args[1];
 		std::string message = getMessage(2);
@@ -27,13 +27,13 @@ void Commands::commandPrivMsg( void )
 		if (!isChannel)
 		{
 			if (!sendMessage(_clients.getFDByNick(recipient), message))
-				printError(errorNoSuchNick(recipient, "nick"));
+				printInfo(errorNoSuchNick(recipient, "nick"));
 		}
 		else if (!sendMessage( _channels.get(recipient), message))
-				printError(errorNoSuchNick(recipient, "channel"));
+				printInfo(errorNoSuchNick(recipient, "channel"));
 		else if (false) // Acrescentar: Enviado para um usuário que (a) não está em um canal que esteja no modo +n ou (b) não é um chanop (ou modo +v) em um canal que tem o modo +m definido
-			printError(RED + "Error " + toString(ERR_CANNOTSENDTOCHAN) +
-				"\n" + recipient + ":Cannot send to channel \n" + RESET);
+			printInfo(RED + toString(ERR_CANNOTSENDTOCHAN) +
+				recipient + ":Cannot send to channel" + RESET);
 	}
 }
 
@@ -60,6 +60,6 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel, std
 std::string Commands::getFullMessage(const std::string &message)
 {
 	return BBLUE + "Message received from " +
-		BYELLOW + _clients.getNick(_fd) + BPURPLE +
-		"\n" + message + RESET;
+		BYELLOW + " " + _clients.getNick(_fd) + BPURPLE +
+		message + RESET;
 }

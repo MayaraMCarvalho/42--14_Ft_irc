@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/23 21:34:22 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/23 21:45:29 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,9 @@ class IRCServer
 		int					getServerFd(void);
 		const				std::vector<struct pollfd>& getPollFds(void);
 		const				FileTransfer& getFileTransfer(void);
-		const				Bot& getBot(void););
+		const				Bot& getBot(void);
 		ClientList			&getClients( void );
 		ChannelList			&getChannels( void );
-		const std::string	&getPassword( void );
 		MsgHandler			&getMsgHandler(void);
 		bool				getIsFdDisconnected(void);
 		static std::string	getHostName(const char *ip, const char *port);
@@ -99,14 +98,13 @@ class IRCServer
 		void		run(void);
 		void		setupServer(void);
 		void		acceptNewClient(void);
-		void		handleClientMessage(int clientFd);
+		bool		handleClientMessage(int clientFd);
 		void		removeClient(int clientFd);
 		void		setupSignalHandlers(void);
 		void		disconnectClient(int fd, size_t fdIdx);
 		void		disconnectClient(int fd);
 		void		handleClientSideDisconnect(int fd);
 		t_numCode	authenticate(int userFD, std::string password);
-		static std::string	getHostName(const char *ip, const char *port);
 		static void	signalHandler(int signal);
 		static void	sendMessage(int clientFd, const std::string &message);
 };

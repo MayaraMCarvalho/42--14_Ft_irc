@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 05:58:55 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 07:02:36 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 08:10:29 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 NullLogger::NullLogger(void) { }
 
-NullLogger::NullLogger(NullLogger &src) : Logger(src) { (void)src; }
+NullLogger::NullLogger(t_logLevel level) : Logger(level) { }
+
+NullLogger::NullLogger(NullLogger &src) : Logger(src) { }
 
 NullLogger::~NullLogger(void) { }
 

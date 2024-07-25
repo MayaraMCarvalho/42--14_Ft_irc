@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 05:32:14 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 07:02:36 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:50:41 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 class NullLogger : public Logger {
 	public:
 		NullLogger(void);
+		NullLogger(t_logLevel level);
 		NullLogger(NullLogger &src);
 		virtual ~NullLogger(void);
 

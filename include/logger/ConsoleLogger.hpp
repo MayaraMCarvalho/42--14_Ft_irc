@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/24 05:32:14 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 07:02:38 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:52:17 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 class ConsoleLogger : public Logger {
 	public:
 		ConsoleLogger(void);
+		ConsoleLogger(t_logLevel level);
 		ConsoleLogger(ConsoleLogger &src);
 		virtual ~ConsoleLogger(void);
 

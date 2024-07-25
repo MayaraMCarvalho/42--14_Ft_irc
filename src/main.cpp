@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 07:23:46 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 08:11:18 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 {
 	std::string	port;
 	std::string	password;
-	ConsoleLogger logger;
+	ConsoleLogger logger(Logger::DEBUG);
 
 	if (!validateArguments(argc, argv, port, password))
 		return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/04 17:11:23 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 06:32:28 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ void ChannelList::join(int userFD, const std::string &chanName,
 			chan.getChannelModeFlags() | Channel::CHANOP);
 		return;
 	} catch (std::exception &e) {
-		std::cerr << RED << "Could not create channel: " << YELLOW
-			<< chanName << std::endl;
+		_msgHandler.getLogger().error(RED + "Could not create channel: " +
+			YELLOW + chanName);
 		std::cout << RESET << std::endl;
 		return;
 	}
@@ -123,9 +123,8 @@ void ChannelList::part(int userFD, std::string chanName) {
 			remove(chanName);
 
 	} catch (std::exception &e) {
-		std::cerr << RED << "Could not remove channel: " << YELLOW
-			<< chanName << std::endl;
-		std::cout << RESET << std::endl;
+		_msgHandler.getLogger().error(RED + "Could not remove channel: " +
+			YELLOW + chanName + RESET);
 		return;
 	}
 }

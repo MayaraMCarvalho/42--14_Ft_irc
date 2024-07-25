@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/11 05:20:18 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 06:55:19 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,16 @@
 IRCServer* IRCServer::_instance = NULL;
 
 // Constructor & Destructor ===================================================
-IRCServer::~IRCServer(void) {}
-
-IRCServer::IRCServer(const std::string &port, const std::string &password)
+IRCServer::IRCServer(const std::string &port, const std::string &password,
+		Logger &logger)
 	: _port(port), _password(password), _serverFd(-1), _bot("ChatBot"),
-	_msgHandler(), _clients(_msgHandler, _pollFds), _channels(_clients,
-	_msgHandler), _shouldExit(false)
+	_logger(logger), _msgHandler(_logger), _clients(_msgHandler, _pollFds),
+	_channels(_clients, _msgHandler), _shouldExit(false)
 {
 	_instance = this;
 }
+
+IRCServer::~IRCServer(void) { }
 
 // Getters ====================================================================
 ClientList& IRCServer::getClients( void ) { return _clients; }
@@ -36,6 +37,8 @@ ClientList& IRCServer::getClients( void ) { return _clients; }
 ChannelList& IRCServer::getChannels( void ) { return _channels; }
 
 const std::string& IRCServer::getPassword( void ) { return _password; }
+
+Logger &IRCServer::getLogger(void) { return _logger; }
 
 // Setters ====================================================================
 
@@ -156,16 +159,16 @@ void IRCServer::run(void)
 							_msgHandler.sendPop(fd).c_str(),strLen, 0);
 
 						if (nbytes <= 0) {
-							std::cerr << RED << "Write error on client "
-								<< BYELLOW << fd << std::endl << RESET;
+							_logger.error(RED + "Write error on client " +
+								BYELLOW + itoa(fd) + RESET);
 							disconnectClient(fd, fdIdx);
 						}
 						else
 							_msgHandler.removeSendChars(fd, nbytes);
 					} catch (std::out_of_range &e) {
-						std::cerr << RED
-						<< "Out of range exception caught while processing "
-						<< "message queue" << RESET << std::endl;
+						_logger.warn(RED +
+							"Out of range exception caught while processing " +
+							"message queue" + RESET);
 					}
 				}
 			}
@@ -185,7 +188,7 @@ void IRCServer::acceptNewClient(void)
 	clientFd = accept(_serverFd, (struct sockaddr *)&clientAddress, &clientLen);
 
 	if (clientFd < 0) {
-		std::cerr << "Failed to accept new client" << std::endl;
+		_logger.error("Failed to accept new client");
 		return;
 	}
 
@@ -197,8 +200,8 @@ void IRCServer::acceptNewClient(void)
 	struct pollfd pfd = {clientFd, POLLIN | POLLOUT, 0};
 	_pollFds.push_back(pfd);
 
-	std::cout << BLUE << "New client connected: ";
-	std::cout << BYELLOW << clientFd << RESET << std::endl;
+	_logger.info(BLUE + "New client connected: " + BYELLOW +
+		itoa(clientFd) + RESET);
 
 	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
 	std::string message = BPURPLE +
@@ -214,13 +217,13 @@ bool IRCServer::handleClientMessage(int clientFd)
 	nbytes = read(clientFd, buffer, sizeof(buffer) - 1); // read client data
 
 	if (nbytes < 0) {
-		std::cerr << RED << "Read error on client: " << BYELLOW << clientFd
-			<< RESET << std::endl;
+		_logger.error(RED + "Read error on client: " + BYELLOW +
+			itoa(clientFd) + RESET);
 		return false;
 	}
 	else if (nbytes == 0) {
-		std::cerr << "Client disconnected: " << BYELLOW << clientFd
-			<< RESET << std::endl;
+		_logger.info("Client disconnected: " + BYELLOW +
+			itoa(clientFd) + RESET);
 		return false;
 	}
 
@@ -228,7 +231,7 @@ bool IRCServer::handleClientMessage(int clientFd)
 
 	if (!_msgHandler.recvPush(clientFd, buffer))
 	{
-		std::cerr << "Receive message queue is full" << RESET << std::endl;
+		_logger.warn("Receive message queue is full" + RESET);
 		return false;
 	}
 
@@ -270,8 +273,8 @@ void IRCServer::disconnectClient(int fd) {
 		}
 	}
 	if (fdIdx >= _pollFds.size())
-		std::cerr << RED << "Could not find fd in _pollfds: " << BYELLOW << fd
-			<< RESET << std::endl;
+		_logger.error(RED + "Could not find fd in _pollfds: " + BYELLOW +
+			itoa(fd) + RESET);
 	else
 		disconnectClient(fd, fdIdx);
 }

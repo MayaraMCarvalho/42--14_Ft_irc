@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/30 05:37:35 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 06:59:00 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Colors.hpp"
+#include "ConsoleLogger.hpp"
 #include "IrcServer.hpp"
 
 
@@ -73,13 +74,14 @@ int main(int argc, char *argv[])
 {
 	std::string	port;
 	std::string	password;
+	ConsoleLogger logger;
 
 	if (!validateArguments(argc, argv, port, password))
 		return (1);
 
 	try
 	{
-		IRCServer server(port, password);
+		IRCServer server(port, password, logger);
 		server.run();
 	}
 	catch (const std::exception &e)

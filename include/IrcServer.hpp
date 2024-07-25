@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/11 04:36:26 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:02:30 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "FileTransfer.hpp"
 #include "Bot.hpp"
 #include "MsgHandler.hpp"
+#include "Logger.hpp"
 
 class	Channel;
 
@@ -31,6 +32,7 @@ class IRCServer
 		std::vector<struct pollfd>	_pollFds;
 		FileTransfer 				_fileTransfer;
 		Bot 						_bot;
+		Logger				&_logger;
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
@@ -45,7 +47,8 @@ class IRCServer
 		static const int MAX_MSG_LENGTH = 512;
 
 	// Constructor & Destructor ===============================================
-		IRCServer(const std::string &port, const std::string &password);
+		IRCServer(const std::string &port, const std::string &password,
+			Logger &logger);
 		~IRCServer( void );
 
 	// Exceptions =============================================================
@@ -57,6 +60,7 @@ class IRCServer
 		MsgHandler			&getMsgHandler(void);
 		bool				getIsFdDisconnected(void);
 		static std::string	getHostName(const char *ip, const char *port);
+		Logger		&getLogger(void);
 
 	// Setters ================================================================
 

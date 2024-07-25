@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/11 05:35:15 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 06:37:18 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@ void Commands::extractCommands(int clientFd) {
 		if (endIdx == std::string::npos &&
 				(str.find('\n') != std::string::npos ||
 					str.find('\r') != std::string::npos)) {
-			std::cerr << RED << "Message contains invalid line end characters: "
-			<< BYELLOW << str << RESET << std::endl;
+			_server.getLogger().info(
+				"Message contains invalid line end characters: " +
+					BYELLOW + str + RESET);
 			str.clear();
 			return;
 		}
@@ -72,9 +73,9 @@ void Commands::extractCommands(int clientFd) {
 			str.clear();
 
 	} catch(std::out_of_range &e) {
-		std::cerr << RED
-			<< "Out of range exception caught while processing client messages"
-			<< RESET << std::endl;
+		_server.getLogger().warn(RED
+			+ "Out of range exception caught while processing client messages"
+			+ RESET);
 	}
 }
 
@@ -95,8 +96,8 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[MODE] = &Commands::commandMode;
 	cmdFuncs[QUIT] = &Commands::commandQuit; //
 
-	std::cout << CYAN << "Received message from client " << clientFd
-				<< ": " << BYELLOW << message << RESET << std::endl;
+	_server.getLogger().debug(CYAN + "Received message from client " +
+		itoa(clientFd) + ": " + BYELLOW + message + RESET);
 
 	parsingArgs(message);
 	strToUpper(_args[0]);

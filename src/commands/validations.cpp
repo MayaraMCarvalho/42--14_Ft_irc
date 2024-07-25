@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:54:49 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:15:16 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ bool Commands::validArg(std::string &arg)
 
 bool Commands::invalidChar(std::string &arg)
 {
-	if ((_args[0] == MODE || _args[0] == PRIVMSG || _args[0] == JOIN
-		|| _args[0] == INVITE || _args[0] == TOPIC)
+	if (_args[0] != NICK && _args[0] != USER && _args[0] != QUIT
 		&& (arg[0] == '#' || arg[0] == '&'))
 		return false;
 	if (arg.find_first_not_of(ALPHA_NUM_SET) != std::string::npos)
@@ -99,7 +98,7 @@ bool Commands::validChannelName(std::string &channel)
 		&& channel.find_first_not_of(ALPHA_NUM_SET, 1) != std::string::npos)
 		printInfo(errorBadChanMask(channel));
 	else if (channel[0] != '#' && channel[0] != '&')
-		printInfo(errorCannotSendToChan(channel));
+		printInfo(errorNoSuchChannel(channel));
 	else
 		return true;
 	return false;

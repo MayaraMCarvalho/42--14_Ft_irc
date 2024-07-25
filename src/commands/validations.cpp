@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:42:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:50:20 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,13 @@ bool Commands::validArg(std::string &arg)
 	if (arg.empty())
 		printInfo(RED + "Error: Empty parameter" + RESET);// Verificar
 	else if (arg.size() > MAX_LENGTH)
-		printInfo(RED + "Error: Too long" + RESET);// Verificar
-	else if (invalidChar(arg)) // verificar
+	{
+		if (_args[0] == NICK)
+			printInfo(errorErroneusNickname(arg));
+		else
+			printInfo(RED + "Error: Too long" + RESET); // VERIFICAR
+	}
+	else if (invalidChar(arg))
 	{
 		if (_args[0] == NICK)
 			printInfo(errorErroneusNickname(arg));
@@ -84,7 +89,7 @@ bool Commands::invalidChar(std::string &arg)
 		&& (arg[0] == '#' || arg[0] == '&'))
 		return false;
 	if (arg.find_first_not_of(ALPHA_NUM_SET) != std::string::npos)
-			return true;
+		return true;
 	return false;
 }
 

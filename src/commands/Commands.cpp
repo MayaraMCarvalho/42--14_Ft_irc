@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:46:14 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; //
+	cmdFuncs[PASS] = &Commands::commandPass; // Ok
 	cmdFuncs[NICK] = &Commands::commandNick; //
 	cmdFuncs[USER] = &Commands::commandUser; //
 	cmdFuncs[JOIN] = &Commands::commandJoin; //

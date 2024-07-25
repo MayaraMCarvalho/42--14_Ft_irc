@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 09:59:36 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:42:04 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,40 +21,39 @@ bool Commands::initValidation(size_t numArgs)
 		error = errorNeedMoreParams();
 		if (_args[0] == NICK)
 			error = errorNoNicknameGiven();
-		else if (_args[0] == PRIVMSG)
+		if (_args[0] == PRIVMSG)
 		{
 			error = errorNoTextToSend();
 			if (_args.size() < 2)
 				error = errorNoRecipient();
 		}
 		printInfo(error);
-		return false;
 	}
-	else if (_args[0] != QUIT && validSetup())
-		return false;
-	return true;
+	else if (_args.size() > numArgs && _args[0] == NICK)
+		printInfo(errorErroneusNickname(_args[1]));
+	else
+		return true;
+	return false;
 }
 
 bool Commands::validSetup(void)
 {
+	int		status = _clients.getClient(_fd)->second.getStatus();
+
 	bool	isUser = (_args[0] == USER);
 	bool	isNick = (_args[0] == NICK);
-	int		status = _clients.getClient(_fd)->second.getStatus();
+
 	bool	isAuth = (status == Client::AUTHENTICATED);
 	bool	isGotNick = (status == Client::GOT_NICK);
 	bool	isGotUser = (status == Client::GOT_USER);
 	bool	isReg = (status == Client::REGISTERED);
 
-	if ((isUser || isNick) && !isAuth && !isGotNick && !isGotUser && !isReg)
-		printInfo(RED + "Error: Unauthenticated client" + RESET);// Verificar
-	else if ((!isAuth && !isReg)
-		&& ((isUser && !isGotNick) || (isNick && !isGotUser)))
-		printInfo(RED + "Error: Registration must be completed" + RESET);// Verificar
-	else if (!isUser && !isNick && !isReg)
+	if (!isReg && ((!isUser && !isNick)
+		|| (!isAuth && ((isUser && !isGotNick) || (isNick && !isGotUser)))))
 		printInfo(errorNotRegistered());
 	else
-		return false;
-	return true;
+		return true;
+	return false;
 
 }
 
@@ -66,7 +65,7 @@ bool Commands::validArg(std::string &arg)
 		printInfo(RED + "Error: Empty parameter" + RESET);// Verificar
 	else if (arg.size() > MAX_LENGTH)
 		printInfo(RED + "Error: Too long" + RESET);// Verificar
-	else if (invalidChar(arg))
+	else if (invalidChar(arg)) // verificar
 	{
 		if (_args[0] == NICK)
 			printInfo(errorErroneusNickname(arg));

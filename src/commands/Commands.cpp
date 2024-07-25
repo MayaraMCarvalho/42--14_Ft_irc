@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 16:03:48 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,20 +80,17 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; // Ok
-	cmdFuncs[NICK] = &Commands::commandNick; // Ok
-	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; // Ok
-	cmdFuncs[PART] = &Commands::commandPart; // Ok
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // F1 (RPL_AWAY)
-	cmdFuncs[KICK] = &Commands::commandKick; // Ok
-	cmdFuncs[INVITE] = &Commands::commandInvite; // Ok
-	cmdFuncs[TOPIC] = &Commands::commandTopic; // Ok
-	cmdFuncs[MODE] = &Commands::commandMode;
-	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
-
-	std::cout << CYAN << "Received message from client " << clientFd
-				<< ": " << BYELLOW << message << RESET << std::endl;
+	cmdFuncs[PASS] = &Commands::commandPass; //
+	cmdFuncs[NICK] = &Commands::commandNick; //
+	cmdFuncs[USER] = &Commands::commandUser; //
+	cmdFuncs[JOIN] = &Commands::commandJoin; //
+	cmdFuncs[PART] = &Commands::commandPart; //
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //
+	cmdFuncs[KICK] = &Commands::commandKick; //
+	cmdFuncs[INVITE] = &Commands::commandInvite; //
+	cmdFuncs[TOPIC] = &Commands::commandTopic; //
+	cmdFuncs[MODE] = &Commands::commandMode; // Faltam os RPL's
+	cmdFuncs[QUIT] = &Commands::commandQuit; //
 
 	std::cout << CYAN << "Received message from client " << clientFd
 				<< ": " << BYELLOW << message << RESET << std::endl;
@@ -121,7 +118,7 @@ void Commands::parsingArgs(const std::string &message)
 
 void Commands::commandInvite( void )
 {
-	if (initValidation(3))
+	if (validSetup() && initValidation(3))
 	{
 		std::string	nick = _args[1];
 		std::string	channelName = _args[2];

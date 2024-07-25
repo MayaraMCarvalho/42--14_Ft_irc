@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/23 14:17:05 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:42:10 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,29 @@
 void Commands::commandPass( void )
 {
 	Client	&client = _clients.getClient(_fd)->second;
+	Client::t_status status = client.getStatus();
 
 	if (_args.size() != 2)
 		printInfo(errorNeedMoreParams());
-	else if (client.getStatus() == Client::REGISTERED)
+	else if (status == Client::AUTHENTICATED || status == Client::GOT_NICK
+			|| status == Client::GOT_USER || status == Client::REGISTERED)
 		printInfo(errorAlredyRegister());
 	else
 	{
 		std::string	pass = _args[1];
 
-		if (pass != _serverPass)
+		if (pass.size() > MAX_LENGTH)
+			printInfo(errorNeedMoreParams());
+		else if (pass != _serverPass)
 			printInfo(errorPassMismatch());
-		else if (client.getStatus() == Client::CONNECTED)
-		{
+		else if (status == Client::CONNECTED)
 			client.setStatus(Client::AUTHENTICATED);
-			printInfo(GREEN + _args[0] +
-				": Your access has been approved!" + RESET);// Verificar
-		}
 	}
 }
 
 void Commands::commandNick( void )
 {
-	if (initValidation(2))
+	if (validSetup() && initValidation(2))
 	{
 		std::string	nick = _args[1];
 
@@ -62,7 +62,7 @@ void Commands::commandNick( void )
 
 void Commands::commandUser( void )
 {
-	if (initValidation(5))
+	if (validSetup() && initValidation(5))
 	{
 		std::string	user = _args[1];
 		std::string	userName = getMessage(4);

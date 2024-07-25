@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 15:59:38 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:29:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,8 @@ class Commands
 
 		// infos.cpp
 		std::string	getWelcome(Client &client);
-		std::string	getUserModeIs(std::string &who);
+		std::string	getUserModeIs(Client &client);
+		std::string	getChannelModeIs(Channel &channel);
 		std::string	getTopic(std::string &channelName);
 		std::string	getInviting(std::string &nickname, std::string &channelName);
 		std::string	getNamReply(std::string &channelName);

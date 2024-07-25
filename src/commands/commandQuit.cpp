@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandQuit.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/09 23:21:57 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void Commands::commandQuit( void )
 {
-	if (initValidation(1))
+	if (validSetup() && initValidation(1))
 	{
 		std::string	messageQuit = "";
 		std::string	prefix = RED + "Client " + BYELLOW + toString(_fd)

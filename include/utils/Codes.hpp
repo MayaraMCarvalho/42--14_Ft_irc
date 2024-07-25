@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/24 15:34:12 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 10:33:16 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ typedef enum {
 	RPL_BOUNCE = 010,
 	RPL_STATSCOMMANDS = 212,
 	RPL_ENDOFSTATS = 219,
-	RPL_UMODEIS = 221,
+	RPL_UMODEIS = 221, // Ok
 	RPL_STATSUPTIME = 242,
 	RPL_LUSERCLIENT = 251,
 	RPL_LUSEROP = 252,
@@ -56,7 +56,7 @@ typedef enum {
 	RPL_LISTSTART = 321,
 	RPL_LIST = 322,
 	RPL_LISTEND = 323,
-	RPL_CHANNELMODEIS = 324,
+	RPL_CHANNELMODEIS = 324, // Ok
 	RPL_CREATIONTIME = 329,
 	RPL_WHOISACCOUNT = 330,
 	RPL_NOTOPIC = 331, // Ok
@@ -65,7 +65,7 @@ typedef enum {
 	RPL_INVITELIST = 336,
 	RPL_ENDOFINVITELIST = 337,
 	RPL_WHOISACTUALLY = 338,
-	RPL_INVITING = 341,
+	RPL_INVITING = 341, // Ok
 	RPL_INVEXLIST = 346,
 	RPL_ENDOFINVEXLIST = 347,
 	RPL_EXCEPTLIST = 348,
@@ -106,17 +106,17 @@ typedef enum {
 	ERR_ERRONEUSNICKNAME = 432, // Ok
 	ERR_NICKNAMEINUSE = 433, // Ok
 	ERR_NICKCOLLISION = 436,
-	ERR_USERNOTINCHANNEL = 441,
+	ERR_USERNOTINCHANNEL = 441, // Ok
 	ERR_NOTONCHANNEL = 442, // Ok
-	ERR_USERONCHANNEL = 443,
+	ERR_USERONCHANNEL = 443, // Ok
 	ERR_NOTREGISTERED = 451,// Ok
 	ERR_NEEDMOREPARAMS = 461, // Ok
 	ERR_ALREADYREGISTERED = 462, // Ok
 	ERR_PASSWDMISMATCH = 464, // Ok
 	ERR_YOUREBANNEDCREEP = 465,
-	ERR_KEYSET = 467,
+	ERR_KEYSET = 467, // Ok
 	ERR_CHANNELISFULL = 471, // Ok
-	ERR_UNKNOWNMODE = 472,
+	ERR_UNKNOWNMODE = 472, // Ok
 	ERR_INVITEONLYCHAN = 473, // Ok
 	ERR_BANNEDFROMCHAN = 474, // Ok
 	ERR_BADCHANNELKEY = 475, // Ok
@@ -126,7 +126,7 @@ typedef enum {
 	ERR_CANTKILLSERVER = 483,
 	ERR_NOOPERHOST = 491,
 	ERR_UMODEUNKNOWNFLAG = 501,
-	ERR_USERSDONTMATCH = 502,
+	ERR_USERSDONTMATCH = 502, // Ok
 	ERR_HELPNOTFOUND = 524,
 	ERR_INVALIDKEY = 525,
 	RPL_STARTTLS = 670,

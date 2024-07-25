@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/23 11:05:40 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void Commands::commandPrivMsg( void )
 {
-	if (initValidation(3))
+	if (validSetup() && initValidation(3))
 	{
 		std::string	recipient = _args[1];
 		std::string	message = getMessage(2);

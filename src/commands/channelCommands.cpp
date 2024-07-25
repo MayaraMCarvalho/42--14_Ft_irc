@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 13:52:13 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void Commands::commandJoin( void )
 {
-	if (initValidation(2))
+	if (validSetup() && validSetup() && initValidation(2))
 	{
 		std::string	channel = _args[1];
 		std::string	key = "";
@@ -45,7 +45,7 @@ void Commands::printJoin(std::string &channelName)
 
 void Commands::commandPart( void )
 {
-	if (initValidation(2))
+	if (validSetup() && initValidation(2))
 	{
 		std::string channel = _args[1];
 
@@ -61,7 +61,7 @@ void Commands::commandPart( void )
 
 void Commands::commandKick( void )
 {
-	if (initValidation(3))
+	if (validSetup() && initValidation(3))
 	{
 		std::string	channel = _args[1];
 		std::string	user = _args[2];
@@ -83,7 +83,7 @@ void Commands::commandKick( void )
 
 void Commands::commandTopic( void )
 {
-	if (initValidation(2))
+	if (validSetup() && initValidation(2))
 	{
 		std::string	channelName = _args[1];
 		std::string	topic = "";

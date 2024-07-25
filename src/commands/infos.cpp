@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 10:06:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 12:04:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,32 +18,54 @@ std::string Commands::getWelcome(Client &client)
 			" :Welcome to IRC server " + BYELLOW + client.getFullId() + RESET);
 }
 
-std::string Commands::getUserModeIs(std::string &who) //REFAZER RETORNANDO NADA
+std::string Commands::getUserModeIs(Client &client)
 {
-	int			modeFlags;
-	std::string	mode;
+	int	modeFlags = client.getModeFlags();
+	std::stringstream mode;
 
-	if (isItChannel(who))
-		modeFlags = _channels.get(who)->second.getChannelModeFlags();
-	else
-		modeFlags = _clients.getClientByNick(who)->second.getModeFlags();
-	if (modeFlags & Client::AWAY)
-		mode += "a";
-	if (modeFlags & Client::INVISIBLE)
-		mode += "i";
-	if (modeFlags & Client::WALLOPS)
-		mode += "w";
-	if (modeFlags & Client::RESTRICTED)
-		mode += "r";
-	if (modeFlags & Client::OPERATOR)
-		mode += "o";
-	if (modeFlags & Client::LOCAL_OP)
-		mode += "O";
-	if (modeFlags & Client::RECV_NOTICES)
-		mode += "s";
+	if (modeFlags)
+		mode << '+';
 
-	return (CYAN + toString(RPL_UMODEIS) + " " + who + " "
-			+ mode + RESET);
+	if (modeFlags & Client::AWAY) mode << "a";
+	if (modeFlags & Client::INVISIBLE) mode << "i";
+	if (modeFlags & Client::WALLOPS) mode << "w";
+	if (modeFlags & Client::RESTRICTED) mode << "r";
+	if (modeFlags & Client::OPERATOR) mode << "o";
+	if (modeFlags & Client::LOCAL_OP) mode << "O";
+	if (modeFlags & Client::RECV_NOTICES) mode << "s";
+
+	return (CYAN + toString(RPL_UMODEIS) + " " + client.getNick()
+			+ GREEN + " " + mode.str() + RESET);
+}
+
+std::string Commands::getChannelModeIs(Channel &channel)
+{
+	int	modeFlags = channel.getChannelModeFlags();
+	std::stringstream mode, params;
+
+	if (modeFlags)
+		mode << '+';
+	if (modeFlags & Channel::ANONYMOUS) mode << "a";
+	if (modeFlags & Channel::INVITEONLY) mode << "i";
+	if (modeFlags & Channel::MODERATED) mode << "m";
+	if (modeFlags & Channel::NO_OUT_MSG) mode << "n";
+	if (modeFlags & Channel::QUIET) mode << "q";
+	if (modeFlags & Channel::PRIVATE) mode << "p";
+	if (modeFlags & Channel::SECRET) mode << "s";
+	if (modeFlags & Channel::OP_TOPIC) mode << "t";
+	if (modeFlags & Channel::HAS_KEY)
+	{
+		mode << "k";
+		params << ' ' << channel.getKey();
+	}
+	if (modeFlags & Channel::ULIMIT)
+	{
+		mode << "l";
+		params << ' ' << channel.getUserLimit();
+	}
+
+	return (CYAN + toString(RPL_CHANNELMODEIS) + " " + channel.getName()
+			+ GREEN + " " + mode.str() + " " + YELLOW + params.str() + RESET);
 }
 
 std::string Commands::getTopic(std::string &channelName)

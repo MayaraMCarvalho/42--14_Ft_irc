@@ -82,7 +82,6 @@ void Client::setUserName(const std::string &userName) { _userName = userName; }
 
 void Client::setModeFlags(int modeFlags) { _modeFlags = modeFlags; }
 
-#include <iostream>//
 void Client::setMode(const std::string &modeStr) {
 
 	int newModeFlags;

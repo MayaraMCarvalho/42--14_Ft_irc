@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 06:55:19 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:24:19 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ void IRCServer::signalHandler(int signal)
 		for (std::map<int, Client>::iterator it = clients.begin();
 			it != clients.end(); ++it)
 			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
-		std::cout << BGREEN << std::endl;
-		std::cout << "Exiting gracefully!" << RESET << std::endl;
 	}
 }
 
@@ -112,8 +110,8 @@ void IRCServer::run(void)
 
 	setupServer();
 	setupSignalHandlers();
-	std::cout << GREEN << "Server running on port ";
-	std::cout << BYELLOW << _port << RESET << std::endl;
+	_logger.info(GREEN + "Server running on port " +
+		BYELLOW + itoa(_port) + RESET);
 
 	while (!_shouldExit)
 	{
@@ -178,6 +176,7 @@ void IRCServer::run(void)
 				++fdIdx;
 		}
 	}
+	_logger.debug(BGREEN + "Exiting gracefully!" + RESET);
 }
 
 void IRCServer::acceptNewClient(void)

@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 06:37:18 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:20:05 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,15 +122,16 @@ void Commands::parsingArgs(const std::string &message)
 
 void Commands::commandInvite( void )
 {
- std::cout << "Command Invite" << std::endl;
+	_server.getLogger().debug("Command Invite");
 }
 
 void Commands::commandTopic( void )
 {
-	std::cout << "Command Topic" << std::endl;
+	_server.getLogger().debug("Command Topic");
+
 }
 
 void Commands::commandMode( void )
 {
-	std::cout << "Command Mode" << std::endl;
+	_server.getLogger().debug("Command Mode");
 }

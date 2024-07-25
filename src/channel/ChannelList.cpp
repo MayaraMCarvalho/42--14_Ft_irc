@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 06:32:28 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/25 07:17:20 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,7 @@ void ChannelList::join(int userFD, const std::string &chanName,
 		return;
 	} catch (std::exception &e) {
 		_msgHandler.getLogger().error(RED + "Could not create channel: " +
-			YELLOW + chanName);
-		std::cout << RESET << std::endl;
+			YELLOW + chanName + RESET);
 		return;
 	}
 

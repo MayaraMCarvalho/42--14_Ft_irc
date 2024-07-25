@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:25:42 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ void Commands::commandJoin( void )
 void Commands::printJoin(std::string &channelName)
 {
 	Client client = _clients.getClient(_fd)->second;
-	std::string message = ":" + client.getFullId() + " " + _args[0] + " :" + channelName;
+	std::string message = ":" + client.getFullId() + " "
+						+ _args[0] + " :" + channelName;
 
 	sendMessage(_channels.get(channelName), message);
 
@@ -53,8 +54,8 @@ void Commands::commandPart( void )
 			&& verifyChannel(channel))
 		{
 			_channels.part(_fd, channel);
-			printInfo(GREEN + "User successfully part the channel " +
-				channel + "!" + RESET);// Verificar
+			printInfo(GREEN + _clients.getClient(_fd)->second.getFullId()
+						+ " PART " + channel + RESET);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 20:20:51 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,13 @@ void Commands::commandPrivMsg( void )
 		if (!validArg(recipient) || !validMessage(message))
 			return ;
 
-		if (!isChannel)
+		else if (!isChannel)
 		{
 			if (!sendMessage(_clients.getFDByNick(recipient), message))
 				printInfo(errorNoSuchNick(recipient));
 		}
 		else if (validChannelName(recipient))
-		{
-			if (!sendMessage( _channels.get(recipient), message))
-				printInfo(errorNoSuchChannel(recipient));
-			else if (false) // Acrescentar: Enviado para um usuário que (a) não está em um canal que esteja no modo +n ou (b) não é um chanop (ou modo +v) em um canal que tem o modo +m definido
-				printInfo(errorCannotSendToChan(recipient));
-		}
+			sendMessageChannel(recipient, message);
 	}
 }
 
@@ -51,9 +46,25 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 	if (clientFd == -1)
 		return false;
 
-	_server.getMsgHandler().sendMessage(clientFd, getFullMessage(message));
+	std::string name = _clients.getNick(clientFd);
+	_server.getMsgHandler().sendMessage(clientFd, getFullMessage(message, name));
 
 	return true;
+}
+
+void Commands::sendMessageChannel(std::string &recipient, std::string &message)
+{
+	Client	client = _clients.getClient(_fd)->second;
+	Channel	channel = _channels.get(recipient)->second;
+
+	if ((channel.getChannelMode(Channel::NO_OUT_MSG)
+		&& !client.isInChannel(recipient))
+		|| (channel.getChannelMode(Channel::MODERATED)
+		&& !channel.getUserMode(_fd, Channel::CHANOP)
+		&& !channel.getUserMode(_fd, Channel::VOICE)))
+		printInfo(errorCannotSendToChan(recipient));
+	else if (!sendMessage( _channels.get(recipient), message))
+		printInfo(errorNoSuchChannel(recipient));
 }
 
 bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel,
@@ -62,13 +73,14 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel,
 	if (channel == _channels.end())
 		return false;
 
-	channel->second.sendToAll(getFullMessage(message));
+	std::string name = channel->second.getName();
+	channel->second.sendToAll(getFullMessage(message, name));
 
 	return true;
 }
 
-std::string Commands::getFullMessage(const std::string &message)
+std::string Commands::getFullMessage(const std::string &message, std::string &name)
 {
-	return BBLUE + "Message received from " +
-		BYELLOW + _clients.getNick(_fd) + BPURPLE + " " + message + RESET;
+	return BBLUE + _clients.getClient(_fd)->second.getFullId() + " PRIVMSG "
+			+ BYELLOW + name + BPURPLE + " :" + message + RESET;
 }

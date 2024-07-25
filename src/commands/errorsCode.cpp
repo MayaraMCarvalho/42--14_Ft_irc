@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 15:36:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 20:01:28 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ std::string Commands::errorTooManyChannels(std::string &channelName)
 std::string Commands::errorNoRecipient( void )
 {
 	return (RED + toString(ERR_NORECIPIENT)
-			+ " :No recipient given (" + _args[0] + ")" + RESET);
+			+ " :No recipient given" + RESET);
 }
 
 std::string Commands::errorNoTextToSend( void )

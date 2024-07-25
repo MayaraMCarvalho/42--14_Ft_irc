@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 19:15:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:56:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,11 @@ bool Commands::validMessage(std::string &message)
 	if (message[0] != ':')
 	{
 		printInfo(RED + "Error: Non-standard message" + RESET);// Verificar
+		return false;
+	}
+	if (message == ":")
+	{
+		printInfo(errorNoTextToSend());
 		return false;
 	}
 	message.erase(0, 1);

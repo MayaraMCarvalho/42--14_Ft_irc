@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:29:49 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 20:21:00 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,10 @@ class Commands
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
 		bool		sendMessage(int clientFd, const std::string &message);
+		void		sendMessageChannel(std::string &recipient, std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
 								std::string &message);
-		std::string	getFullMessage(const std::string &message);
+		std::string	getFullMessage(const std::string &message, std::string &name);
 		bool		isItChannel(const std::string &channelName);
 
 		// quitCommand.cpp

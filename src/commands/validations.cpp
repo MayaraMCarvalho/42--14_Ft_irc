@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:50:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 18:54:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ bool Commands::validArg(std::string &arg)
 	}
 	else if (invalidChar(arg))
 	{
-		if (_args[0] == NICK)
+		if (_args[0] == NICK || _args[0] == USER)
 			printInfo(errorErroneusNickname(arg));
 		else
 			printInfo(RED + "Error: Prohibited characters found" + RESET); // Verificar para cada comando

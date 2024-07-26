@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 12:36:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 15:20:41 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[NICK] = &Commands::commandNick; // Ok
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
 	cmdFuncs[JOIN] = &Commands::commandJoin; // Ok
-	cmdFuncs[PART] = &Commands::commandPart; // falta mensagem
+	cmdFuncs[PART] = &Commands::commandPart; // Ok
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // retestar
 	cmdFuncs[KICK] = &Commands::commandKick; //
 	cmdFuncs[INVITE] = &Commands::commandInvite; //

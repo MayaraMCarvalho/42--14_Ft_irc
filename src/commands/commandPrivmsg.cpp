@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 13:39:06 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 16:33:44 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void Commands::commandPrivMsg( void )
 		if (!validArg(recipient) || !validMessage(message))
 			return ;
 
-		else if (!isChannel)
+		if (!isChannel)
 		{
 			if (!sendMessage(_clients.getFDByNick(recipient), message))
 				printInfo(errorNoSuchNick(recipient));
@@ -47,21 +47,27 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 		return false;
 
 	std::string name = _clients.getNick(clientFd);
-	_server.getMsgHandler().sendMessage(clientFd, getFullMessage(message, name));
+	if (message.find("unknown command") != std::string::npos)
+		_server.getMsgHandler().sendMessage(clientFd, RED + message + RESET);
+	else
+		_server.getMsgHandler().sendMessage(clientFd,
+											getFullMessage(message, name));
 
 	return true;
 }
 
 void Commands::sendMessageChannel(std::string &recipient, std::string &message)
 {
-	Client	client = _clients.getClient(_fd)->second;
-	Channel	channel = _channels.get(recipient)->second;
+	std::map<std::string, Channel>::iterator channel = _channels.get(recipient);
 
-	if ((channel.getChannelMode(Channel::NO_OUT_MSG)
-		&& !client.isInChannel(recipient))
-		|| (channel.getChannelMode(Channel::MODERATED)
-		&& !channel.getUserMode(_fd, Channel::CHANOP)
-		&& !channel.getUserMode(_fd, Channel::VOICE)))
+
+	if (channel == _channels.end())
+		printInfo(errorNoSuchChannel(recipient));
+	else if ((channel->second.getChannelMode(Channel::NO_OUT_MSG)
+		&& !_clients.getClient(_fd)->second.isInChannel(recipient))
+		|| (channel->second.getChannelMode(Channel::MODERATED)
+		&& !channel->second.getUserMode(_fd, Channel::CHANOP)
+		&& !channel->second.getUserMode(_fd, Channel::VOICE)))
 		printInfo(errorCannotSendToChan(recipient));
 	else if (!sendMessage( _channels.get(recipient), message))
 		printInfo(errorNoSuchChannel(recipient));

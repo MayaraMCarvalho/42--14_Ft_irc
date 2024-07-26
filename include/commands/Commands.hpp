@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 10:44:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 16:04:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,8 @@ class Commands
 		void		commandJoin( void );
 		void		printJoin(std::string &channelName);
 		void		commandPart( void );
+		void		applyPart(std::string &channel, std::string &info,
+							  std::string &message);
 		void		commandKick( void );
 		void		commandTopic( void );
 

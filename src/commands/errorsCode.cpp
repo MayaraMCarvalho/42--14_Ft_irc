@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 20:01:28 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 16:24:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 std::string Commands::errorNoSuchNick(std::string &recipient)
 {
-	return (RED + toString(ERR_NOSUCHNICK) + " "
-			+ recipient + " :No such nick" + RESET);
+	return (RED + toString(ERR_NOSUCHNICK) + " " + _clients.getNick(_fd)
+			+ " " + recipient + " :No such nick" + RESET);
 }
 
 std::string Commands::errorNoSuchChannel(std::string &channelName)
@@ -38,13 +38,14 @@ std::string Commands::errorTooManyChannels(std::string &channelName)
 
 std::string Commands::errorNoRecipient( void )
 {
-	return (RED + toString(ERR_NORECIPIENT)
+	return (RED + toString(ERR_NORECIPIENT) + " " + _clients.getNick(_fd)
 			+ " :No recipient given" + RESET);
 }
 
 std::string Commands::errorNoTextToSend( void )
 {
-	return (RED + toString(ERR_NOTEXTTOSEND) + " :No text to send" + RESET);
+	return (RED + toString(ERR_NOTEXTTOSEND) + " " + _clients.getNick(_fd)
+			+ " :No text to send" + RESET);
 }
 
 std::string Commands::errorNoNicknameGiven( void )

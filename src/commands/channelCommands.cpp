@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 14:03:56 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 16:05:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void Commands::commandPart( void )
 	{
 		std::vector<std::string> channels;
 		std::string	message = "";
-		std::string	channel;
 		std::string	info = BGREEN + _clients.getClient(_fd)->second.getFullId()
 				+ " PART" + BYELLOW + " " ;
 
@@ -73,19 +72,28 @@ void Commands::commandPart( void )
 		for (std::vector<std::string>::const_iterator it = channels.begin();
 			it != channels.end(); ++it)
 		{
-			channel = *it;
-			if (validChannelName(channel) && validArg(channel)
-				&& verifyChannel(channel))
-			{
-				std::string fullInfo = info;
-				_channels.part(_fd, channel);
-				fullInfo += channel;
-				if (!message.empty())
-					fullInfo += PURPLE + " :" + message;
-				fullInfo += RESET;
-				sendMessage(_channels.get(channel), fullInfo);
-			}
+			std::string channel = *it;
+			applyPart(channel, info, message);
 		}
+	}
+}
+
+void Commands::applyPart(std::string &channel, std::string &info,
+						 std::string &message)
+{
+	if (validChannelName(channel) && validArg(channel)
+		&& verifyChannel(channel))
+	{
+		std::string fullInfo = info;
+
+		_channels.part(_fd, channel);
+		fullInfo += channel;
+
+		if (!message.empty())
+			fullInfo += PURPLE + " :" + message;
+		fullInfo += RESET;
+
+		sendMessage(_channels.get(channel), fullInfo);
 	}
 }
 

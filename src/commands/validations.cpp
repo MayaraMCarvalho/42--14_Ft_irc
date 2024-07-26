@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 10:16:57 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 16:02:07 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ bool Commands::initValidation(size_t numArgs)
 		error = errorNeedMoreParams();
 		if (_args[0] == NICK)
 			error = errorNoNicknameGiven();
-		if (_args[0] == PRIVMSG)
+		else if (_args[0] == PRIVMSG && _args.size() == 2)
 		{
 			error = errorNoTextToSend();
-			if (_args.size() < 2)
+			if (_args[1][0] == ':')
 				error = errorNoRecipient();
 		}
 		printInfo(error);

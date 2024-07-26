@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 20:24:20 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 12:20:11 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel,
 		return false;
 
 	std::string name = channel->second.getName();
-	channel->second.sendToAll(getFullMessage(message, name));
+	if (_args[0] == PRIVMSG)
+		channel->second.sendToAll(getFullMessage(message, name));
+	else
+		channel->second.sendToAll(message.erase(0, 1));
 
 	return true;
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 19:25:42 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:52:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,25 @@ void Commands::commandJoin( void )
 {
 	if (validSetup() && validSetup() && initValidation(2))
 	{
-		std::string	channel = _args[1];
+		std::vector<std::string> channels;
 		std::string	key = "";
+		std::string	channel;
 
 		if (_args.size() > 2)
 			key = _args[2];
 
-		if (validChannelName(channel) && validArg(channel)
-			&& verifyJoin(channel, key))
+		parsingArgs(_args[1], ',', channels);
+
+		for (std::vector<std::string>::const_iterator it = channels.begin();
+			it != channels.end(); ++it)
 		{
-			_channels.join(_fd, channel, key);
-			printJoin(channel);
+			channel = *it;
+			if (validChannelName(channel) && validArg(channel)
+				&& verifyJoin(channel, key))
+			{
+				_channels.join(_fd, channel, key);
+				printJoin(channel);
+			}
 		}
 	}
 }

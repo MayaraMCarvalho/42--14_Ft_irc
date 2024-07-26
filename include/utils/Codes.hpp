@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 10:33:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:27:54 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 typedef enum {
 	NO_CODE = 000, // Ok
 	RPL_WELCOME = 001, // Ok
-	RPL_YOURHOST = 002, // ? USER
-	RPL_CREATED = 003, // ? USER
-	RPL_MYINFO = 004, // ? USER
+	RPL_YOURHOST = 002, // Ok
+	RPL_CREATED = 003,
+	RPL_MYINFO = 004, // Ok
 	RPL_ISUPPORT = 005,
 	RPL_BOUNCE = 010,
 	RPL_STATSCOMMANDS = 212,

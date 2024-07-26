@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 20:22:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:37:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,8 @@ class Commands
 
 		// infos.cpp
 		std::string	getWelcome(Client &client);
+		std::string	getYourHost(Client &client);
+		std::string	getMyInfo(Client &client);
 		std::string	getUserModeIs(Client &client);
 		std::string	getChannelModeIs(Channel &channel);
 		std::string	getTopic(std::string &channelName);
@@ -173,6 +175,8 @@ class Commands
 		int			toInt(std::string &str);
 		void		printInfo(const std::string &info);
 		static void	strToUpper(std::string &str);
+		std::string	getUserFlags(int modeFlags);
+		std::string	getChannelFlags(int modeFlags, Channel &channel);
 
 		// validations.cpp
 		bool		initValidation(size_t numArgs);

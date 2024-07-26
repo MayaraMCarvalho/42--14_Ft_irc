@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 19:56:56 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:16:57 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,10 @@ bool Commands::validMessage(std::string &message)
 	}
 	if (message == ":")
 	{
-		printInfo(errorNoTextToSend());
+		if (_args[0] == USER)
+			printInfo(errorNeedMoreParams());
+		else
+			printInfo(errorNoTextToSend());
 		return false;
 	}
 	message.erase(0, 1);

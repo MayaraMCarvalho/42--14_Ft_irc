@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 16:02:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:36:53 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,51 @@ void Commands::printInfo(const std::string &info)
 void Commands::strToUpper(std::string &str) {
 	for (std::string::iterator it = str.begin(); it != str.end(); ++it)
 		*it = std::toupper(*it);
+}
+
+std::string Commands::getUserFlags(int modeFlags)
+{
+	std::stringstream mode;
+
+	if (modeFlags)
+		mode << '+';
+
+	if (modeFlags & Client::AWAY) mode << "a";
+	if (modeFlags & Client::INVISIBLE) mode << "i";
+	if (modeFlags & Client::WALLOPS) mode << "w";
+	if (modeFlags & Client::RESTRICTED) mode << "r";
+	if (modeFlags & Client::OPERATOR) mode << "o";
+	if (modeFlags & Client::LOCAL_OP) mode << "O";
+	if (modeFlags & Client::RECV_NOTICES) mode << "s";
+
+	return mode.str();
+
+}
+
+std::string Commands::getChannelFlags(int modeFlags, Channel &channel)
+{
+	std::stringstream mode, params;
+
+	if (modeFlags)
+		mode << '+';
+	if (modeFlags & Channel::ANONYMOUS) mode << "a";
+	if (modeFlags & Channel::INVITEONLY) mode << "i";
+	if (modeFlags & Channel::MODERATED) mode << "m";
+	if (modeFlags & Channel::NO_OUT_MSG) mode << "n";
+	if (modeFlags & Channel::QUIET) mode << "q";
+	if (modeFlags & Channel::PRIVATE) mode << "p";
+	if (modeFlags & Channel::SECRET) mode << "s";
+	if (modeFlags & Channel::OP_TOPIC) mode << "t";
+	if (modeFlags & Channel::HAS_KEY)
+	{
+		mode << "k";
+		params << ' ' << channel.getKey();
+	}
+	if (modeFlags & Channel::ULIMIT)
+	{
+		mode << "l";
+		params << ' ' << channel.getUserLimit();
+	}
+
+	return mode.str() + " " + YELLOW + params.str();
 }

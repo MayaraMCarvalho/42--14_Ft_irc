@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 20:21:00 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 20:22:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ class Commands
 		void		handleKeyMode(std::string &channelName, std::string &param);
 		void		commandModeUser(std::string &nick);
 		bool		verifyNick(std::string &nick);
-
 
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );

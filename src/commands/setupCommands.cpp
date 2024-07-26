@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:42:10 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 10:12:31 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,7 @@ void Commands::commandNick( void )
 		else
 		{
 			errorCode = _clients.setNick(_fd, nick);
-			if (errorCode == NO_CODE)
-				printInfo(GREEN + ":NICK " + nick + RESET);
-			else
+			if (errorCode != NO_CODE)
 				printInfo(RED + toString(errorCode) + RESET);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:19:18 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 18:29:30 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 09:01:20 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,11 +118,6 @@ void Commands::handleKeyMode(std::string &channelName, std::string &param)
 		channel.setKey(param);
 	else
 		printInfo(errorKeySet(channelName));
-
-	// else if (/*Tentativa de definir modos em um canal que não suporta modos*/)
-	// 	printInfo(ERR_NOCHANMODES);//
-	// else
-	// 	return true;
 }
 
 void Commands::commandModeUser(std::string &nick)
@@ -160,16 +155,3 @@ bool Commands::verifyNick(std::string &nick)
 		return true;
 	return false;
 }
-
-
-
-// 	// //
-// 	// else if (/* */)
-// 	// 	printInfo();//
-// 	// else if (/* */)
-// 	// 	printInfo();//
-// 	// else if (/* */)
-// 	// 	printInfo();//
-// 	else
-// 		return true;
-// 	return false;

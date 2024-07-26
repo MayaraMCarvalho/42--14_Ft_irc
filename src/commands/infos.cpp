@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 12:04:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 20:25:48 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,5 +109,3 @@ std::string Commands::getEndOfNames(std::string &channelName)
 	return (CYAN + toString(RPL_ENDOFNAMES) + " " + _clients.getNick(_fd)
 			+ " " + channelName + " :End of /NAMES list." + RESET);
 }
-
-

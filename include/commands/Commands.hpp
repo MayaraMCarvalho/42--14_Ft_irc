@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 16:04:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 17:21:11 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,12 +128,14 @@ class Commands
 		void		saveUser(std::string &user, std::string &userName);
 
 		// errorsCode.cpp
+		std::string	errorUnknownError( void );
 		std::string	errorNoSuchNick(std::string &recipient);
 		std::string	errorNoSuchChannel(std::string &channelName);
 		std::string	errorCannotSendToChan(std::string &channelName);
 		std::string	errorTooManyChannels(std::string &channelName);
 		std::string	errorNoRecipient( void );
 		std::string	errorNoTextToSend( void );
+		std::string	errorInputTooLong( void );
 		std::string	errorNoNicknameGiven( void );
 		std::string	errorErroneusNickname(std::string &arg);
 		std::string	errorNicknameInUse(std::string &nick);

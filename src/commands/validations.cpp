@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 16:02:07 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 17:21:28 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,20 @@ bool Commands::validArg(std::string &arg)
 	std::string	error;
 
 	if (arg.empty())
-		printInfo(RED + "Error: Empty parameter" + RESET);// Verificar
+		printInfo(errorNeedMoreParams());
 	else if (arg.size() > MAX_LENGTH)
 	{
 		if (_args[0] == NICK)
 			printInfo(errorErroneusNickname(arg));
 		else
-			printInfo(RED + "Error: Too long" + RESET); // VERIFICAR
+			printInfo(errorInputTooLong());
 	}
 	else if (invalidChar(arg))
 	{
 		if (_args[0] == NICK || _args[0] == USER)
 			printInfo(errorErroneusNickname(arg));
 		else
-			printInfo(RED + "Error: Prohibited characters found" + RESET); // Verificar para cada comando
+			printInfo(errorUnknownError());
 	}
 	else
 		return true;
@@ -109,18 +109,18 @@ bool Commands::validMessage(std::string &message)
 	std::string	error = "";
 
 	if (message[0] != ':')
-	{
-		printInfo(RED + "Error: Non-standard message" + RESET);// Verificar
-		return false;
-	}
-	if (message == ":")
+		printInfo(errorNeedMoreParams());
+	else if (message == ":")
 	{
 		if (_args[0] == USER)
 			printInfo(errorNeedMoreParams());
 		else
 			printInfo(errorNoTextToSend());
-		return false;
 	}
-	message.erase(0, 1);
-	return true;
+	else
+	{
+		message.erase(0, 1);
+		return true;
+	}
+	return false;
 }

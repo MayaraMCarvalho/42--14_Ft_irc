@@ -6,11 +6,17 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 16:24:49 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 17:21:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+
+std::string Commands::errorUnknownError( void )
+{
+	return (RED + toString(ERR_UNKNOWNERROR) + " " + _clients.getNick(_fd)
+			+ " :Unknown error" + RESET);
+}
 
 std::string Commands::errorNoSuchNick(std::string &recipient)
 {
@@ -46,6 +52,12 @@ std::string Commands::errorNoTextToSend( void )
 {
 	return (RED + toString(ERR_NOTEXTTOSEND) + " " + _clients.getNick(_fd)
 			+ " :No text to send" + RESET);
+}
+
+std::string Commands::errorInputTooLong( void )
+{
+	return (RED + toString(ERR_INPUTTOOLONG) + " " + _clients.getNick(_fd)
+			+ " :Input line was too long" + RESET);
 }
 
 std::string Commands::errorNoNicknameGiven( void )
@@ -174,5 +186,3 @@ std::string Commands::errorUsersDontMatch( void )
 // 	return (RED + toString(...) + " " + _clients.getNick(_fd)
 //			+ "..." + RESET);
 // }
-
-

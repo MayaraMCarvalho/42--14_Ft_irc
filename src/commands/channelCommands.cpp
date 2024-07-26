@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 16:05:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 16:56:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void Commands::commandKick( void )
 			_channels.part(_clients.getFDByUser(user), channel);
 			printInfo(PURPLE + "The user " + BYELLOW + user +
 				PURPLE + " have been removed from the channel " +
-				BYELLOW + channel + PURPLE + "by the operator " +
+				BYELLOW + channel + PURPLE + " by the operator " +
 				BYELLOW + _clients.getUser(_fd) + "!" + RESET);// Verificar
 		}
 	}

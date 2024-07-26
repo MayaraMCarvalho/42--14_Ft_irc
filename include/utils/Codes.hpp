@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/26 10:27:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 17:19:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ typedef enum {
 	RPL_YOUREOPER = 381,
 	RPL_REHASHING = 382,
 	RPL_TIME = 391,
-	ERR_UNKNOWNERROR = 400,
+	ERR_UNKNOWNERROR = 400, // Ok
 	ERR_NOSUCHNICK = 401, // Ok
 	ERR_NOSUCHSERVER = 402,
 	ERR_NOSUCHCHANNEL = 403, // Ok
@@ -99,7 +99,7 @@ typedef enum {
 	ERR_NOORIGIN = 409,
 	ERR_NORECIPIENT = 411, // Ok
 	ERR_NOTEXTTOSEND = 412, // Ok
-	ERR_INPUTTOOLONG = 417,
+	ERR_INPUTTOOLONG = 417, // Ok
 	ERR_UNKNOWNCOMMAND = 421,
 	ERR_NOMOTD = 422,
 	ERR_NONICKNAMEGIVEN = 431, // Ok

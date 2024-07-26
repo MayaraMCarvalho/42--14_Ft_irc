@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 10:52:28 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 12:36:14 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,10 @@ void Commands::parsingArgs(const std::string &message, char c,
 	std::istringstream	tokenStream(message);
 
 	while (std::getline(tokenStream, token, c))
-		vector.push_back(token);
+	{
+		if (!token.empty())
+			vector.push_back(token);
+	}
 }
 
 void Commands::commandInvite( void )

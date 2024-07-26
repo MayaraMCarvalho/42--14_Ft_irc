@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/24 15:55:51 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 14:28:59 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ bool Commands::verifyJoinChannel(std::string &channelName, std::string &key)
 
 bool Commands::verifyChanOp(std::string &channelName)
 {
-	if (!_clients.getClient(_fd)->second.getMode(Client::OPERATOR))
+	if (!_channels.get(channelName)->second.getUserMode(_fd, Channel::CHANOP))
 	{
 		printInfo(errorChanPrivsNeeded(channelName));
 		return false;

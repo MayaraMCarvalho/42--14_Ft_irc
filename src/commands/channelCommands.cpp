@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 10:52:05 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 14:03:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void Commands::commandJoin( void )
 void Commands::printJoin(std::string &channelName)
 {
 	Client client = _clients.getClient(_fd)->second;
-	std::string message = ":" + client.getFullId() + " "
-						+ _args[0] + " :" + channelName;
+	std::string message = BGREEN + client.getFullId() + " " + _args[0]
+						+ BYELLOW + " " + channelName + RESET;
 
 	sendMessage(_channels.get(channelName), message);
 
@@ -56,14 +56,35 @@ void Commands::commandPart( void )
 {
 	if (validSetup() && initValidation(2))
 	{
-		std::string channel = _args[1];
+		std::vector<std::string> channels;
+		std::string	message = "";
+		std::string	channel;
+		std::string	info = BGREEN + _clients.getClient(_fd)->second.getFullId()
+				+ " PART" + BYELLOW + " " ;
 
-		if (validChannelName(channel) && validArg(channel)
-			&& verifyChannel(channel))
+		if (_args.size() > 2)
+			message = getMessage(2);
+
+		if (!message.empty() && !validMessage(message))
+			return ;
+
+		parsingArgs(_args[1], ',', channels);
+
+		for (std::vector<std::string>::const_iterator it = channels.begin();
+			it != channels.end(); ++it)
 		{
-			_channels.part(_fd, channel);
-			printInfo(GREEN + _clients.getClient(_fd)->second.getFullId()
-						+ " PART " + channel + RESET);
+			channel = *it;
+			if (validChannelName(channel) && validArg(channel)
+				&& verifyChannel(channel))
+			{
+				std::string fullInfo = info;
+				_channels.part(_fd, channel);
+				fullInfo += channel;
+				if (!message.empty())
+					fullInfo += PURPLE + " :" + message;
+				fullInfo += RESET;
+				sendMessage(_channels.get(channel), fullInfo);
+			}
 		}
 	}
 }

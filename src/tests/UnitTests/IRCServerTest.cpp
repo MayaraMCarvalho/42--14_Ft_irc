@@ -6,11 +6,11 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 01:42:11 by lucperei          #+#    #+#             */
-/*   Updated: 2024/07/23 15:58:47 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:38:00 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./TestFramework.hpp"
+#include "./include/TestFramework.hpp"
 
 void    generateRandomPortStr(std::string &portStr, size_t length) {
     const char numbers[] = "0123456789";

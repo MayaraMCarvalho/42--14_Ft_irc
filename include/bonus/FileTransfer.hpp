@@ -38,15 +38,22 @@ class FileTransfer
 	// Constructor ============================================================
 		FileTransfer(void);
 
+	// Getter ============================================================
+		int getSenderFd(int fd) const;
+		int getReceiverFd(int fd) const;
+		std::string getFileName(int fd) const;
+		 std::vector<char> getFileData(int fd) const;
+		std::map<int, TransferInfo> getTransfers(void) const;
+
 	// Methods ================================================================
 		void	requestTransfer(int senderFd, int receiverFd, const std::string &fileName);
 		void	handleTransfer(int clientFd);
-		// void	sendFileChunk(int clientFd);
+		void	sendFileChunk(int clientFd);
+		std::vector<char>	readFile(const std::string &fileName);
+		TransferInfo getTransferInfo(int fd) const;
 
 		std::map<int, TransferInfo>	_transfers;
 
-		void				sendFileChunk(int clientFd);
-		std::vector<char>	readFile(const std::string &fileName);
 };
 
 #endif

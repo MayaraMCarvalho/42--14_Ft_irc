@@ -6,23 +6,29 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 23:06:08 by lucperei          #+#    #+#             */
-/*   Updated: 2024/07/23 23:37:57 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/26 02:52:22 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TEST_FRAMEWORK_HPP
 #define TEST_FRAMEWORK_HPP
 
-#include "../include/IrcServer.hpp"
-#include "../include/client/Client.hpp"
-#include "../include/client/ClientList.hpp"
-#include "../include/commands/Commands.hpp"
-#include "../include/channel/ChannelList.hpp"
+#include "../../include/IrcServer.hpp"
+#include "../../include/client/Client.hpp"
+#include "../../include/client/ClientList.hpp"
+#include "../../include/commands/Commands.hpp"
+#include "../../include/channel/Channel.hpp"
+#include "../../include/channel/ChannelList.hpp"
+#include "../../include/bonus/Bot.hpp"
+#include "../../include/bonus/FileTransfer.hpp"
 
 #include <iostream>
+#include <sstream>
+#include <unistd.h>
 #include <fstream>
 #include <cstdio>
 #include <stdexcept>
+#include <iomanip>
 #include <cstring>
 #include <cassert>
 #include <cstdlib>
@@ -59,5 +65,15 @@
     (!(condition) ? \
         (std::cerr << "\033[0;32m" << "✅ passed: \033[0m (" << #condition << " is false)" << std::endl, true) : \
         (std::cerr << "\033[0;31m" << "❌ failed: \033[0m (" << #condition << " is true)" << std::endl, false))
+
+#define ASSERT_TRUE_ITER(condition, it) \
+    ((condition) ? \
+        (std::cerr << "\033[0;32m" << "✅ passed: \033[0m (" << #condition << ") at " << it->first << std::endl, true) : \
+        (std::cerr << "\033[0;31m" << "❌ failed: \033[0m (" << #condition << ") at " << it->first << std::endl, false))
+
+#define ASSERT_FALSE_ITER(condition, it) \
+    (!(condition) ? \
+        (std::cerr << "\033[0;32m" << "✅ passed: \033[0m (" << #condition << " is false) at " << it->first << std::endl, true) : \
+        (std::cerr << "\033[0;31m" << "❌ failed: \033[0m (" << #condition << " is true) at " << it->first << std::endl, false))
 
 #endif

@@ -6,11 +6,11 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 22:16:44 by lucperei          #+#    #+#             */
-/*   Updated: 2024/07/23 21:18:47 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:38:33 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./TestFramework.hpp"
+#include "../include/TestFramework.hpp"
 
 bool    TestDefaultConstructorClientList(void) {
     MsgHandler  dummyMsgHandler;

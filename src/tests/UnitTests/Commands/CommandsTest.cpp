@@ -6,12 +6,12 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 01:25:59 by lucperei          #+#    #+#             */
-/*   Updated: 2024/07/12 15:52:53 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:38:16 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //#include "./TestFramework.hpp"
-#include "./MockTest.hpp"
+#include "./include/MockTest.hpp"
 
 /*bool    TestIsCommand(void) {
     MockClientList clients;

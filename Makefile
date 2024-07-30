@@ -6,7 +6,7 @@
 #    By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/24 13:45:42 by lucperei         ###   ########.fr        #
+#    Updated: 2024/07/26 17:18:30 by lucperei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,9 +25,16 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			commandQuit.cpp setupCommands.cpp \
 			errorsCode.cpp infos.cpp utils.cpp validations.cpp verify.cpp
 
-TESTS_SRCS  = src/tests/UnitTests/IRCServerTest.cpp src/tests/UnitTests/ClientTest.cpp \
-			src/tests/UnitTests/ClientListTest.cpp src/tests/UnitTests/mainTest.cpp 
-# src/tests/UnitTests/CommandsTest.cpp
+TESTS_SRCS  = src/tests/UnitTests/IRCServerTest.cpp src/tests/UnitTests/ClientTest/ClientTest.cpp \
+			src/tests/UnitTests/ClientTest/ClientListTest.cpp src/tests/UnitTests/mainTest.cpp \
+			src/tests/UnitTests/MsgHandlerTest.cpp \
+			src/tests/UnitTests/ChannelTest/ChannelTest.cpp \
+			src/tests/UnitTests/ChannelTest/ChannelListTest.cpp \
+			src/tests/UnitTests/Bonus/BotTest.cpp \
+			src/tests/UnitTests/Bonus/FileTransferTest.cpp \
+			src/tests/UnitTests/Commands/ChannelCommandsTest.cpp \
+			src/tests/UnitTests/Helpers/Helpers.cpp
+# src/tests/UnitTests/CommandsTest/CommandsTest.cpp
 			
 INTEG_TESTS = tests/IntegrationTests/IRCServerIntegrationTest.cpp
 
@@ -37,7 +44,7 @@ INCLUDE		= -I./include -I./include/bonus -I./include/channel \
 
 OBJS_PATH	= obj
 OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
-TESTS_OBJS  = $(addprefix $(OBJS_PATH)/, $(TESTS_SRCS:.cpp=.o))
+TESTS_OBJS  = $(addprefix $(OBJS_PATH)/, $(TESTS_SRCS:src/tests/UnitTests/%.cpp=src/tests/UnitTests/%.o))
 
 FLAGS		= -g3 -Wall -Wextra -Werror -g -std=c++98 -Wpedantic
 CC			= c++
@@ -76,13 +83,50 @@ $(OBJS_PATH):
 
 $(OBJS_PATH)/src/tests/UnitTests:
 	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests/ChannelTest
+	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests/ClientTest
+	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests/Commands
+	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests/Helpers
+	@mkdir -p $(OBJS_PATH)/src/tests/UnitTests/Bonus
 
 $(OBJS_PATH)/%.o: %.cpp
-			@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
-			@echo -n "$(YELLOW)Generating $(CYAN)$(NAME) $(YELLOW)objects..." $@
-			@echo -n "\n"
+	@mkdir -p $(dir $@)
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)$(NAME) $(YELLOW)objects..." $@
+	@echo -n "\n"
 
-$(OBJS_PATH)/%.o: src/tests/UnitTests/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+$(OBJS_PATH)/src/tests/UnitTests/%.o: src/tests/UnitTests/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(dir $@)
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
+	@echo -n "\n"
+
+$(OBJS_PATH)/src/tests/UnitTests/ChannelTest/%.o: src/tests/UnitTests/ChannelTest/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(dir $@)
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
+	@echo -n "\n"
+
+$(OBJS_PATH)/src/tests/UnitTests/ClientTest/%.o: src/tests/UnitTests/ClientTest/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(dir $@)
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
+	@echo -n "\n"
+
+$(OBJS_PATH)/src/tests/UnitTests/Commands/%.o: src/tests/UnitTests/Commands/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(dir $@)
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
+	@echo -n "\n"
+
+$(OBJS_PATH)/src/tests/UnitTests/Helpers/%.o: src/tests/UnitTests/Helpers/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(dir $@)
+	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
+	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
+	@echo -n "\n"
+
+$(OBJS_PATH)/src/tests/UnitTests/Bonus/%.o: src/tests/UnitTests/Bonus/%.cpp | $(OBJS_PATH)/src/tests/UnitTests
+	@mkdir -p $(dir $@)
 	@$(CC) $(FLAGS) $(INCLUDE) -c $< -o $@
 	@echo -n "$(YELLOW)Generating $(CYAN)test objects...$(RESET)" $@
 	@echo -n "\n"

@@ -17,6 +17,44 @@
 // Constructor ================================================================
 FileTransfer::FileTransfer(void) {}
 
+// Getter =====================================================================
+int FileTransfer::getSenderFd(int fd) const
+{
+    std::map<int, TransferInfo>::const_iterator it = _transfers.find(fd);
+    return (it != _transfers.end()) ? it->second._senderFd : -1;
+}
+
+int FileTransfer::getReceiverFd(int fd) const
+{
+    std::map<int, TransferInfo>::const_iterator it = _transfers.find(fd);
+    return (it != _transfers.end()) ? it->second._receiverFd : -1;
+}
+
+std::string FileTransfer::getFileName(int fd) const
+{
+    std::map<int, TransferInfo>::const_iterator it = _transfers.find(fd);
+    return (it != _transfers.end()) ? it->second._fileName : "";
+}
+
+std::vector<char> FileTransfer::getFileData(int fd) const
+{
+    std::map<int, TransferInfo>::const_iterator it = _transfers.find(fd);
+    return (it != _transfers.end()) ? it->second._fileData : std::vector<char>();
+}
+
+
+
+FileTransfer::TransferInfo FileTransfer::getTransferInfo(int fd) const
+{
+    std::map<int, TransferInfo>::const_iterator it = _transfers.find(fd);
+    if (it != _transfers.end())
+    {
+        return it->second;  // Retorna a TransferInfo associada ao fd
+    }
+
+    // Retorna um TransferInfo padrão se não encontrado
+    return TransferInfo();
+}
 // Methods ====================================================================
 void FileTransfer::requestTransfer(int senderFd, int receiverFd, const std::string &fileName)
 {
@@ -78,3 +116,4 @@ std::vector<char> FileTransfer::readFile(const std::string &fileName)
 
 	// return std::vector<char>((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 }
+

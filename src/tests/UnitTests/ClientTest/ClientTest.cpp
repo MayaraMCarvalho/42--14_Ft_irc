@@ -6,12 +6,12 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 21:43:19 by lucperei          #+#    #+#             */
-/*   Updated: 2024/07/23 20:11:34 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:38:25 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./TestFramework.hpp"
-#include "./MockIRCServer.hpp"
+#include "../include/TestFramework.hpp"
+#include "../include/MockIRCServer.hpp"
 
 
 class TestClient : public Client {

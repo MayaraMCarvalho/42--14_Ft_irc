@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 16:56:56 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 10:03:47 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,20 +101,47 @@ void Commands::commandKick( void )
 {
 	if (validSetup() && initValidation(3))
 	{
-		std::string	channel = _args[1];
-		std::string	user = _args[2];
+		std::vector<std::string> channels;
+		std::vector<std::string> users;
+		std::string	comment = "";
+
+		parsingArgs(_args[1], ',', channels);
+		parsingArgs(_args[2], ',', users);
 
 		if (_args.size() > 3)
-			std::string	comment = getMessage(3);
+			comment = getMessage(3);
 
-		if (validArg(user) && validChannelName(channel) && validArg(channel)
-			&& verifyChannel(channel) && verifyChanOp(channel))
+		for (std::vector<std::string>::const_iterator it1 = channels.begin();
+			it1 != channels.end(); ++it1)
 		{
+			std::string channel = *it1;
+			for (std::vector<std::string>::const_iterator it2 = users.begin();
+			it2 != users.end(); ++it2)
+			{
+				std::string user = *it2;
+				applyKick(channel, user, comment);
+			}
+		}
+	}
+}
+
+void Commands::applyKick(std::string &channel, std::string &user, std::string &comment)
+{
+	if (validArg(user) && validChannelName(channel) && validArg(channel)
+		&& verifyChannel(channel) && verifyChanOp(channel))
+	{
+		std::map<int, Client>::iterator it = _clients.getClientByUser(user);
+
+		if (it == _clients.end() || !it->second.isInChannel(channel))
+			printInfo(errorUserNotInChannel(user, channel));
+		else
+		{
+			std::string message = PURPLE +
+						_clients.getClient(_fd)->second.getFullId()
+						+ " KICK " + BYELLOW + channel + " " + user
+						+ BBLUE + " " + comment + RESET;
+			sendMessage(_channels.get(channel), message);
 			_channels.part(_clients.getFDByUser(user), channel);
-			printInfo(PURPLE + "The user " + BYELLOW + user +
-				PURPLE + " have been removed from the channel " +
-				BYELLOW + channel + PURPLE + " by the operator " +
-				BYELLOW + _clients.getUser(_fd) + "!" + RESET);// Verificar
 		}
 	}
 }

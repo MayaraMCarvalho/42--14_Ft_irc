@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 15:20:41 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/26 17:23:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,12 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
 	cmdFuncs[JOIN] = &Commands::commandJoin; // Ok
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // retestar
-	cmdFuncs[KICK] = &Commands::commandKick; //
-	cmdFuncs[INVITE] = &Commands::commandInvite; //
-	cmdFuncs[TOPIC] = &Commands::commandTopic; //
-	cmdFuncs[MODE] = &Commands::commandMode; // Faltam os RPL's
-	cmdFuncs[QUIT] = &Commands::commandQuit; //
+	cmdFuncs[KICK] = &Commands::commandKick; // Testar e corrigir
+	cmdFuncs[MODE] = &Commands::commandMode; // Testar e corrigir Faltam os RPL's
+	cmdFuncs[QUIT] = &Commands::commandQuit; // Testar e corrigir
+	cmdFuncs[TOPIC] = &Commands::commandTopic; // Testar e corrigir
+	cmdFuncs[INVITE] = &Commands::commandInvite; // Testar e corrigir
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // Ok
 
 	std::cout << CYAN << "Received message from client " << clientFd
 				<< ": " << BYELLOW << message << RESET << std::endl;

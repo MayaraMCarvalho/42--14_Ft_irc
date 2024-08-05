@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 17:21:11 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 10:02:43 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ class Commands
 		void		applyPart(std::string &channel, std::string &info,
 							  std::string &message);
 		void		commandKick( void );
+		void		applyKick(std::string &channel, std::string &user,
+							  std::string &comment);
 		void		commandTopic( void );
 
 		// commandMode.cpp

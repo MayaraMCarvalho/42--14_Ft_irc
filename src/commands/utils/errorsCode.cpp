@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 17:21:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 12:04:16 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ std::string Commands::errorUsersDontMatch( void )
 	return (RED + toString(ERR_USERSDONTMATCH) + " " + _clients.getNick(_fd)
 			+ " :Cant change mode for other users" + RESET);
 }
-
 
 // std::string Commands::error...( void )
 // {

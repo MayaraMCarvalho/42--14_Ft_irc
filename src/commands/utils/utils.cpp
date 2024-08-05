@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:44:49 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 11:57:04 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,12 +100,12 @@ std::string Commands::getChannelFlags(int modeFlags, Channel &channel)
 	if (modeFlags & Channel::HAS_KEY)
 	{
 		mode << "k";
-		params << ' ' << channel.getKey();
+		params << channel.getKey() << ' ';
 	}
 	if (modeFlags & Channel::ULIMIT)
 	{
 		mode << "l";
-		params << ' ' << channel.getUserLimit();
+		params << channel.getUserLimit() << ' ';
 	}
 
 	return mode.str() + " " + YELLOW + params.str();

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:30:53 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 12:10:13 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,7 @@ class Commands
 		std::string	errorBadChanMask(std::string &channelName);
 		std::string	errorChanPrivsNeeded(std::string &channelName);
 		std::string	errorUsersDontMatch( void );
+		std::string	errorUModeUnknowFlag(std::string &nick);
 		std::string	errorUnknownMode(std::string &nick, std::string &mode);
 
 		// infos.cpp

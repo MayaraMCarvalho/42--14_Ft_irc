@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/26 17:19:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 12:10:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ typedef enum {
 	ERR_CHANOPRIVSNEEDED = 482, // Ok
 	ERR_CANTKILLSERVER = 483,
 	ERR_NOOPERHOST = 491,
-	ERR_UMODEUNKNOWNFLAG = 501,
+	ERR_UMODEUNKNOWNFLAG = 501, // Ok
 	ERR_USERSDONTMATCH = 502, // Ok
 	ERR_HELPNOTFOUND = 524,
 	ERR_INVALIDKEY = 525,

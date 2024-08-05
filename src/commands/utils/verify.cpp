@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 14:28:59 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 12:24:56 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,7 @@ bool Commands::verifyJoinChannel(std::string &channelName, std::string &key)
 	Channel		channel = _channels.get(channelName)->second;
 	int			numClients = channel.getNumUsers();
 
-	if (false)// TO DO
-		printInfo(errorBannedFromChan(nick, channelName));
-	else if (channel.getChannelModeFlags() == Channel::INVITEONLY &&
+	if (channel.getChannelModeFlags() == Channel::INVITEONLY &&
 		!channel.userHasInvite(nick))
 		printInfo(errorInviteOnlyChan(nick, channelName));
 	else if (channel.getKey() != key)

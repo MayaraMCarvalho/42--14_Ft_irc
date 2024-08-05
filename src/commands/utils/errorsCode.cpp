@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 12:04:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 12:09:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,12 @@ std::string Commands::errorChanPrivsNeeded(std::string &channelName)
 {
 	return (RED + toString(ERR_CHANOPRIVSNEEDED) + ": "
 			+ channelName + " :You're not channel operator" + RESET);
+}
+
+std::string Commands::errorUModeUnknowFlag(std::string &nick)
+{
+	return (RED + toString(ERR_UMODEUNKNOWNFLAG) + " " + nick
+			+ " :Unknown MODE flag" + RESET);
 }
 
 std::string Commands::errorUsersDontMatch( void )

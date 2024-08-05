@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 20:25:52 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:38:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 11:05:35 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ bool Commands::validMessage(std::string &message)
 
 	if (message[0] != ':')
 		printInfo(errorNeedMoreParams());
-	else if (message == ":")
+	else if (message == ":" && _args[0] != TOPIC)
 	{
 		if (_args[0] == USER)
 			printInfo(errorNeedMoreParams());

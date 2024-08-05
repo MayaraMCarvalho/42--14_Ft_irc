@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:47:48 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 11:00:22 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
 	cmdFuncs[KICK] = &Commands::commandKick; // Ok
 	cmdFuncs[MODE] = &Commands::commandMode; // Testar e corrigir Faltam os RPL's
-	cmdFuncs[QUIT] = &Commands::commandQuit; // Testar e corrigir
+	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
 	cmdFuncs[TOPIC] = &Commands::commandTopic; // Testar e corrigir
 	cmdFuncs[INVITE] = &Commands::commandInvite; // Testar e corrigir
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // Ok
@@ -138,7 +138,13 @@ void Commands::commandTopic( void )
 			{
 				topic = getMessage(2);
 				if (verifyChanOp(channelName) && validMessage(topic))
+				{
 					_channels.get(channelName)->second.setTopic(topic);
+					std::string message = BCYAN +
+						_clients.getClient(_fd)->second.getFullId() + " TOPIC "
+						+ BYELLOW + channelName + PURPLE + " :" + topic + RESET;
+					sendMessage(_channels.get(channelName), message);
+				}
 			}
 			else
 				printInfo(getTopic(channelName));

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:23:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 10:47:48 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,17 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 				<< ": " << BYELLOW << message << RESET << std::endl;
 
 	parsingArgs(message, ' ', _args);
-	strToUpper(_args[0]);
-	std::map<std::string, void (Commands::*)()>::iterator it =
-		cmdFuncs.find(_args[0]);
-	if (it != cmdFuncs.end())
+
+	if (_args.size() > 0)
 	{
-		(this->*(it->second))();
-		return true;
+		strToUpper(_args[0]);
+		std::map<std::string, void (Commands::*)()>::iterator it =
+			cmdFuncs.find(_args[0]);
+		if (it != cmdFuncs.end())
+		{
+			(this->*(it->second))();
+			return true;
+		}
 	}
 	return false;
 }

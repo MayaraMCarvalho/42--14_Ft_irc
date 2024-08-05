@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 11:00:22 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 11:09:10 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[KICK] = &Commands::commandKick; // Ok
 	cmdFuncs[MODE] = &Commands::commandMode; // Testar e corrigir Faltam os RPL's
 	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
-	cmdFuncs[TOPIC] = &Commands::commandTopic; // Testar e corrigir
+	cmdFuncs[TOPIC] = &Commands::commandTopic; // Ok
 	cmdFuncs[INVITE] = &Commands::commandInvite; // Testar e corrigir
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // Ok
 

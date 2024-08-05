@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 10:37:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 11:20:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ std::string Commands::getInviting(std::string &nickname,
 								  std::string &channelName)
 {
 	return (CYAN + toString(RPL_INVITING) + " " + _clients.getNick(_fd)
-			+ " " + nickname + " " + channelName);
+			+ " " + nickname + " " + channelName + RESET);
 }
 
 std::string Commands::getNamReply(std::string &channelName)

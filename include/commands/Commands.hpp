@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:02:43 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 10:30:53 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,40 +74,37 @@ class Commands
 		~Commands( void );
 	// Methods ================================================================
 
-		// ADICIONAR CONST E & ONDE NECESSÁRIO E RETESTAR TODOS OS COMANDOS
-
 		// Commands.cpp
 		void		extractCommands(int clientFd);
 		bool		isCommand(int clientFd, const std::string &message);
 		void		parsingArgs(const std::string &message, char c,
 								std::vector<std::string>	&vector);
+		void		commandTopic( void );
 
+		// commandInvite.cpp
 		void		commandInvite( void );
 		void		sendInviting(std::string &nick, std::string &channelName);
 
-		// channelCommands.cpp
+		// commandJoin.cpp
 		void		commandJoin( void );
 		void		printJoin(std::string &channelName);
-		void		commandPart( void );
-		void		applyPart(std::string &channel, std::string &info,
-							  std::string &message);
+
+		// commandKick.cpp
 		void		commandKick( void );
 		void		applyKick(std::string &channel, std::string &user,
 							  std::string &comment);
-		void		commandTopic( void );
 
 		// commandMode.cpp
 		void		commandMode( void );
 		void		commandModeChannel(std::string &channelName);
-		bool		verifyMode(std::string &mode, std::string &who,
-							   std::string pattern);
 		void		applyMode(std::string &channelName, std::string mode,
 							  size_t &index);
-		void		handleModeParameters(std::string &mode,
-									std::string &channelName, size_t &index);
-		void		handleKeyMode(std::string &channelName, std::string &param);
 		void		commandModeUser(std::string &nick);
-		bool		verifyNick(std::string &nick);
+
+		// commandPart.cpp
+		void		commandPart( void );
+		void		applyPart(std::string &channel, std::string &info,
+							  std::string &message);
 
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
@@ -118,12 +115,12 @@ class Commands
 		std::string	getFullMessage(const std::string &message, std::string &name);
 		bool		isItChannel(const std::string &channelName);
 
-		// quitCommand.cpp
+		// commandQuit.cpp
 		void		commandQuit( void );
 		void		quitServer( void );
 		bool		getQuitMessage(std::string &messageQuit);
 
-		// setupCommands.cpp
+		// commandSetup.cpp
 		void		commandPass( void );
 		void		commandNick( void );
 		void		commandUser( void );
@@ -184,6 +181,14 @@ class Commands
 		static void	strToUpper(std::string &str);
 		std::string	getUserFlags(int modeFlags);
 		std::string	getChannelFlags(int modeFlags, Channel &channel);
+
+		// utilsMode.cpp
+		bool		verifyMode(std::string &mode, std::string &who,
+							   std::string pattern);
+		void		handleModeParameters(std::string &mode,
+										 std::string &channelName, size_t &index);
+		void		handleKeyMode(std::string &channelName, std::string &param);
+		bool		verifyNick(std::string &nick);
 
 		// validations.cpp
 		bool		initValidation(size_t numArgs);

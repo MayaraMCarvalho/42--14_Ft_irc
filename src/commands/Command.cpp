@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Commands.cpp                                       :+:      :+:    :+:   */
+/*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 17:23:39 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 10:23:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[USER] = &Commands::commandUser; // Ok
 	cmdFuncs[JOIN] = &Commands::commandJoin; // Ok
 	cmdFuncs[PART] = &Commands::commandPart; // Ok
-	cmdFuncs[KICK] = &Commands::commandKick; // Testar e corrigir
+	cmdFuncs[KICK] = &Commands::commandKick; // Ok
 	cmdFuncs[MODE] = &Commands::commandMode; // Testar e corrigir Faltam os RPL's
 	cmdFuncs[QUIT] = &Commands::commandQuit; // Testar e corrigir
 	cmdFuncs[TOPIC] = &Commands::commandTopic; // Testar e corrigir
@@ -120,31 +120,24 @@ void Commands::parsingArgs(const std::string &message, char c,
 	}
 }
 
-void Commands::commandInvite( void )
+void Commands::commandTopic( void )
 {
-	if (validSetup() && initValidation(3))
+	if (validSetup() && initValidation(2))
 	{
-		std::string	nick = _args[1];
-		std::string	channelName = _args[2];
+		std::string	channelName = _args[1];
+		std::string	topic = "";
 
-		if (validArg(channelName) && validChannelName(channelName)
-			&& verifyChannel(channelName) && verifyChanOp(channelName)
-			&& validArg(nick) && verifyInvite(nick, channelName))
+		if (validArg(channelName)&& validChannelName(channelName)
+			&& verifyChannel(channelName))
 		{
-			_channels.get(channelName)->second.addInvite(nick);
-			printInfo(getInviting(nick, channelName));
-			sendInviting(nick, channelName);
+			if (_args.size() > 2)
+			{
+				topic = getMessage(2);
+				if (verifyChanOp(channelName) && validMessage(topic))
+					_channels.get(channelName)->second.setTopic(topic);
+			}
+			else
+				printInfo(getTopic(channelName));
 		}
 	}
-}
-
-void Commands::sendInviting(std::string &nick, std::string &channelName)
-{
-	std::string	user = _clients.getNick(_fd);
-	std::string	info;
-
-	info = CYAN + ":" + user + "!" + user + "@" + _host + " INVITE "
-			+ nick + " :" + channelName + "" + RESET;
-
-	_clients.getClientByNick(nick)->second.sendMessage(info);
 }

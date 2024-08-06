@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:24:25 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 12:12:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/06 09:54:17 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ bool Commands::verifyMode(std::string &mode, std::string &who,
 	else if (mode.find_first_not_of(pattern) != std::string::npos)
 	{
 		if (pattern == "+-aiwroOs")
-			printInfo(errorerrorUModeUnknowFlag(who, mode));
+			printInfo(errorUModeUnknowFlag(who));
 		else
 			printInfo(errorUnknownMode(who, mode));
 	}

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 11:22:52 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/05 12:33:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,17 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; // Ok
-	cmdFuncs[NICK] = &Commands::commandNick; // Ok
-	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; // Ok
-	cmdFuncs[PART] = &Commands::commandPart; // Ok
-	cmdFuncs[KICK] = &Commands::commandKick; // Ok
-	cmdFuncs[MODE] = &Commands::commandMode; // Testar e corrigir Faltam os RPL's
-	cmdFuncs[QUIT] = &Commands::commandQuit; // Ok
-	cmdFuncs[TOPIC] = &Commands::commandTopic; // Ok
-	cmdFuncs[INVITE] = &Commands::commandInvite; // Ok
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; // Ok
+	cmdFuncs[PASS] = &Commands::commandPass;
+	cmdFuncs[NICK] = &Commands::commandNick;
+	cmdFuncs[USER] = &Commands::commandUser;
+	cmdFuncs[JOIN] = &Commands::commandJoin;
+	cmdFuncs[PART] = &Commands::commandPart;
+	cmdFuncs[KICK] = &Commands::commandKick;
+	cmdFuncs[MODE] = &Commands::commandMode;
+	cmdFuncs[QUIT] = &Commands::commandQuit;
+	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[INVITE] = &Commands::commandInvite;
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg;
 
 	std::cout << CYAN << "Received message from client " << clientFd
 				<< ": " << BYELLOW << message << RESET << std::endl;

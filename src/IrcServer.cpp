@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/11 05:20:18 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/07/24 16:17:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,8 +219,9 @@ bool IRCServer::handleClientMessage(int clientFd)
 		return false;
 	}
 	else if (nbytes == 0) {
-		std::cerr << "Client disconnected: " << BYELLOW << clientFd
+		std::cerr << RED << "Client disconnected: " << BYELLOW << clientFd
 			<< RESET << std::endl;
+
 		return false;
 	}
 

@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/07/05 10:59:57 by macarval         ###   ########.fr        #
+#    Updated: 2024/08/05 10:27:24 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,11 +20,15 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
 			Client.cpp ClientList.cpp \
 			\
-			Commands.cpp channelCommands.cpp commandPrivmsg.cpp \
-			commandQuit.cpp setupCommands.cpp \
-			errorsCode.cpp infos.cpp utils.cpp validations.cpp verify.cpp
+			Command.cpp commandInvite.cpp commandJoin.cpp commandKick.cpp \
+			commandMode.cpp commandPart.cpp commandPrivmsg.cpp commandQuit.cpp \
+			commandSetup.cpp \
+			\
+			errorsCode.cpp infos.cpp utils.cpp utilsMode.cpp \
+			validations.cpp verify.cpp
 
-VPATH		= src/ src/bonus src/channel src/client src/commands
+VPATH		= src/ src/bonus src/channel src/client src/commands \
+			src/commands/utils tests/
 OBJS_PATH	= obj
 INCLUDE		= -I./include -I./include/bonus -I./include/channel \
 			-I./include/client -I./include/commands -I./include/utils
@@ -51,11 +55,11 @@ BPURPLE		= \033[1;35m
 BCYAN		= \033[1;36m
 BWHITE		= \033[1;37m
 
-BRANCH_FILE = .branch_name
-DEVELOP_BRANCH = develop
-MAIN_BRANCH = master
+BRANCH_FILE	= .branch_name
+DEV_BRANCH	= develop
+MAIN_BRANCH	= master
 
-OBJS 		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
+OBJS		= $(addprefix $(OBJS_PATH)/, $(SRCS:.cpp=.o))
 
 all: 		$(NAME)
 
@@ -93,8 +97,8 @@ val:
 			@valgrind ./$(NAME)
 
 new-branch:
-			git checkout $(DEVELOP_BRANCH)
-			git pull origin $(DEVELOP_BRANCH)
+			git checkout $(DEV_BRANCH)
+			git pull origin $(DEV_BRANCH)
 			@echo "$(BGREEN)Enter the name of the new branch: "; \
 			read branch_name; \
 			feature_branch="feature/$$branch_name"; \
@@ -134,27 +138,27 @@ git:
 			echo -n "\n"; \
 			echo "$(BBLUE)"; \
 			git commit -m "[ft_irc] $$type: $$msg"; \
-			git checkout $(DEVELOP_BRANCH); \
-			git pull origin $(DEVELOP_BRANCH); \
+			git checkout $(DEV_BRANCH); \
+			git pull origin $(DEV_BRANCH); \
 			git checkout $(shell cat $(BRANCH_FILE)); \
-			git merge $(DEVELOP_BRANCH); \
+			git merge $(DEV_BRANCH); \
 			git push origin $(shell cat $(BRANCH_FILE)); \
 
 delete-branch:
-			git checkout $(DEVELOP_BRANCH)
-			git pull origin $(DEVELOP_BRANCH)
+			git checkout $(DEV_BRANCH)
+			git pull origin $(DEV_BRANCH)
 			git checkout $(shell cat $(BRANCH_FILE))
-			git merge $(DEVELOP_BRANCH)
-			git checkout $(DEVELOP_BRANCH)
+			git merge $(DEV_BRANCH)
+			git checkout $(DEV_BRANCH)
 			git merge $(shell cat $(BRANCH_FILE))
-			git push origin $(DEVELOP_BRANCH)
+			git push origin $(DEV_BRANCH)
 			git branch -d $(shell cat $(BRANCH_FILE))
 			git push origin --delete $(shell cat $(BRANCH_FILE))
 
 merge-to-master:
 			git checkout $(MASTER_BRANCH)
 			git pull origin $(MASTER_BRANCH)
-			git merge $(DEVELOP_BRANCH)
+			git merge $(DEV_BRANCH)
 			git push origin $(MASTER_BRANCH)
 
 lazy:

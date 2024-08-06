@@ -6,11 +6,12 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 11:57:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:34:18 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+#include "IrcServer.hpp"
 
 std::string Commands::getMessage(int index)
 {
@@ -57,6 +58,7 @@ int Commands::toInt(std::string &str)
 void Commands::printInfo(const std::string &info)
 {
 	_clients.getClient(_fd)->second.sendMessage(info);
+	_server.getLogger().debug(info);
 }
 
 void Commands::strToUpper(std::string &str) {

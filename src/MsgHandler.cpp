@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 03:32:58 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/26 12:10:22 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:18:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 #include "Channel.hpp"
 # include "Codes.hpp"
 
-MsgHandler::MsgHandler(void) : _host("defaulthost"), _sendQueues(),
-	_recvQueues() { }
-
 MsgHandler::MsgHandler(MsgHandler &src) : _host(src._host) , _sendQueues(),
-	_recvQueues() { }
+	_recvQueues(), _logger(src._logger) { }
 
-MsgHandler::MsgHandler(std::string host) : _host(host), _sendQueues(),
-	_recvQueues() { }
+MsgHandler::MsgHandler(std::string host, Logger &logger) : _host(host),
+	_sendQueues(), _recvQueues(), _logger(logger) { }
+
+MsgHandler::MsgHandler(Logger &logger) : _host("defaulthost"),
+	_sendQueues(), _recvQueues(), _logger(logger) { }
 
 MsgHandler::~MsgHandler(void) { }
 
@@ -38,7 +38,9 @@ MsgHandler &MsgHandler::operator=(MsgHandler &src) {
 	return *this;
 }
 
-const std::string& MsgHandler::getHost(void) { return _host; }
+std::string &MsgHandler::getHost(void) { return _host; }
+
+Logger &MsgHandler::getLogger(void) { return _logger; }
 
 void MsgHandler::sendMessage(int fd, const std::string &msg) {
 	sendMessage(fd, _host, msg);

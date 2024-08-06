@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/08/05 10:27:24 by macarval         ###   ########.fr        #
+#    Updated: 2024/08/06 17:20:45 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,8 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			commandMode.cpp commandPart.cpp commandPrivmsg.cpp commandQuit.cpp \
 			commandSetup.cpp \
 			\
+			Logger.cpp ConsoleLogger.cpp FileLogger.cpp NullLogger.cpp \
+			\
 			errorsCode.cpp infos.cpp utils.cpp utilsMode.cpp \
 			validations.cpp verify.cpp
 
@@ -31,7 +33,8 @@ VPATH		= src/ src/bonus src/channel src/client src/commands \
 			src/commands/utils tests/
 OBJS_PATH	= obj
 INCLUDE		= -I./include -I./include/bonus -I./include/channel \
-			-I./include/client -I./include/commands -I./include/utils
+			-I./include/client -I./include/commands \
+			-I./include/logger -I./include/utils
 
 FLAGS		= -g3 -Wall -Wextra -Werror -g -std=c++98 -Wpedantic
 CC			= c++

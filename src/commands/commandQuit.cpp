@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:42:56 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:16:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void Commands::commandQuit( void )
 void Commands::quitServer( void )
 {
 	_server.disconnectClient(_fd);
-	std::cout << RED << "Client disconnected: ";
-	std::cout << BYELLOW << _fd << RESET << std::endl;
+	_server.getLogger().info(RED + "Client disconnected: " +
+		BYELLOW + itoa(_fd) + RESET);
 }
 
 bool Commands::getQuitMessage(std::string &messageQuit)

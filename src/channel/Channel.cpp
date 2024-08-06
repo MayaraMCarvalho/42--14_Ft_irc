@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
 #include "Channel.hpp"
 #include "IrcServer.hpp"
 #include "Colors.hpp"
@@ -243,8 +242,8 @@ void Channel::sendToAll(const std::string &message) {
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
-		std::cerr << "Sending message " << BGREEN << message << RESET
-			<< " to " << BYELLOW << it->first << RESET << std::endl;
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
 		_msgHandler.sendMessage(it->first, message);
 	}
 }
@@ -254,8 +253,8 @@ void Channel::sendToAll(const std::string &from, const std::string &message)
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
-		std::cerr << "Sending message " << BGREEN << message << RESET
-			<< " to " << BYELLOW << it->first << RESET << std::endl;
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
 		_msgHandler.sendMessage(it->first, from, message);
 	}
 }

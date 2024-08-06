@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandQuit.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 07:19:00 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:16:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ void Commands::commandQuit( void )
 	if (initValidation(1))
 	{
 		std::string	messageQuit = "";
-		std::string	prefix = RED + "Client " + BYELLOW + toString(_fd)
-			+ RED + " left the channel ";
 
 		if(getQuitMessage(messageQuit))
 		{
@@ -27,8 +25,8 @@ void Commands::commandQuit( void )
 				it != _channels.end(); ++it)
 			{
 				if (it->second.userIsInChannel(_fd))
-					it->second.sendToAll(prefix + BCYAN + it->second.getName()
-						+ messageQuit);
+					it->second.sendToAll(BYELLOW +
+					_clients.getClient(_fd)->second.getFullId() + messageQuit);
 			}
 			quitServer();
 		}
@@ -49,7 +47,7 @@ bool Commands::getQuitMessage(std::string &messageQuit)
 		std::string message = getMessage(1);
 		if (!validMessage(message))
 			return false;
-		messageQuit = BLUE + " And sent the following farewell message: "
+		messageQuit = BLUE + " QUIT: "
 			+ BGREEN + message + RESET;
 	}
 	return true;

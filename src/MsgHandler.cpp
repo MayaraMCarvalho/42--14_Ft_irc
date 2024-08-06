@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MsgHandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 03:32:58 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 06:59:11 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:18:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

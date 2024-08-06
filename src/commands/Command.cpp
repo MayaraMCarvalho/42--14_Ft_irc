@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Commands.cpp                                       :+:      :+:    :+:   */
+/*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 07:20:05 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:15:36 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,10 @@
 // Constructor & Destructor ===================================================
 Commands::Commands( IRCServer& server ) : _server(server),
 	_clients(_server.getClients()), _channels(_server.getChannels()),
-	_serverPass(_server.getPassword()) {}
+	_serverPass(_server.getPassword()),
+	_host(_server.getMsgHandler().getHost()) {}
 
 Commands::~Commands(void) {}
-
-// Getters ====================================================================
-
-// Setters ====================================================================
 
 // Methods ====================================================================
 
@@ -40,9 +37,8 @@ void Commands::extractCommands(int clientFd) {
 		if (endIdx == std::string::npos &&
 				(str.find('\n') != std::string::npos ||
 					str.find('\r') != std::string::npos)) {
-			_server.getLogger().info(
-				"Message contains invalid line end characters: " +
-					BYELLOW + str + RESET);
+			std::cerr << RED << "Message contains invalid line end characters: "
+			<< BYELLOW << str << RESET << std::endl;
 			str.clear();
 			return;
 		}
@@ -73,9 +69,9 @@ void Commands::extractCommands(int clientFd) {
 			str.clear();
 
 	} catch(std::out_of_range &e) {
-		_server.getLogger().warn(RED
-			+ "Out of range exception caught while processing client messages"
-			+ RESET);
+		std::cerr << RED
+			<< "Out of range exception caught while processing client messages"
+			<< RESET << std::endl;
 	}
 }
 
@@ -84,54 +80,74 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; // Ok c/ ressalvas
-	cmdFuncs[NICK] = &Commands::commandNick; // Ok
-	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; //	F4
-	cmdFuncs[PART] = &Commands::commandPart; //
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //	F1
-	cmdFuncs[KICK] = &Commands::commandKick; //
-	cmdFuncs[INVITE] = &Commands::commandInvite;
-	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[PASS] = &Commands::commandPass;
+	cmdFuncs[NICK] = &Commands::commandNick;
+	cmdFuncs[USER] = &Commands::commandUser;
+	cmdFuncs[JOIN] = &Commands::commandJoin;
+	cmdFuncs[PART] = &Commands::commandPart;
+	cmdFuncs[KICK] = &Commands::commandKick;
 	cmdFuncs[MODE] = &Commands::commandMode;
-	cmdFuncs[QUIT] = &Commands::commandQuit; //
+	cmdFuncs[QUIT] = &Commands::commandQuit;
+	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[INVITE] = &Commands::commandInvite;
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg;
 
-	_server.getLogger().debug(CYAN + "Received message from client " +
-		itoa(clientFd) + ": " + BYELLOW + message + RESET);
+	std::cout << CYAN << "Received message from client " << clientFd
+				<< ": " << BYELLOW << message << RESET << std::endl;
 
-	parsingArgs(message);
-	strToUpper(_args[0]);
-	std::map<std::string, void (Commands::*)()>::iterator it =
-		cmdFuncs.find(_args[0]);
-	if (it != cmdFuncs.end())
+	parsingArgs(message, ' ', _args);
+
+	if (_args.size() > 0)
 	{
-		(this->*(it->second))();
-		return true;
+		strToUpper(_args[0]);
+		std::map<std::string, void (Commands::*)()>::iterator it =
+			cmdFuncs.find(_args[0]);
+		if (it != cmdFuncs.end())
+		{
+			(this->*(it->second))();
+			return true;
+		}
 	}
 	return false;
 }
 
-void Commands::parsingArgs(const std::string &message)
+void Commands::parsingArgs(const std::string &message, char c,
+						   std::vector<std::string>	&vector)
 {
 	std::string			token;
 	std::istringstream	tokenStream(message);
 
-	while (std::getline(tokenStream, token, ' '))
-		_args.push_back(token);
-}
-
-void Commands::commandInvite( void )
-{
-	_server.getLogger().debug("Command Invite");
+	while (std::getline(tokenStream, token, c))
+	{
+		if (!token.empty())
+			vector.push_back(token);
+	}
 }
 
 void Commands::commandTopic( void )
 {
-	_server.getLogger().debug("Command Topic");
+	if (validSetup() && initValidation(2))
+	{
+		std::string	channelName = _args[1];
+		std::string	topic = "";
 
-}
-
-void Commands::commandMode( void )
-{
-	_server.getLogger().debug("Command Mode");
+		if (validArg(channelName)&& validChannelName(channelName)
+			&& verifyChannel(channelName))
+		{
+			if (_args.size() > 2)
+			{
+				topic = getMessage(2);
+				if (verifyChanOp(channelName) && validMessage(topic))
+				{
+					_channels.get(channelName)->second.setTopic(topic);
+					std::string message = BCYAN +
+						_clients.getClient(_fd)->second.getFullId() + " TOPIC "
+						+ BYELLOW + channelName + PURPLE + " :" + topic + RESET;
+					sendMessage(_channels.get(channelName), message);
+				}
+			}
+			else
+				printInfo(getTopic(channelName));
+		}
+	}
 }

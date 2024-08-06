@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MsgHandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 02:44:02 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 06:58:44 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:19:35 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class MsgHandler {
 			const std::string &msg);
 		std::string &sendPop(int fd);
 		bool sendPush(int fd, std::string msg);
+		void  removeSendChars(int fd, ssize_t numChars);
 		ssize_t sendLength(int fd);
 		std::string &recvPop(int fd);
 		bool recvPush(int fd, std::string msg);

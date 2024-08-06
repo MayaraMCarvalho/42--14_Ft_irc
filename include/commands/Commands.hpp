@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 12:10:13 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:10:22 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ class Commands
 
 		// utils.cpp
 		std::string	getMessage(int index);
-		std::string	toString(t_numCode &code);
+		std::string	toString(t_numCode code);
 		std::string	toString(int num);
 		int			toInt(std::string &str);
 		void		printInfo(const std::string &info);

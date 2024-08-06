@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
+#    By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/08/06 17:20:45 by macarval         ###   ########.fr        #
+#    Updated: 2024/08/06 18:08:45 by gmachado         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			validations.cpp verify.cpp
 
 VPATH		= src/ src/bonus src/channel src/client src/commands \
-			src/commands/utils tests/
+			src/commands/utils src/logger tests/
 OBJS_PATH	= obj
 INCLUDE		= -I./include -I./include/bonus -I./include/channel \
 			-I./include/client -I./include/commands \

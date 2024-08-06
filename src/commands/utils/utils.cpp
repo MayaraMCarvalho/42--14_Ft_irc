@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 11:57:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/06 18:16:45 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ std::string Commands::getMessage(int index)
 	return result;
 }
 
-std::string Commands::toString(t_numCode &code)
+std::string Commands::toString(t_numCode code)
 {
 	std::ostringstream	oss;
 

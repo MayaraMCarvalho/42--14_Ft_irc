@@ -50,8 +50,7 @@ void Commands::applyPart(std::string &channel, std::string &info,
 		fullInfo += channel;
 
 		if (!message.empty())
-			fullInfo += PURPLE + " :" + message;
-		fullInfo += RESET;
+			fullInfo += " :" + message;
 
 		sendMessage(_channels.get(channel), fullInfo);
 	}

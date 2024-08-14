@@ -37,8 +37,9 @@ void Commands::extractCommands(int clientFd) {
 		if (endIdx == std::string::npos &&
 				(str.find('\n') != std::string::npos ||
 					str.find('\r') != std::string::npos)) {
-			std::cerr << RED << "Message contains invalid line end characters: "
-			<< BYELLOW << str << RESET << std::endl;
+			_server.getLogger().warn(RED +
+				"Message contains invalid line end characters: " + BYELLOW +
+				str + RESET);
 			str.clear();
 			return;
 		}
@@ -69,9 +70,9 @@ void Commands::extractCommands(int clientFd) {
 			str.clear();
 
 	} catch(std::out_of_range &e) {
-		std::cerr << RED
-			<< "Out of range exception caught while processing client messages"
-			<< RESET << std::endl;
+		_server.getLogger().warn(RED +
+			"Out of range exception caught while processing client messages" +
+			RESET);
 	}
 }
 
@@ -92,8 +93,8 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg;
 
-	std::cout << CYAN << "Received message from client " << clientFd
-				<< ": " << BYELLOW << message << RESET << std::endl;
+	_server.getLogger().debug(CYAN + "Received message from client " +
+		itoa(clientFd) + ": " + BYELLOW + message + RESET);
 
 	parsingArgs(message, ' ', _args);
 
@@ -140,9 +141,9 @@ void Commands::commandTopic( void )
 				if (verifyChanOp(channelName) && validMessage(topic))
 				{
 					_channels.get(channelName)->second.setTopic(topic);
-					std::string message = BCYAN +
+					std::string message =
 						_clients.getClient(_fd)->second.getFullId() + " TOPIC "
-						+ BYELLOW + channelName + PURPLE + " :" + topic + RESET;
+						+ channelName + " :" + topic;
 					sendMessage(_channels.get(channelName), message);
 				}
 			}

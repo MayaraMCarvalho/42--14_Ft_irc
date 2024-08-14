@@ -52,10 +52,8 @@ void Commands::applyKick(std::string &channel, std::string &user,
 			printInfo(errorUserNotInChannel(user, channel));
 		else
 		{
-			std::string message = PURPLE +
-						_clients.getClient(_fd)->second.getFullId()
-						+ " KICK " + BYELLOW + channel + " " + user
-						+ BBLUE + " " + comment + RESET;
+			std::string message = _clients.getClient(_fd)->second.getFullId()
+						+ " KICK " + channel + " " + user + " " + comment;
 			sendMessage(_channels.get(channel), message);
 			_channels.part(_clients.getFDByUser(user), channel);
 		}

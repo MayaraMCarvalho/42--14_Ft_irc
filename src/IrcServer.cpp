@@ -85,7 +85,7 @@ void IRCServer::signalHandler(int signal)
 
 		for (std::map<int, Client>::iterator it = clients.begin();
 			it != clients.end(); ++it)
-			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
+			it->second.sendMessage("The server was disconnected!");
 	}
 }
 
@@ -201,11 +201,6 @@ void IRCServer::acceptNewClient(void)
 
 	_logger.info(BLUE + "New client connected: " + BYELLOW +
 		itoa(clientFd) + RESET);
-
-	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
-	std::string message = BPURPLE +
-		"NOTICE * :*** Welcome to the IRC server ***" + RESET;
-	it->second.sendMessage(message);
 }
 
 bool IRCServer::handleClientMessage(int clientFd)

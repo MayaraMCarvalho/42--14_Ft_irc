@@ -110,5 +110,5 @@ std::string Commands::getChannelFlags(int modeFlags, Channel &channel)
 		params << channel.getUserLimit() << ' ';
 	}
 
-	return mode.str() + " " + YELLOW + params.str();
+	return mode.str() + " " + params.str();
 }

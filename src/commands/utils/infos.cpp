@@ -14,38 +14,38 @@
 
 std::string Commands::getWelcome(Client &client)
 {
-	return (GREEN + toString(RPL_WELCOME) + " " + client.getNick() +
-			" :Welcome to IRC server " + BYELLOW + client.getFullId() + RESET);
+	return (toString(RPL_WELCOME) + " " + client.getNick() +
+			" :Welcome to IRC server " + client.getFullId());
 }
 
 std::string Commands::getYourHost(Client &client)
 {
-	return (GREEN + toString(RPL_YOURHOST) + " " + client.getNick() +
-			BYELLOW + " :Your host is " + _host + RESET);
+	return (toString(RPL_YOURHOST) + " " + client.getNick() +
+			" :Your host is " + _host);
 }
 
 std::string Commands::getMyInfo(Client &client)
 {
 	int	modeFlags = client.getModeFlags();
 
-	return (GREEN + toString(RPL_MYINFO) + " " + client.getNick() +
-			BYELLOW + " " + _host + " " + getUserFlags(modeFlags) + RESET);
+	return (toString(RPL_MYINFO) + " " + client.getNick() +
+			" " + _host + " " + getUserFlags(modeFlags));
 }
 
 std::string Commands::getUserModeIs(Client &client)
 {
 	int	modeFlags = client.getModeFlags();
 
-	return (CYAN + toString(RPL_UMODEIS) + " " + client.getNick()
-			+ GREEN + " " + getUserFlags(modeFlags) + RESET);
+	return (toString(RPL_UMODEIS) + " " + client.getNick()
+			+ " " + getUserFlags(modeFlags));
 }
 
 std::string Commands::getChannelModeIs(Channel &channel)
 {
 	int	modeFlags = channel.getChannelModeFlags();
 
-	return (CYAN + toString(RPL_CHANNELMODEIS) + " " + channel.getName()
-			+ GREEN + " " + getChannelFlags(modeFlags, channel) + RESET);
+	return (toString(RPL_CHANNELMODEIS) + " " + channel.getName()
+			+ " " + modeFlags);
 }
 
 std::string Commands::getTopic(std::string &channelName)
@@ -53,19 +53,19 @@ std::string Commands::getTopic(std::string &channelName)
 	std::string topic = _channels.get(channelName)->second.getTopic();
 
 	if (topic.empty())
-		return (CYAN + toString(RPL_NOTOPIC) + " " + _clients.getNick(_fd)
-				+ " " + channelName + " :No topic is set" + RESET);
+		return (toString(RPL_NOTOPIC) + " " + _clients.getNick(_fd)
+				+ " " + channelName + " :No topic is set");
 	else
-		return (CYAN + toString(RPL_TOPIC) + " " + _clients.getNick(_fd)
-				+ " " + channelName + " :" + topic + RESET);
+		return (toString(RPL_TOPIC) + " " + _clients.getNick(_fd)
+				+ " " + channelName + " :" + topic);
 
 }
 
 std::string Commands::getInviting(std::string &nickname,
 								  std::string &channelName)
 {
-	return (CYAN + toString(RPL_INVITING) + " " + _clients.getNick(_fd)
-			+ " " + nickname + " " + channelName + RESET);
+	return (toString(RPL_INVITING) + " " + _clients.getNick(_fd)
+			+ " " + nickname + " " + channelName);
 }
 
 std::string Commands::getNamReply(std::string &channelName)
@@ -80,12 +80,12 @@ std::string Commands::getNamReply(std::string &channelName)
 			listUsers.append(" ");
 		listUsers.append(_clients.getNick(it->first));
 	}
-	return (CYAN + toString(RPL_NAMREPLY) + " " + _clients.getNick(_fd)
-			+ " = " + channelName + " :" + listUsers + "" + RESET);
+	return (toString(RPL_NAMREPLY) + " " + _clients.getNick(_fd)
+			+ " = " + channelName + " :" + listUsers + "");
 }
 
 std::string Commands::getEndOfNames(std::string &channelName)
 {
-	return (CYAN + toString(RPL_ENDOFNAMES) + " " + _clients.getNick(_fd)
-			+ " " + channelName + " :End of /NAMES list." + RESET);
+	return (toString(RPL_ENDOFNAMES) + " " + _clients.getNick(_fd)
+			+ " " + channelName + " :End of /NAMES list.");
 }

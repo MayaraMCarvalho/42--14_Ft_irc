@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:10:50 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:11:03 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/18 17:00:58 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,7 @@ void Commands::commandPart( void )
 	{
 		std::vector<std::string> channels;
 		std::string	message = "";
-		std::string	info = BGREEN + _clients.getClient(_fd)->second.getFullId()
-				+ " PART" + BYELLOW + " " ;
+		std::string	info = BGREEN + " PART" + BYELLOW + " " ;
 
 		if (_args.size() > 2)
 			message = getMessage(2);
@@ -53,6 +52,7 @@ void Commands::applyPart(std::string &channel, std::string &info,
 			fullInfo += PURPLE + " :" + message;
 		fullInfo += RESET;
 
-		sendMessage(_channels.get(channel), fullInfo);
+		std::string from = _clients.getClient(_fd)->second.getFullId();
+		sendMessage(_channels.get(channel), fullInfo, from);
 	}
 }

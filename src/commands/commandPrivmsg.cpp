@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 16:33:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/18 17:03:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 		_server.getMsgHandler().sendMessage(clientFd, RED + message + RESET);
 	else
 		_server.getMsgHandler().sendMessage(clientFd,
-											getFullMessage(message, name));
+											name, getFullMessage(message, name));
 
 	return true;
 }
@@ -59,7 +59,7 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 void Commands::sendMessageChannel(std::string &recipient, std::string &message)
 {
 	std::map<std::string, Channel>::iterator channel = _channels.get(recipient);
-
+	std::string from = _clients.getClient(_fd)->second.getFullId();
 
 	if (channel == _channels.end())
 		printInfo(errorNoSuchChannel(recipient));
@@ -69,27 +69,28 @@ void Commands::sendMessageChannel(std::string &recipient, std::string &message)
 		&& !channel->second.getUserMode(_fd, Channel::CHANOP)
 		&& !channel->second.getUserMode(_fd, Channel::VOICE)))
 		printInfo(errorCannotSendToChan(recipient));
-	else if (!sendMessage( _channels.get(recipient), message))
+	else if (!sendMessage(_channels.get(recipient), message, from))
 		printInfo(errorNoSuchChannel(recipient));
 }
 
 bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel,
-						   std::string &message)
+						   std::string &message, std::string &from)
 {
 	if (channel == _channels.end())
 		return false;
 
-	std::string name = channel->second.getName();
+	std::string channelName = channel->second.getName();
 	if (_args[0] == PRIVMSG)
-		channel->second.sendToAll(getFullMessage(message, name));
+		channel->second.sendToAll(from, getFullMessage(message, channelName));
 	else
-		channel->second.sendToAll(message);
+		channel->second.sendToAll(from, message);
 
 	return true;
 }
 
-std::string Commands::getFullMessage(const std::string &message, std::string &name)
+std::string Commands::getFullMessage(const std::string &message,
+									 std::string &name)
 {
-	return BBLUE + _clients.getClient(_fd)->second.getFullId() + " PRIVMSG "
-			+ BYELLOW + name + BPURPLE + " :" + message + RESET;
+	return BBLUE + " PRIVMSG " + BYELLOW + name + BPURPLE + " :"
+			+ message + RESET;
 }

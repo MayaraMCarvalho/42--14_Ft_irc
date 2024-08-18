@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 12:10:13 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:47:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ class Commands
 		bool		sendMessage(int clientFd, const std::string &message);
 		void		sendMessageChannel(std::string &recipient, std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
-								std::string &message);
+								std::string &message, std::string &from);
 		std::string	getFullMessage(const std::string &message, std::string &name);
 		bool		isItChannel(const std::string &channelName);
 

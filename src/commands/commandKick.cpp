@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:09:33 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 10:19:40 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/18 17:00:27 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,10 @@ void Commands::applyKick(std::string &channel, std::string &user,
 			printInfo(errorUserNotInChannel(user, channel));
 		else
 		{
-			std::string message = PURPLE +
-						_clients.getClient(_fd)->second.getFullId()
-						+ " KICK " + BYELLOW + channel + " " + user
-						+ BBLUE + " " + comment + RESET;
-			sendMessage(_channels.get(channel), message);
+			std::string message = PURPLE + " KICK " + BYELLOW + channel
+						+ " " + user + BBLUE + " " + comment + RESET;
+			std::string from = _clients.getClient(_fd)->second.getFullId();
+			sendMessage(_channels.get(channel), message, from);
 			_channels.part(_clients.getFDByUser(user), channel);
 		}
 	}

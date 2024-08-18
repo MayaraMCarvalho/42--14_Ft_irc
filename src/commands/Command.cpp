@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/06 17:15:36 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:59:11 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 		if (it != cmdFuncs.end())
 		{
 			(this->*(it->second))();
+			_args.clear();
 			return true;
 		}
 	}
@@ -140,10 +141,10 @@ void Commands::commandTopic( void )
 				if (verifyChanOp(channelName) && validMessage(topic))
 				{
 					_channels.get(channelName)->second.setTopic(topic);
-					std::string message = BCYAN +
-						_clients.getClient(_fd)->second.getFullId() + " TOPIC "
+					std::string from = _clients.getClient(_fd)->second.getFullId();
+					std::string message = BCYAN + " TOPIC "
 						+ BYELLOW + channelName + PURPLE + " :" + topic + RESET;
-					sendMessage(_channels.get(channelName), message);
+					sendMessage(_channels.get(channelName), message, from);
 				}
 			}
 			else

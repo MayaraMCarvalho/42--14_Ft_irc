@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/06 17:16:46 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/18 16:57:28 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ void Commands::commandQuit( void )
 				it != _channels.end(); ++it)
 			{
 				if (it->second.userIsInChannel(_fd))
-					it->second.sendToAll(BYELLOW +
-					_clients.getClient(_fd)->second.getFullId() + messageQuit);
+					it->second.sendToAll(_clients.getClient(_fd)->second.getFullId(),
+										messageQuit);
 			}
 			quitServer();
 		}

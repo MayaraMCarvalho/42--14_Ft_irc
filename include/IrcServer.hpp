@@ -15,8 +15,6 @@
 
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
-#include "FileTransfer.hpp"
-#include "Bot.hpp"
 #include "MsgHandler.hpp"
 #include "Logger.hpp"
 
@@ -30,18 +28,13 @@ class IRCServer
 		std::string					_password;
 		int 						_serverFd;
 		std::vector<struct pollfd>	_pollFds;
-		FileTransfer 				_fileTransfer;
-		Bot 						_bot;
-		Logger				&_logger;
+		Logger						&_logger;
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
 		bool						_isFdDisconnected;
-
 		bool						_shouldExit;
 		static IRCServer*			_instance;
-
-		void handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
 		static const int MAX_MSG_LENGTH = 512;

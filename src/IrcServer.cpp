@@ -22,8 +22,8 @@ IRCServer* IRCServer::_instance = NULL;
 // Constructor & Destructor ===================================================
 IRCServer::IRCServer(const std::string &port, const std::string &password,
 		Logger &logger)
-	: _port(port), _password(password), _serverFd(-1), _bot("ChatBot"),
-	_logger(logger), _msgHandler(_logger), _clients(_msgHandler, _pollFds),
+	: _port(port), _password(password), _serverFd(-1), _logger(logger),
+	_msgHandler(_logger), _clients(_msgHandler, _pollFds),
 	_channels(_clients, _msgHandler), _shouldExit(false)
 {
 	_instance = this;
@@ -235,16 +235,6 @@ bool IRCServer::handleClientMessage(int clientFd)
 	return true;
 }
 
-void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
-{
-	std::istringstream	iss(command);
-	std::string			cmd, file_name;
-	int					receiver_fd;
-
-	iss >> cmd >> receiver_fd >> file_name;
-	_fileTransfer.requestTransfer(clientFd, receiver_fd, file_name); // starts file transfer
-}
-
 std::string IRCServer::getHostName(const char *ip, const char *port) {
 	struct addrinfo *addrInfo;
 	std::string hostName;
@@ -289,5 +279,3 @@ void IRCServer::handleClientSideDisconnect(int fd) {
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
 
 bool IRCServer::getIsFdDisconnected(void) { return _isFdDisconnected; }
-
-// Exceptions =================================================================

@@ -49,8 +49,7 @@ void Commands::applyPart(std::string &channel, std::string &info,
 		fullInfo += channel;
 
 		if (!message.empty())
-			fullInfo += PURPLE + " :" + message;
-		fullInfo += RESET;
+			fullInfo += " :" + message;
 
 		std::string from = _clients.getClient(_fd)->second.getFullId();
 		sendMessage(_channels.get(channel), fullInfo, from);

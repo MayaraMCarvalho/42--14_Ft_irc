@@ -48,7 +48,7 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 
 	std::string name = _clients.getNick(clientFd);
 	if (message.find("unknown command") != std::string::npos)
-		_server.getMsgHandler().sendMessage(clientFd, RED + message + RESET);
+		_server.getMsgHandler().sendMessage(clientFd, message);
 	else
 		_server.getMsgHandler().sendMessage(clientFd,
 											name, getFullMessage(message, name));
@@ -91,6 +91,5 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel,
 std::string Commands::getFullMessage(const std::string &message,
 									 std::string &name)
 {
-	return BBLUE + " PRIVMSG " + BYELLOW + name + BPURPLE + " :"
-			+ message + RESET;
+	return " PRIVMSG " + name + " :" + message;
 }

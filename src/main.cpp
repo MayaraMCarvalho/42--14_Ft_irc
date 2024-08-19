@@ -86,9 +86,7 @@ int main(int argc, char *argv[])
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << RED;
-		std::cerr << "Error: " << e.what() << std::endl;
-		std::cerr << RESET << std::endl;
+		logger.fatal("Exception caught: " + RED + e.what() + RESET);
 		return (1);
 	}
 	return (0);

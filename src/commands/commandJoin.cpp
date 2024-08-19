@@ -42,8 +42,8 @@ void Commands::commandJoin( void )
 void Commands::printJoin(std::string &channelName)
 {
 	Client client = _clients.getClient(_fd)->second;
-	std::string message = BGREEN + _args[0]
-						+ BYELLOW + " " + channelName + RESET;
+	std::string message = _args[0]
+						+ " " + channelName;
 	std::string from = client.getFullId();
 
 	sendMessage(_channels.get(channelName), message, from);

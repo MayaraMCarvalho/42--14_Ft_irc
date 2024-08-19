@@ -35,8 +35,8 @@ void Commands::sendInviting(std::string &nick, std::string &channelName)
 	std::string	user = _clients.getNick(_fd);
 	std::string	info;
 
-	info = CYAN + ":" + user + "!" + user + "@" + _host + " INVITE "
-			+ nick + " :" + channelName + "" + RESET;
+	info = ":" + user + "!" + user + "@" + _host + " INVITE "
+			+ nick + " :" + channelName;
 
 	_clients.getClientByNick(nick)->second.sendMessage(info);
 }

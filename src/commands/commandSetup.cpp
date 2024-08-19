@@ -53,7 +53,7 @@ void Commands::commandNick( void )
 		{
 			errorCode = _clients.setNick(_fd, nick);
 			if (errorCode != NO_CODE)
-				printInfo(RED + toString(errorCode) + RESET);
+				printInfo(toString(errorCode));
 		}
 	}
 }
@@ -94,5 +94,5 @@ void Commands::saveUser(std::string &user, std::string &userName)
 		printInfo(getMyInfo(client));
 	}
 	else
-		printInfo(RED + toString(errorCode) + RESET);
+		printInfo(toString(errorCode));
 }

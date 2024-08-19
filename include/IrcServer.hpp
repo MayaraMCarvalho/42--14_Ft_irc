@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/25 07:02:30 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:36:44 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
-#include "FileTransfer.hpp"
-#include "Bot.hpp"
 #include "MsgHandler.hpp"
 #include "Logger.hpp"
 
@@ -30,18 +28,13 @@ class IRCServer
 		std::string					_password;
 		int 						_serverFd;
 		std::vector<struct pollfd>	_pollFds;
-		FileTransfer 				_fileTransfer;
-		Bot 						_bot;
 		Logger				&_logger;
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
 		bool						_isFdDisconnected;
-
 		bool						_shouldExit;
 		static IRCServer*			_instance;
-
-		void handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
 		static const int MAX_MSG_LENGTH = 512;

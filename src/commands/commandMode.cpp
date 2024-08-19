@@ -6,11 +6,12 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:19:18 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 11:57:38 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/19 09:23:57 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+#include "IrcServer.hpp"
 
 void Commands::commandMode( void )
 {
@@ -45,7 +46,11 @@ void Commands::commandModeChannel(std::string &channelName)
 				for (std::string::const_iterator it = mode.begin() + 1;
 					it != mode.end(); ++it)
 					applyMode(channelName, std::string(1, signal) + *it, index);
-				printInfo(getChannelModeIs(_channels.get(channelName)->second));
+
+				std::string message = _args[0] + " " + channelName + " " + mode;
+				std::string from = _clients.getClient(_fd)->second.getFullId();
+
+				sendMessage(_channels.get(channelName), message, from);
 			}
 		}
 	}
@@ -88,10 +93,16 @@ void Commands::commandModeUser(std::string &nick)
 
 			if (verifyMode(mode, nick, "+-aiwroOs"))
 			{
-				Client &client = _clients.getClientByNick(nick)->second;
+				Client &user = _clients.getClientByNick(nick)->second;
 				for (std::string::const_iterator it = mode.begin() + 1; it != mode.end(); ++it)
-					client.setMode(std::string(1, signal) + *it);
-				printInfo(getUserModeIs(_clients.getClientByNick(nick)->second));
+					user.setMode(std::string(1, signal) + *it);
+
+				Client client = _clients.getClient(_fd)->second;
+				std::string message = _args[0] + " " + nick + " " + mode;
+				std::string from = client.getFullId();
+				_server.getMsgHandler().sendMessage(_fd, from, message);
+				if (client.getNick() != nick)
+					_server.getMsgHandler().sendMessage(user.getFD(), from, message);
 			}
 		}
 	}

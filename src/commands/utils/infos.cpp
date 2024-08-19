@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 11:20:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:41:04 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ std::string Commands::getChannelModeIs(Channel &channel)
 	int	modeFlags = channel.getChannelModeFlags();
 
 	return (toString(RPL_CHANNELMODEIS) + " " + channel.getName()
-			+ " " + modeFlags);
+			+ " " + getChannelFlags(modeFlags, channel));
 }
 
 std::string Commands::getTopic(std::string &channelName)

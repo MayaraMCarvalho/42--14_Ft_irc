@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/08/06 17:29:22 by macarval         ###   ########.fr        #
+#    Updated: 2024/08/19 09:18:48 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,7 +66,7 @@ all: 		$(NAME)
 
 $(NAME): 	$(OBJS_PATH) $(OBJS)
 			@$(CC) $(FLAGS) $(OBJS) -o $(NAME)
-			@echo "\n$(CYAN)$(NAME): $(GREEN)Done!$()\n"
+			@echo "\n$(CYAN)$(NAME): $(GREEN)Done!$(RESET)\n"
 
 $(OBJS_PATH):
 			@mkdir -p $(OBJS_PATH)

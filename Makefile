@@ -14,8 +14,6 @@ NAME		= ircserv
 
 SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
-			Bot.cpp FileTransfer.cpp \
-			\
 			Channel.cpp ChannelList.cpp \
 			\
 			Client.cpp ClientList.cpp \
@@ -29,10 +27,10 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
 			Logger.cpp ConsoleLogger.cpp FileLogger.cpp NullLogger.cpp
 
-VPATH		= src/ src/bonus src/channel src/client src/commands src/logger \
+VPATH		= src/ src/channel src/client src/commands src/logger \
 			src/commands/utils tests/
 OBJS_PATH	= obj
-INCLUDE		= -I./include -I./include/bonus -I./include/channel \
+INCLUDE		= -I./include -I./include/channel \
 			-I./include/client -I./include/commands \
 			-I./include/logger -I./include/utils
 
@@ -68,7 +66,7 @@ all: 		$(NAME)
 
 $(NAME): 	$(OBJS_PATH) $(OBJS)
 			@$(CC) $(FLAGS) $(OBJS) -o $(NAME)
-			@echo "\n$(CYAN)$(NAME): $(GREEN)Done!$(RESET)\n"
+			@echo "\n$(CYAN)$(NAME): $(GREEN)Done!$()\n"
 
 $(OBJS_PATH):
 			@mkdir -p $(OBJS_PATH)

@@ -31,8 +31,6 @@
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "MsgHandler.hpp"
-#include "FileTransfer.hpp"
-#include "Bot.hpp"
 #include "Colors.hpp"
 #include "Codes.hpp"
 

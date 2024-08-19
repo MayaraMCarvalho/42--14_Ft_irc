@@ -76,7 +76,6 @@ void ChannelList::join(int userFD, const std::string &chanName,
 		const std::string &key) {
 	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
-	// TODO: add exception
 	if (userIt == _clients.end())
 		return;
 
@@ -98,7 +97,6 @@ void ChannelList::join(int userFD, const std::string &chanName,
 		return;
 	}
 
-	// TODO: add exception
 	if (!userCanJoin(userFD, chanIt->second, key))
 		return;
 
@@ -110,7 +108,6 @@ void ChannelList::part(int userFD, std::string chanName) {
 	std::map<std::string, Channel>::iterator chanIt = get(chanName);
 	std::map<int, Client>::iterator userIt = _clients.getClient(userFD);
 
-	// TODO: add exception
 	if (chanIt == end() || userIt == _clients.end())
 		return;
 
@@ -195,7 +192,7 @@ void ChannelList::addInvite(const std::string &nick,
 	{
 		newSetPair = std::make_pair(chan, std::set<std::string>());
 		newSetPair.second.insert(nick);
-		_invites.insert(newSetPair); //TODO: add exception in case of failure to insert
+		_invites.insert(newSetPair);
 		return;
 	}
 

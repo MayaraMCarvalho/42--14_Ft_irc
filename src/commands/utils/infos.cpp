@@ -45,7 +45,7 @@ std::string Commands::getChannelModeIs(Channel &channel)
 	int	modeFlags = channel.getChannelModeFlags();
 
 	return (toString(RPL_CHANNELMODEIS) + " " + channel.getName()
-			+ " " + modeFlags);
+			+ " " + getUserFlags(modeFlags));
 }
 
 std::string Commands::getTopic(std::string &channelName)

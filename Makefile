@@ -66,7 +66,7 @@ all: 		$(NAME)
 
 $(NAME): 	$(OBJS_PATH) $(OBJS)
 			@$(CC) $(FLAGS) $(OBJS) -o $(NAME)
-			@echo "\n$(CYAN)$(NAME): $(GREEN)Done!$()\n"
+			@echo "\n$(CYAN)$(NAME): $(GREEN)Done!$(RESET)\n"
 
 $(OBJS_PATH):
 			@mkdir -p $(OBJS_PATH)

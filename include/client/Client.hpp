@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/23 21:37:41 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:48:37 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ class Client {
 		void setUserHost(const std::string &userHost);
 		void setUserServer(const std::string &userServer);
 		void setUserName(const std::string &userName);
-		void setFD(int fd);//
 		void setModeFlags(int modeFlags);
 		void setMode(const std::string &modeStr);
 		void setStatus(t_status status);

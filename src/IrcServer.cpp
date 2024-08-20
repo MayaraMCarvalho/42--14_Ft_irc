@@ -6,7 +6,7 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/23 21:38:54 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:49:11 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,16 @@
 IRCServer* IRCServer::_instance = NULL;
 
 // Constructor & Destructor ===================================================
-IRCServer::~IRCServer(void) {}
-
-IRCServer::IRCServer(const std::string &port, const std::string &password)
-	: _port(port), _password(password), _serverFd(-1), _bot("ChatBot"),
-	_msgHandler(), _clients(_msgHandler, _pollFds), _channels(_clients,
-	_msgHandler), _shouldExit(false)
+IRCServer::IRCServer(const std::string &port, const std::string &password,
+		Logger &logger)
+	: _port(port), _password(password), _serverFd(-1),
+	_logger(logger), _msgHandler(_logger), _clients(_msgHandler, _pollFds),
+	_channels(_clients, _msgHandler), _shouldExit(false)
 {
 	_instance = this;
 }
+
+IRCServer::~IRCServer(void) { }
 
 // Getters ====================================================================
 const std::string& IRCServer::getPort(void) {
@@ -62,6 +63,8 @@ ClientList& IRCServer::getClients(void) {
 ChannelList& IRCServer::getChannels(void) {
 	return _channels;
 }
+
+Logger &IRCServer::getLogger(void) { return _logger; }
 
 // Setters ====================================================================
 void	IRCServer::setPort(const std::string& port) {
@@ -140,8 +143,6 @@ void IRCServer::signalHandler(int signal)
 		for (std::map<int, Client>::iterator it = clients.begin();
 			it != clients.end(); ++it)
 			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
-		std::cout << BGREEN << std::endl;
-		std::cout << "Exiting gracefully!" << RESET << std::endl;
 	}
 }
 
@@ -166,8 +167,8 @@ void IRCServer::run(void)
 
 	setupServer();
 	setupSignalHandlers();
-	std::cout << GREEN << "Server running on port ";
-	std::cout << BYELLOW << _port << RESET << std::endl;
+	_logger.info(GREEN + "Server running on port " +
+		BYELLOW + itoa(_port) + RESET);
 
 	while (!_shouldExit)
 	{
@@ -213,16 +214,16 @@ void IRCServer::run(void)
 							_msgHandler.sendPop(fd).c_str(),strLen, 0);
 
 						if (nbytes <= 0) {
-							std::cerr << RED << "Write error on client "
-								<< BYELLOW << fd << std::endl << RESET;
+							_logger.error(RED + "Write error on client " +
+								BYELLOW + itoa(fd) + RESET);
 							disconnectClient(fd, fdIdx);
 						}
 						else
 							_msgHandler.removeSendChars(fd, nbytes);
 					} catch (std::out_of_range &e) {
-						std::cerr << RED
-						<< "Out of range exception caught while processing "
-						<< "message queue" << RESET << std::endl;
+						_logger.warn(RED +
+							"Out of range exception caught while processing " +
+							"message queue" + RESET);
 					}
 				}
 			}
@@ -232,6 +233,7 @@ void IRCServer::run(void)
 				++fdIdx;
 		}
 	}
+	_logger.debug(BGREEN + "Exiting gracefully!" + RESET);
 }
 
 void IRCServer::acceptNewClient(void)
@@ -242,7 +244,7 @@ void IRCServer::acceptNewClient(void)
 	clientFd = accept(_serverFd, (struct sockaddr *)&clientAddress, &clientLen);
 
 	if (clientFd < 0) {
-		std::cerr << "Failed to accept new client" << std::endl;
+		_logger.error("Failed to accept new client");
 		return;
 	}
 
@@ -254,13 +256,8 @@ void IRCServer::acceptNewClient(void)
 	struct pollfd pfd = {clientFd, POLLIN | POLLOUT, 0};
 	_pollFds.push_back(pfd);
 
-	std::cout << BLUE << "New client connected: ";
-	std::cout << BYELLOW << clientFd << RESET << std::endl;
-
-	std::map<int, Client>::iterator it = _clients.getClient(clientFd);
-	std::string message = BPURPLE +
-		"NOTICE * :*** Welcome to the IRC server ***" + RESET;
-	it->second.sendMessage(message);
+	_logger.info(BLUE + "New client connected: " + BYELLOW +
+		itoa(clientFd) + RESET);
 }
 
 bool IRCServer::handleClientMessage(int clientFd)
@@ -271,13 +268,13 @@ bool IRCServer::handleClientMessage(int clientFd)
 	nbytes = read(clientFd, buffer, sizeof(buffer) - 1); // read client data
 
 	if (nbytes < 0) {
-		std::cerr << RED << "Read error on client: " << BYELLOW << clientFd
-			<< RESET << std::endl;
+		_logger.error(RED + "Read error on client: " + BYELLOW +
+			itoa(clientFd) + RESET);
 		return false;
 	}
 	else if (nbytes == 0) {
-		std::cerr << "Client disconnected: " << BYELLOW << clientFd
-			<< RESET << std::endl;
+		_logger.info("Client disconnected: " + BYELLOW +
+			itoa(clientFd) + RESET);
 		return false;
 	}
 
@@ -285,7 +282,7 @@ bool IRCServer::handleClientMessage(int clientFd)
 
 	if (!_msgHandler.recvPush(clientFd, buffer))
 	{
-		std::cerr << "Receive message queue is full" << RESET << std::endl;
+		_logger.warn("Receive message queue is full" + RESET);
 		return false;
 	}
 
@@ -293,16 +290,6 @@ bool IRCServer::handleClientMessage(int clientFd)
 
 	commands.extractCommands(clientFd);
 	return true;
-}
-
-void IRCServer::handleFileTransfer(int clientFd, const std::string &command)
-{
-	std::istringstream	iss(command);
-	std::string			cmd, file_name;
-	int					receiver_fd;
-
-	iss >> cmd >> receiver_fd >> file_name;
-	_fileTransfer->requestTransfer(clientFd, receiver_fd, file_name); // starts file transfer
 }
 
 std::string IRCServer::getHostName(const char *ip, const char *port) {
@@ -327,8 +314,8 @@ void IRCServer::disconnectClient(int fd) {
 		}
 	}
 	if (fdIdx >= _pollFds.size())
-		std::cerr << RED << "Could not find fd in _pollfds: " << BYELLOW << fd
-			<< RESET << std::endl;
+		_logger.error(RED + "Could not find fd in _pollfds: " + BYELLOW +
+			itoa(fd) + RESET);
 	else
 		disconnectClient(fd, fdIdx);
 }
@@ -349,5 +336,3 @@ void IRCServer::handleClientSideDisconnect(int fd) {
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
 
 bool IRCServer::getIsFdDisconnected(void) { return _isFdDisconnected; }
-
-// Exceptions =================================================================

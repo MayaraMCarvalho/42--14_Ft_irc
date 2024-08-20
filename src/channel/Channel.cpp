@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
 #include "Channel.hpp"
 #include "IrcServer.hpp"
 #include "Colors.hpp"
@@ -62,7 +61,6 @@ bool Channel::getUserMode(const int userFD, const t_umode mode) {
 int Channel::getUserModeFlags(const int userFD) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
-	// TODO: add exception
 	if (it == _users.end())
 		return NO_UMODE;
 
@@ -95,7 +93,6 @@ bool Channel::userIsInChannel(const int userFD) {
 }
 
 bool Channel::userCanJoin(const int userFD) {
-	// TODO: mask checks
 	(void)userFD;
 	return true;
 }
@@ -162,7 +159,7 @@ void Channel::setChannelMode(const std::string &modeStr) {
 			}
 			newModeFlags = SECRET;
 			break;
-		case 'r': // TODO: User must be founder, channel must start with !
+		case 'r':
 			newModeFlags = SERV_REOP;
 			break;
 		case 't':
@@ -185,7 +182,6 @@ void Channel::setChannelModeFlags(const int modeFlags) {
 void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
-	// TODO: add exception
 	if (it == _users.end())
 		return;
 
@@ -212,7 +208,6 @@ void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 void Channel::setUserModeFlags(const int userFD, const int modeFlags) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
-	// TODO: add exception
 	if (it == _users.end())
 		return;
 
@@ -220,7 +215,6 @@ void Channel::setUserModeFlags(const int userFD, const int modeFlags) {
 }
 
 void Channel::addUser(const int fd, const int userModeFlags) {
-	// TODO: add exception
 	if (!userCanJoin(fd))
 		return;
 
@@ -243,8 +237,8 @@ void Channel::sendToAll(const std::string &message) {
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
-		std::cerr << "Sending message " << BGREEN << message << RESET
-			<< " to " << BYELLOW << it->first << RESET << std::endl;
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
 		_msgHandler.sendMessage(it->first, message);
 	}
 }
@@ -254,8 +248,8 @@ void Channel::sendToAll(const std::string &from, const std::string &message)
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
-		std::cerr << "Sending message " << BGREEN << message << RESET
-			<< " to " << BYELLOW << it->first << RESET << std::endl;
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
 		_msgHandler.sendMessage(it->first, from, message);
 	}
 }

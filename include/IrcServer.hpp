@@ -6,35 +6,17 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/23 21:45:29 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:47:19 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRC_SERVER_HPP
 #define IRC_SERVER_HPP
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
-#include <stdexcept>
-#include <unistd.h>
-#include <cstring>
-#include <cstdlib>
-#include <csignal>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <poll.h>
-#include "./client/ClientList.hpp"
-#include "./channel/ChannelList.hpp"
-#include "./bonus/FileTransfer.hpp"
-#include "./bonus/Bot.hpp"
-#include "Colors.hpp"
-#include "./MsgHandler.hpp"
-#include "Codes.hpp"
+#include "ClientList.hpp"
+#include "ChannelList.hpp"
+#include "MsgHandler.hpp"
+#include "Logger.hpp"
 
 class	Channel;
 
@@ -46,24 +28,20 @@ class IRCServer
 		std::string					_password;
 		int 						_serverFd;
 		std::vector<struct pollfd>	_pollFds;
-		FileTransfer 				*_fileTransfer;
-		Bot 						_bot;
+		Logger						&_logger;
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;
 		bool						_isFdDisconnected;
-
 		bool						_shouldExit;
 		static IRCServer*			_instance;
-
-		void		handleFileTransfer(int clientFd, const std::string &command);
 
 	public:
 		static const int MAX_MSG_LENGTH = 512;
 
 	// Constructor & Destructor ===============================================
-	
-		IRCServer(const std::string &port, const std::string &password);
+		IRCServer(const std::string &port, const std::string &password,
+			Logger &logger);
 		~IRCServer( void );
 
 	// Exceptions =============================================================
@@ -81,6 +59,7 @@ class IRCServer
 		MsgHandler			&getMsgHandler(void);
 		bool				getIsFdDisconnected(void);
 		static std::string	getHostName(const char *ip, const char *port);
+		Logger		&getLogger(void);
 
 	// Setters ================================================================
 	

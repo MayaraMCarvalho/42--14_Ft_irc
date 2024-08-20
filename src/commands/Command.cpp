@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Commands.cpp                                       :+:      :+:    :+:   */
+/*   Command.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/11 05:35:15 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:50:52 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,10 @@
 // Constructor & Destructor ===================================================
 Commands::Commands( IRCServer& server ) : _server(server),
 	_clients(_server.getClients()), _channels(_server.getChannels()),
-	_serverPass(_server.getPassword()) {}
+	_serverPass(_server.getPassword()),
+	_host(_server.getMsgHandler().getHost()) {}
 
 Commands::~Commands(void) {}
-
-// Getters ====================================================================
-std::vector<std::string> Commands::getArgs(void) const {
-	return _args;
-}
-
-ClientList& Commands::getClients(void) const {
-	return _clients;
-}
-
-ChannelList& Commands::getChannels(void) const {
-	return _channels;
-}
-
-int Commands::getFd(void) const {
-	return _fd;
-}
-// Setters ====================================================================
-void Commands::setArgs(const std::vector<std::string> &args) {
-	_args = args;
-}
-
-void Commands::setFd(int fd) {
-	_fd = fd;
-}
 
 // Methods ====================================================================
 
@@ -61,8 +37,9 @@ void Commands::extractCommands(int clientFd) {
 		if (endIdx == std::string::npos &&
 				(str.find('\n') != std::string::npos ||
 					str.find('\r') != std::string::npos)) {
-			std::cerr << RED << "Message contains invalid line end characters: "
-			<< BYELLOW << str << RESET << std::endl;
+			_server.getLogger().warn(RED +
+				"Message contains invalid line end characters: " + BYELLOW +
+				str + RESET);
 			str.clear();
 			return;
 		}
@@ -93,9 +70,9 @@ void Commands::extractCommands(int clientFd) {
 			str.clear();
 
 	} catch(std::out_of_range &e) {
-		std::cerr << RED
-			<< "Out of range exception caught while processing client messages"
-			<< RESET << std::endl;
+		_server.getLogger().warn(RED +
+			"Out of range exception caught while processing client messages" +
+			RESET);
 	}
 }
 
@@ -104,53 +81,74 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
-	cmdFuncs[PASS] = &Commands::commandPass; // Ok c/ ressalvas
-	cmdFuncs[NICK] = &Commands::commandNick; // Ok
-	cmdFuncs[USER] = &Commands::commandUser; // Ok
-	cmdFuncs[JOIN] = &Commands::commandJoin; //	F4
-	cmdFuncs[PART] = &Commands::commandPart; //
-	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg; //	F1
-	cmdFuncs[KICK] = &Commands::commandKick; //
-	cmdFuncs[INVITE] = &Commands::commandInvite;
-	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[PASS] = &Commands::commandPass;
+	cmdFuncs[NICK] = &Commands::commandNick;
+	cmdFuncs[USER] = &Commands::commandUser;
+	cmdFuncs[JOIN] = &Commands::commandJoin;
+	cmdFuncs[PART] = &Commands::commandPart;
+	cmdFuncs[KICK] = &Commands::commandKick;
 	cmdFuncs[MODE] = &Commands::commandMode;
-	cmdFuncs[QUIT] = &Commands::commandQuit; //
+	cmdFuncs[QUIT] = &Commands::commandQuit;
+	cmdFuncs[TOPIC] = &Commands::commandTopic;
+	cmdFuncs[INVITE] = &Commands::commandInvite;
+	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg;
 
-	std::cout << CYAN << "Received message from client " << clientFd
-				<< ": " << BYELLOW << message << RESET << std::endl;
+	_server.getLogger().debug(CYAN + "Received message from client " +
+		itoa(clientFd) + ": " + BYELLOW + message + RESET);
 
-	parsingArgs(message);
-	strToUpper(_args[0]);
-	std::map<std::string, void (Commands::*)()>::iterator it =
-		cmdFuncs.find(_args[0]);
-	if (it != cmdFuncs.end())
+	parsingArgs(message, ' ', _args);
+
+	if (_args.size() > 0)
 	{
-		(this->*(it->second))();
-		return true;
+		strToUpper(_args[0]);
+		std::map<std::string, void (Commands::*)()>::iterator it =
+			cmdFuncs.find(_args[0]);
+		if (it != cmdFuncs.end())
+		{
+			(this->*(it->second))();
+			_args.clear();
+			return true;
+		}
 	}
 	return false;
 }
 
-void Commands::parsingArgs(const std::string &message)
+void Commands::parsingArgs(const std::string &message, char c,
+						   std::vector<std::string>	&vector)
 {
 	std::string			token;
 	std::istringstream	tokenStream(message);
 
-	while (std::getline(tokenStream, token, ' '))
-		_args.push_back(token);
-}
-
-void Commands::commandInvite( void )
-{
- std::cout << "Command Invite" << std::endl;
+	while (std::getline(tokenStream, token, c))
+	{
+		if (!token.empty())
+			vector.push_back(token);
+	}
 }
 
 void Commands::commandTopic( void )
 {
-	std::cout << "Command Topic" << std::endl;
-}
+	if (validSetup() && initValidation(2))
+	{
+		std::string	channelName = _args[1];
+		std::string	topic = "";
 
-void Commands::commandMode( void )
-{
-	std::cout << "Command Mode" << std::endl;
+		if (validArg(channelName)&& validChannelName(channelName)
+			&& verifyChannel(channelName))
+		{
+			if (_args.size() > 2)
+			{
+				topic = getMessage(2);
+				if (verifyChanOp(channelName) && validMessage(topic))
+				{
+					_channels.get(channelName)->second.setTopic(topic);
+					std::string from = _clients.getClient(_fd)->second.getFullId();
+					std::string message = " TOPIC " + channelName + " :" + topic;
+					sendMessage(_channels.get(channelName), message, from);
+				}
+			}
+			else
+				printInfo(getTopic(channelName));
+		}
+	}
 }

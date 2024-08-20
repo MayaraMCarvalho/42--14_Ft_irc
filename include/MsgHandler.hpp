@@ -6,25 +6,26 @@
 /*   By: lucperei <lucperei@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 02:44:02 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/26 02:24:10 by lucperei         ###   ########.fr       */
+/*   Updated: 2024/08/20 00:47:31 by lucperei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MSG_HANDLER
 # define MSG_HANDLER
 
-#include <map>
+# include <map>
 # include <string>
-#include <sys/types.h>
+# include <sys/types.h>
+# include "Logger.hpp"
 
 class MsgHandler {
 	public:
 		static const int MAX_SEND_QUEUE_LENGTH = 2600;
 		static const int MAX_RECV_QUEUE_LENGTH = 2600;
 
-		MsgHandler(void);
 		MsgHandler(MsgHandler &src);
-		MsgHandler(std::string host);
+		MsgHandler(std::string host, Logger &logger);
+		MsgHandler(Logger &logger);
 
 		~MsgHandler(void);
 
@@ -32,9 +33,7 @@ class MsgHandler {
 
 		std::string &getHost(void);
 		std::string &getSendQueue(int fd);
-
-		void setHost(const std::string& host);
-		
+		Logger &getLogger(void);
 		void removeSendChars(int fd, ssize_t numChars);
 		void sendMessage(int fd, const std::string &msg);
 		void sendMessage(int fd, const std::string &from,
@@ -127,6 +126,7 @@ class MsgHandler {
 		std::string _host;
 		std::map<int, std::string> _sendQueues;
 		std::map<int, std::string> _recvQueues;
+		Logger &_logger;
 };
 
 #endif

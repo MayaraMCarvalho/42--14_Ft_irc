@@ -206,7 +206,6 @@ void ClientList::add(Client &client) {
 		std::map<int, Client>::iterator nickIt =
 			getClientByNick(client.getNick());
 
-		// TODO: add exception
 		if (nickIt != end())
 			return;
 	}
@@ -216,7 +215,6 @@ void ClientList::add(Client &client) {
 		std::map<int, Client>::iterator userIt =
 			getClientByUser(client.getUser());
 
-		// TODO: add exception
 		if (userIt != end())
 			return;
 	}
@@ -224,7 +222,6 @@ void ClientList::add(Client &client) {
 	result =
 		_clients.insert(std::pair<int, Client>(client.getFD(), client));
 
-	// TODO: add exception
 	if (!result.second)
 		return;
 

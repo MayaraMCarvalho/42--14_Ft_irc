@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/25 07:17:20 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/19 15:09:37 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,23 @@ void ChannelList::join(int userFD, const std::string &chanName,
 		return;
 
 	std::map<std::string, Channel>::iterator chanIt = get(chanName);
+	bool	isOper = false;
 
 	try {
 		if (chanIt == end())
+		{
 			chanIt = add(Channel(chanName, _msgHandler));
+			isOper = true;
+		}
 
 		Channel& chan = chanIt->second;
 		chan.addUser(userFD, _DEFAULT_FLAGS);
 		userIt->second.addChannel(chanName);
-		chan.setUserModeFlags(userFD,
-			chan.getChannelModeFlags() | Channel::CHANOP);
+
+		if (isOper)
+			chan.setUserModeFlags(userFD,
+				chan.getChannelModeFlags() | Channel::CHANOP);
+
 		return;
 	} catch (std::exception &e) {
 		_msgHandler.getLogger().error(RED + "Could not create channel: " +

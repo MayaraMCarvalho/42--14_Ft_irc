@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/06 17:18:38 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/19 08:36:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ IRCServer* IRCServer::_instance = NULL;
 // Constructor & Destructor ===================================================
 IRCServer::IRCServer(const std::string &port, const std::string &password,
 		Logger &logger)
-	: _port(port), _password(password), _serverFd(-1), _logger(logger),
-	_msgHandler(_logger), _clients(_msgHandler, _pollFds),
+	: _port(port), _password(password), _serverFd(-1),
+	_logger(logger), _msgHandler(_logger), _clients(_msgHandler, _pollFds),
 	_channels(_clients, _msgHandler), _shouldExit(false)
 {
 	_instance = this;

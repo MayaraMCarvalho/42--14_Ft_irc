@@ -49,6 +49,6 @@ void Commands::printJoin(std::string &channelName)
 	sendMessage(_channels.get(channelName), message, from);
 
 	printInfo(getTopic(channelName));
-	printInfo(getNamReply(channelName));
-	printInfo(getEndOfNames(channelName));
+	//printInfo(getNamReply(channelName));
+	//printInfo(getEndOfNames(channelName));
 }

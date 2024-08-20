@@ -85,7 +85,7 @@ void IRCServer::signalHandler(int signal)
 
 		for (std::map<int, Client>::iterator it = clients.begin();
 			it != clients.end(); ++it)
-			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
+			it->second.sendMessage("The server was disconnected!");
 	}
 }
 

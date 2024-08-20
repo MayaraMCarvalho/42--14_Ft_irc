@@ -54,6 +54,7 @@ class	Channel;
 # define TOPIC "TOPIC"
 # define MODE "MODE"
 # define QUIT "QUIT"
+# define WHO "WHO"
 
 class Commands
 {
@@ -78,6 +79,7 @@ class Commands
 		void		parsingArgs(const std::string &message, char c,
 								std::vector<std::string>	&vector);
 		void		commandTopic( void );
+		void		commandWho( void );
 
 		// commandInvite.cpp
 		void		commandInvite( void );

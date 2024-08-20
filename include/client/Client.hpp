@@ -57,6 +57,7 @@ class Client {
 		const std::string &getUser(void);
 		const std::string &getHost(void);
 		const std::string getFullId(void);
+		const std::string &getUserName(void);
 		int getFD(void);
 		std::set<std::string> &getChannelList(void);
 		t_status getStatus(void);

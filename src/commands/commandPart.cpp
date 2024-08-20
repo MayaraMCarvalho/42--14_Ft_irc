@@ -18,7 +18,7 @@ void Commands::commandPart( void )
 	{
 		std::vector<std::string> channels;
 		std::string	message = "";
-		std::string	info = BGREEN + " PART" + BYELLOW + " " ;
+		std::string	info = " PART ";
 
 		if (_args.size() > 2)
 			message = getMessage(2);
@@ -45,13 +45,14 @@ void Commands::applyPart(std::string &channel, std::string &info,
 	{
 		std::string fullInfo = info;
 
-		_channels.part(_fd, channel);
 		fullInfo += channel;
 
 		if (!message.empty())
 			fullInfo += " :" + message;
 
 		std::string from = _clients.getClient(_fd)->second.getFullId();
+
 		sendMessage(_channels.get(channel), fullInfo, from);
+		_channels.part(_fd, channel);
 	}
 }

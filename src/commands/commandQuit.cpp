@@ -47,7 +47,7 @@ bool Commands::getQuitMessage(std::string &messageQuit)
 		std::string message = getMessage(1);
 		if (!validMessage(message))
 			return false;
-		messageQuit = " QUIT: "+  message;
+		messageQuit = " QUIT: "+ message;
 	}
 	return true;
 }

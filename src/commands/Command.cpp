@@ -92,6 +92,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	cmdFuncs[TOPIC] = &Commands::commandTopic;
 	cmdFuncs[INVITE] = &Commands::commandInvite;
 	cmdFuncs[PRIVMSG] = &Commands::commandPrivMsg;
+	cmdFuncs[WHO] = &Commands::commandWho;
 
 	_server.getLogger().debug(CYAN + "Received message from client " +
 		itoa(clientFd) + ": " + BYELLOW + message + RESET);
@@ -143,12 +144,62 @@ void Commands::commandTopic( void )
 				{
 					_channels.get(channelName)->second.setTopic(topic);
 					std::string from = _clients.getClient(_fd)->second.getFullId();
-					std::string message = " TOPIC " + channelName + " :" + topic;
+					std::string message = "TOPIC " + channelName + " :" + topic;
 					sendMessage(_channels.get(channelName), message, from);
 				}
 			}
 			else
 				printInfo(getTopic(channelName));
 		}
+	}
+}
+
+void Commands::commandWho( void )
+{
+	if (_args.size() == 2 && isItChannel(_args[1]))
+	{
+		std::map<std::string, Channel>::iterator chanIt = _channels.get(_args[1]);
+
+		if (chanIt == _channels.end())
+			return;
+
+		Channel &chanRef = chanIt->second;
+		std::map<int, int>::iterator usersIt = chanRef.usersBegin();
+		std::map<int, int>::iterator usersEnd = chanRef.usersEnd();
+		std::map<int, Client>::iterator clientIt = _clients.getClient(_fd);
+		Client &clientRef = clientIt->second;
+		std::string clientNick = clientRef.getNick();
+		std::string chanName = chanRef.getName();
+		MsgHandler &handler = _server.getMsgHandler();
+
+
+		while (usersIt != usersEnd)
+		{
+			int userFd = usersIt->first;
+
+			//TODO: get real server name
+			std::string rplLine = itoa(RPL_WHOREPLY) + " " + clientNick + " " +
+				chanName + " " + clientRef.getUser() + " " +
+				clientRef.getHost() + " defaulthost " + clientRef.getNick() + " ";
+
+			if (clientRef.getMode(Client::AWAY))
+				rplLine += "G";
+			else
+				rplLine += "H";
+
+			if (chanRef.getUserMode(userFd, Channel::CHANOP))
+				rplLine += "@";
+			else if (chanRef.getUserMode(userFd, Channel::HALFOP))
+				rplLine += "%";
+			else if (chanRef.getUserMode(userFd, Channel::VOICE))
+				rplLine += "+";
+
+			rplLine += " :0 " + clientRef.getUserName();
+			handler.sendMessage(_fd, rplLine);
+			++usersIt;
+		}
+
+		handler.sendMessage(_fd, itoa(RPL_ENDOFWHO) + " " + clientNick + " " +
+				chanName + " :End of /WHO list.");
 	}
 }

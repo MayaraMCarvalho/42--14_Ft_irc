@@ -50,6 +50,8 @@ const std::string &Client::getUser(void) { return _user; }
 
 const std::string &Client::getHost(void) { return _host; }
 
+const std::string &Client::getUserName(void) { return _userName; }
+
 const std::string Client::getFullId(void) {
 	return _nick + '!' + _user + '@' + _host;
 }

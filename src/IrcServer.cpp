@@ -279,5 +279,3 @@ void IRCServer::handleClientSideDisconnect(int fd) {
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }
 
 bool IRCServer::getIsFdDisconnected(void) { return _isFdDisconnected; }
-
-// Exceptions =================================================================

@@ -28,7 +28,7 @@ class IRCServer
 		std::string					_password;
 		int 						_serverFd;
 		std::vector<struct pollfd>	_pollFds;
-		Logger				&_logger;
+		Logger						&_logger;
 		MsgHandler					_msgHandler;
 		ClientList					_clients;
 		ChannelList					_channels;

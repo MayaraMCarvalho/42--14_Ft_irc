@@ -6,12 +6,13 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/19 08:36:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:53:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "Commands.hpp"
+#include "Colors.hpp"
 #include <cerrno>
 #include <cstdio>
 #include <sys/types.h>

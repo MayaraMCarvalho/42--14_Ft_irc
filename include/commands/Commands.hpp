@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/19 08:34:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:23:49 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "MsgHandler.hpp"
-#include "Colors.hpp"
+// #include "Colors.hpp"
 #include "Codes.hpp"
 
 class	IRCServer;
@@ -43,17 +43,18 @@ class	Channel;
 # define NUM_SET "0123456789_"
 # define ALPHA_NUM_SET ALPHA_SET NUM_SET
 
+# define WHO "WHO"
 # define PASS "PASS"
 # define NICK "NICK"
 # define USER "USER"
 # define JOIN "JOIN"
 # define PART "PART"
-# define PRIVMSG "PRIVMSG"
 # define KICK "KICK"
-# define INVITE "INVITE"
-# define TOPIC "TOPIC"
 # define MODE "MODE"
 # define QUIT "QUIT"
+# define TOPIC "TOPIC"
+# define INVITE "INVITE"
+# define PRIVMSG "PRIVMSG"
 
 class Commands
 {
@@ -101,8 +102,7 @@ class Commands
 
 		// commandPart.cpp
 		void		commandPart( void );
-		void		applyPart(std::string &channel, std::string &info,
-							  std::string &message);
+		void		applyPart(std::string &channel, std::string &message);
 
 		// privmsgCommands.cpp
 		void		commandPrivMsg( void );
@@ -123,6 +123,10 @@ class Commands
 		void		commandNick( void );
 		void		commandUser( void );
 		void		saveUser(std::string &user, std::string &userName);
+
+		// commandWho.cpp
+		void		commandWho( void );
+		void		commandWhoChannel(std::string &ChannelName);
 
 		// errorsCode.cpp
 		std::string	errorUnknownError( void );
@@ -170,6 +174,8 @@ class Commands
 		std::string	getInviting(std::string &nickname, std::string &channelName);
 		std::string	getNamReply(std::string &channelName);
 		std::string	getEndOfNames(std::string &channelName);
+		std::string	getWhoReply(std::string &nick, std::string &channelName);
+		std::string	getEndOfWho(std::string &channelName);
 
 		// utils.cpp
 		std::string	getMessage(int index);

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 03:13:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/08/05 12:10:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:23:30 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef enum {
 	RPL_WHOISSERVER = 312,
 	RPL_WHOISOPERATOR = 313,
 	RPL_WHOWASUSER = 314,
-	RPL_ENDOFWHO = 315,
+	RPL_ENDOFWHO = 315, // Ok
 	RPL_WHOISIDLE = 317,
 	RPL_ENDOFWHOIS = 318,
 	RPL_WHOISCHANNELS = 319,
@@ -71,7 +71,7 @@ typedef enum {
 	RPL_EXCEPTLIST = 348,
 	RPL_ENDOFEXCEPTLIST = 349,
 	RPL_VERSION = 351,
-	RPL_WHOREPLY = 352,
+	RPL_WHOREPLY = 352, // Ok
 	RPL_NAMREPLY = 353, // Ok
 	RPL_LINKS = 364,
 	RPL_ENDOFLINKS = 365,

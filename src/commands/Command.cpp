@@ -6,11 +6,12 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/18 16:59:11 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:47:37 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+#include "Colors.hpp"
 #include "IrcServer.hpp"
 
 // Constructor & Destructor ===================================================
@@ -81,6 +82,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	std::map<std::string, void (Commands::*)()> cmdFuncs;
 
 	_fd = clientFd;
+	cmdFuncs[WHO] = &Commands::commandWho;
 	cmdFuncs[PASS] = &Commands::commandPass;
 	cmdFuncs[NICK] = &Commands::commandNick;
 	cmdFuncs[USER] = &Commands::commandUser;

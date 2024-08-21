@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/23 09:28:22 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:39:25 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ class Client {
 		const std::string &getNick(void);
 		const std::string &getUser(void);
 		const std::string &getHost(void);
+		const std::string &getUserName(void);
 		const std::string getFullId(void);
 		int getFD(void);
 		std::set<std::string> &getChannelList(void);

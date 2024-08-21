@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:10:50 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/18 17:00:58 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:58:09 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void Commands::commandPart( void )
 	{
 		std::vector<std::string> channels;
 		std::string	message = "";
-		std::string	info = BGREEN + " PART" + BYELLOW + " " ;
 
 		if (_args.size() > 2)
 			message = getMessage(2);
@@ -32,18 +31,17 @@ void Commands::commandPart( void )
 			it != channels.end(); ++it)
 		{
 			std::string channel = *it;
-			applyPart(channel, info, message);
+			applyPart(channel, message);
 		}
 	}
 }
 
-void Commands::applyPart(std::string &channel, std::string &info,
-						 std::string &message)
+void Commands::applyPart(std::string &channel, std::string &message)
 {
 	if (validChannelName(channel) && validArg(channel)
 		&& verifyChannel(channel))
 	{
-		std::string fullInfo = info;
+		std::string fullInfo = " PART ";
 
 		_channels.part(_fd, channel);
 		fullInfo += channel;

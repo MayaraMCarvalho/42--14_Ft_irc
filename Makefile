@@ -6,7 +6,7 @@
 #    By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/19 16:33:22 by macarval          #+#    #+#              #
-#    Updated: 2024/08/19 09:18:48 by macarval         ###   ########.fr        #
+#    Updated: 2024/08/21 15:02:57 by macarval         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ SRCS		= main.cpp IrcServer.cpp MsgHandler.cpp \
 			\
 			Command.cpp commandInvite.cpp commandJoin.cpp commandKick.cpp \
 			commandMode.cpp commandPart.cpp commandPrivmsg.cpp commandQuit.cpp \
-			commandSetup.cpp \
+			commandSetup.cpp commandWho.cpp\
 			\
 			errorsCode.cpp infos.cpp utils.cpp utilsMode.cpp \
 			validations.cpp verify.cpp \

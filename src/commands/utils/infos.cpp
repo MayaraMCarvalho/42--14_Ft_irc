@@ -6,11 +6,12 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/19 08:41:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 16:28:28 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
+#include "Channel.hpp"
 
 std::string Commands::getWelcome(Client &client)
 {
@@ -79,14 +80,31 @@ std::string Commands::getNamReply(std::string &channelName)
 	{
 		if (it != channel.usersBegin() && it != channel.usersEnd())
 			listUsers.append(" ");
-		listUsers.append(_clients.getNick(it->first));
+		std::string nick = _clients.getNick(it->first);
+		// Channel::t_umode mode = static_cast<Channel::t_umode>(it->second);
+		// listUsers.insert(0, 1,
+		// 				_channels.get(channelName)->second.getPrefix(mode));
+		listUsers.append(nick);
 	}
 	return (toString(RPL_NAMREPLY) + " " + _clients.getNick(_fd)
-			+ " = " + channelName + " :" + listUsers + "");
+			+ " " + channelName + " :" + listUsers + "");
 }
 
 std::string Commands::getEndOfNames(std::string &channelName)
 {
 	return (toString(RPL_ENDOFNAMES) + " " + _clients.getNick(_fd)
 			+ " " + channelName + " :End of /NAMES list.");
+}
+
+std::string Commands::getWhoReply(std::string &nick, std::string &channelName)
+{
+	Client user = _clients.getClientByNick(nick)->second;
+	return (toString(RPL_WHOREPLY) + " " + nick + " " + channelName + " ~"
+			+ user.getNick() + " " + user.getHost() + " H" + user.getUserName());
+}
+
+std::string Commands::getEndOfWho(std::string &channelName)
+{
+	return (toString(RPL_ENDOFWHO) + " " + _clients.getNick(_fd)
+			+ " " + channelName + " :End of /WHO list.");
 }

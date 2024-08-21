@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 17:29:02 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/06 17:34:18 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 15:38:42 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ std::string Commands::getUserFlags(int modeFlags)
 	if (modeFlags & Client::RECV_NOTICES) mode << "s";
 
 	return mode.str();
-
 }
 
 std::string Commands::getChannelFlags(int modeFlags, Channel &channel)

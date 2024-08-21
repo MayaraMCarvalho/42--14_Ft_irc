@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setupCommands.cpp                                  :+:      :+:    :+:   */
+/*   commandSetup.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/07/26 10:27:33 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:17:55 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ void Commands::saveUser(std::string &user, std::string &userName)
 		client.setUserHost(_args[2]);
 		client.setUserServer(_args[3]);
 		client.setUserName(userName);
+
 		printInfo(getWelcome(client));
 		printInfo(getYourHost(client));
 		printInfo(getMyInfo(client));

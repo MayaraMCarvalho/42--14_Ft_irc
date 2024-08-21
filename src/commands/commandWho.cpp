@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 14:31:40 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 15:09:47 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:03:14 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void Commands::commandWho( void )
 				}
 			}
 		}
-		// else
-			//imprimir todos os user (criar método de imprimir um user e chamar nos outros)
 	}
 }
 

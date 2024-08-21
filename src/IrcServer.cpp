@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 14:53:05 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 17:14:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void IRCServer::signalHandler(int signal)
 
 		for (std::map<int, Client>::iterator it = clients.begin();
 			it != clients.end(); ++it)
-			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
+			it->second.sendMessage("The server was disconnected!");
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 03:02:27 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/22 17:38:07 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,25 @@ bool IRCServer::handleClientMessage(int clientFd)
 		return false;
 	}
 	else if (nbytes == 0) {
+		std::string quit = "QUIT :disconnected";
+		for (std::map<std::string, Channel>::iterator it = _channels.begin();
+			it != _channels.end(); ++it)
+		{
+			if (it->second.userIsInChannel(clientFd))
+			{
+				it->second.sendToAll(_clients.getClient(clientFd)->second.getFullId(),
+									quit);
+
+				 std::map<std::string, Channel>::iterator next = it;
+				++next;
+
+				_channels.part(clientFd, it->second.getName());
+
+				it = next;
+			}
+		}
+		disconnectClient(clientFd);
+
 		_logger.info("Client disconnected: " + BYELLOW +
 			itoa(clientFd) + RESET);
 		return false;
@@ -262,8 +281,10 @@ void IRCServer::disconnectClient(int fd) {
 		}
 	}
 	if (fdIdx >= _pollFds.size())
+	{
 		_logger.error(RED + "Could not find fd in _pollfds: " + BYELLOW +
 			itoa(fd) + RESET);
+	}
 	else
 		disconnectClient(fd, fdIdx);
 }
@@ -272,9 +293,17 @@ void IRCServer::disconnectClient(int fd, size_t fdIdx) {
 	_clients.removeClientFD(fd);
 	_channels.partDisconnectedClient(fd);
 	_msgHandler.resetQueues(fd);
-	_pollFds.erase(_pollFds.begin() + fdIdx);
-	close(fd);
-	_isFdDisconnected = true;
+
+	if (fdIdx < _pollFds.size())
+		_pollFds.erase(_pollFds.begin() + fdIdx);
+	else
+		_logger.error(RED + "Invalid fdIdx: " + BYELLOW + itoa(fdIdx) + RESET);
+
+	if (close(fd) == -1)
+		_logger.error(RED + "Failed to close fd: " + BYELLOW + itoa(fd) + RESET);
+	else
+		_isFdDisconnected = true;
+
 }
 
 void IRCServer::handleClientSideDisconnect(int fd) {

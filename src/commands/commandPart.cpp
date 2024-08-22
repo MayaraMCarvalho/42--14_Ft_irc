@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:10:50 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 14:58:09 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 18:56:26 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,9 @@ void Commands::applyPart(std::string &channel, std::string &message)
 	if (validChannelName(channel) && validArg(channel)
 		&& verifyChannel(channel))
 	{
-		std::string fullInfo = " PART ";
-
 		_channels.part(_fd, channel);
-		fullInfo += channel;
+
+		std::string fullInfo = " PART " + channel;
 
 		if (!message.empty())
 			fullInfo += " :" + message;

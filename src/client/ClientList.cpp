@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/11 03:18:15 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/21 23:13:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,7 @@ t_numCode ClientList::setNick(int fd, const std::string &newNick) {
 
 	else if (status == Client::GOT_USER)
 		it->second.setStatus(Client::REGISTERED);
+
 
 	if (!it->second.getNick().empty())
 		_nickToClient.erase(it->second.getNick());

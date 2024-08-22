@@ -6,14 +6,13 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 14:53:05 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 23:23:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "Commands.hpp"
 #include "Colors.hpp"
-#include <cerrno>
 #include <cstdio>
 #include <sys/types.h>
 #include <netdb.h>
@@ -83,10 +82,6 @@ void IRCServer::signalHandler(int signal)
 		ChannelList	channels = _instance->_channels;
 		ClientList	clients = _instance->_clients;
 		_instance->_shouldExit = true;
-
-		for (std::map<int, Client>::iterator it = clients.begin();
-			it != clients.end(); ++it)
-			it->second.sendMessage(BRED + "The server was disconnected!" + RESET);
 	}
 }
 
@@ -128,12 +123,7 @@ void IRCServer::run(void)
 
 		pollCount = poll(_pollFds.data(), _pollFds.size(), 0);
 		if (pollCount < 0)
-		{
-			if (errno == EINTR)
-				continue;
-			else
 				throw std::runtime_error("Poll error");
-		}
 
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();

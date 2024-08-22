@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/16 16:51:56 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/27 12:00:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/07/25 08:11:18 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/IrcServer.hpp"
+
+#include <cstdlib>
+#include <iostream>
+#include "Colors.hpp"
+#include "ConsoleLogger.hpp"
+#include "IrcServer.hpp"
+
 
 bool validateArguments(int argc, char *argv[], std::string &port, std::string &password)
 {
@@ -18,7 +24,7 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 	{
 		std::cerr << RED;
 		std::cerr << "Usage: " << argv[0] << " <port> <password>" << std::endl;
-		std::cout << RESET << std::endl;
+		std::cerr << RESET << std::endl;
 		return (false);
 	}
 
@@ -39,15 +45,15 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 	{
 		std::cerr << RED;
 		std::cerr << "Invalid port number: " << YELLOW << argv[1] << std::endl;
-		std::cout << RESET << std::endl;
+		std::cerr << RESET << std::endl;
 		return (false);
 	}
 	catch (const std::out_of_range &e)
 	{
 		std::cerr << RED;
 		std::cerr << "Port number out of range: ";
-		std::cout << YELLOW << argv[1] << std::endl;
-		std::cout << RESET << std::endl;
+		std::cerr << YELLOW << argv[1] << std::endl;
+		std::cerr << RESET << std::endl;
 		return (false);
 	}
 
@@ -57,7 +63,7 @@ bool validateArguments(int argc, char *argv[], std::string &port, std::string &p
 	{
 		std::cerr << RED;
 		std::cerr << "Invalid password! "<< YELLOW << argv[2] << std::endl;
-		std::cout << RESET << std::endl;
+		std::cerr << RESET << std::endl;
 		return (false);
 	}
 
@@ -68,20 +74,19 @@ int main(int argc, char *argv[])
 {
 	std::string	port;
 	std::string	password;
+	ConsoleLogger logger(Logger::DEBUG);
 
 	if (!validateArguments(argc, argv, port, password))
 		return (1);
 
 	try
 	{
-		IRCServer server(port, password);
+		IRCServer server(port, password, logger);
 		server.run();
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << RED;
-		std::cerr << "Error: " << e.what() << std::endl;
-		std::cout << RESET << std::endl;
+		logger.fatal("Exception caught: " + RED + e.what() + RESET);
 		return (1);
 	}
 	return (0);

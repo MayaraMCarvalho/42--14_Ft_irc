@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Colors.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:45:45 by macarval          #+#    #+#             */
-/*   Updated: 2024/06/20 09:00:13 by macarval         ###   ########.fr       */
+/*   Updated: 2024/06/30 04:54:50 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef COLORS_HPP
 # define COLORS_HPP
 
-# include <iostream>
+# include <string>
 
 // Color codes as global variables
 const std::string RESET = "\033[0m";

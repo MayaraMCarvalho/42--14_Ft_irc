@@ -6,13 +6,14 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:23:56 by gmachado          #+#    #+#             */
-/*   Updated: 2024/06/27 15:04:16 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 14:39:25 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
+#include "MsgHandler.hpp"
 #include <string>
 #include <set>
 
@@ -43,8 +44,9 @@ class Client {
 		} t_status;
 
 		// Constructors
-		Client(int fd);
+		Client(int fd, MsgHandler &MsgHandler);
 		Client(const Client &src);
+		Client(int fd, MsgHandler &MsgHandler, const std::string &host);
 
 		~Client(void);
 
@@ -54,6 +56,7 @@ class Client {
 		const std::string &getNick(void);
 		const std::string &getUser(void);
 		const std::string &getHost(void);
+		const std::string &getUserName(void);
 		const std::string getFullId(void);
 		int getFD(void);
 		std::set<std::string> &getChannelList(void);
@@ -64,9 +67,11 @@ class Client {
 
 		// Setters
 		void setNick(const std::string &nick);
-		void setUser(const std::string &user);
 		void setHost(const std::string &host);
-		void setFD(int fd);//
+		void setUser(const std::string &user);
+		void setUserHost(const std::string &userHost);
+		void setUserServer(const std::string &userServer);
+		void setUserName(const std::string &userName);
 		void setModeFlags(int modeFlags);
 		void setMode(const std::string &modeStr);
 		void setStatus(t_status status);
@@ -75,20 +80,21 @@ class Client {
 		bool isInChannel(const std::string &channelStr) ;
 		void addChannel(const std::string &channelStr);
 		void removeChannel(const std::string &channelStr);
+		void sendMessage(const std::string &from, const std::string &msg);
 		void sendMessage(const std::string &msg);
 
 	private:
+		MsgHandler &_msgHandler;
 		std::string _nick;
 		std::string _user;
 		std::string _host;
+		std::string _userHost;
+		std::string _userServer;
+		std::string _userName;
 		int _fd;
 		std::set<std::string> _channels;
 		int _modeFlags;
 		t_status _status;
-
-		// Private default constructor to prevent empty initialization
-		Client(void);
-
 };
 
 #endif

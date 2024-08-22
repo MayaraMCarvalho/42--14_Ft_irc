@@ -12,15 +12,14 @@
 
 #include "Channel.hpp"
 #include "IrcServer.hpp"
+#include "Colors.hpp"
 
-Channel::Channel(void) : _name("#default"), _topic(""), _key(""),
-	_users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
-
-Channel::Channel(const std::string &name) : _name(name), _topic(""), _key(""),
+Channel::Channel(const std::string &name, MsgHandler &msgHandler) :
+	_msgHandler(msgHandler), _name(name), _topic(""), _key(""),
 _users(), _channelModeFlags(NO_CMODE), _limit(-1) { }
 
-Channel::Channel(const Channel &src) : _name(src._name), _topic(src._topic),
-	_key(src._key), _users(src._users),
+Channel::Channel(const Channel &src) : _msgHandler(src._msgHandler),
+	_name(src._name), _topic(src._topic), _key(src._key), _users(src._users),
 	_channelModeFlags(src._channelModeFlags), _limit(src._limit) { }
 
 Channel::~Channel(void) { }
@@ -62,11 +61,29 @@ bool Channel::getUserMode(const int userFD, const t_umode mode) {
 int Channel::getUserModeFlags(const int userFD) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
-	// TODO: add exception
 	if (it == _users.end())
 		return NO_UMODE;
 
 	return it->second;
+}
+
+char Channel::getPrefix(t_umode umode) {
+	if (umode & FOUNDER)
+		return '~';
+
+	if (umode & PROTECTED)
+		return '&';
+
+	if (umode & CHANOP)
+		return '@';
+
+	if (umode & HALFOP)
+		return '%';
+
+	if (umode & VOICE)
+		return '+';
+
+	return '\0';
 }
 
 bool Channel::userIsInChannel(const int userFD) {
@@ -76,7 +93,6 @@ bool Channel::userIsInChannel(const int userFD) {
 }
 
 bool Channel::userCanJoin(const int userFD) {
-	// TODO: mask checks
 	(void)userFD;
 	return true;
 }
@@ -86,12 +102,26 @@ bool Channel::empty(void) { return _users.empty(); }
 // Setters
 void Channel::setTopic(const std::string &topic) { _topic = topic; }
 
-void Channel::setKey(const std::string &key) { _key = key; }
+void Channel::setKey(const std::string &key) {
+	_key = key;
 
-void Channel::setUserLimit(const int limit) {_limit = limit; }
+	if (key.empty())
+		_channelModeFlags &= (~HAS_KEY);
+	else
+		_channelModeFlags |= HAS_KEY;
+}
+
+void Channel::setUserLimit(const int limit) {
+	_limit = limit;
+
+	if (limit < 0)
+		_channelModeFlags &= (~ULIMIT);
+	else
+		_channelModeFlags |= ULIMIT;
+}
 
 void Channel::setChannelMode(const std::string &modeStr) {
-	int newModeFlags;
+	int newModeFlags = NO_CMODE;
 
 	if (modeStr.length() != 2)
 		return;
@@ -114,9 +144,19 @@ void Channel::setChannelMode(const std::string &modeStr) {
 			newModeFlags = QUIET;
 			break;
 		case 'p':
+			if (_channelModeFlags & SECRET)
+			{
+				_channelModeFlags &= (~PRIVATE);
+				return;
+			}
 			newModeFlags = PRIVATE;
 			break;
 		case 's':
+			if (_channelModeFlags & PRIVATE)
+			{
+				_channelModeFlags &= (~SECRET);
+				return;
+			}
 			newModeFlags = SECRET;
 			break;
 		case 'r':
@@ -142,7 +182,6 @@ void Channel::setChannelModeFlags(const int modeFlags) {
 void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
-	// TODO: add exception
 	if (it == _users.end())
 		return;
 
@@ -152,7 +191,7 @@ void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 		return;
 
 	if (modeStr[1] == 'O')
-		newModeFlags = CREATOR;
+		newModeFlags = FOUNDER;
 	else if (modeStr[1] == 'o')
 		newModeFlags = CHANOP;
 	else if (modeStr[1] == 'v')
@@ -169,7 +208,6 @@ void Channel::setUserMode(const int userFD, const std::string &modeStr) {
 void Channel::setUserModeFlags(const int userFD, const int modeFlags) {
 	std::map<int, int>::iterator it = _users.find(userFD);
 
-	// TODO: add exception
 	if (it == _users.end())
 		return;
 
@@ -177,7 +215,6 @@ void Channel::setUserModeFlags(const int userFD, const int modeFlags) {
 }
 
 void Channel::addUser(const int fd, const int userModeFlags) {
-	// TODO: add exception
 	if (!userCanJoin(fd))
 		return;
 
@@ -196,14 +233,24 @@ std::map<int, int>::iterator Channel::usersEnd(void) {
 	return _users.end();
 }
 
-void Channel::sendToAll(const std::string &message)
+void Channel::sendToAll(const std::string &message) {
+	for (std::map<int, int>::iterator it = usersBegin();
+		it != usersEnd(); ++it)
+	{
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
+		_msgHandler.sendMessage(it->first, message);
+	}
+}
+
+void Channel::sendToAll(const std::string &from, const std::string &message)
 {
 	for (std::map<int, int>::iterator it = usersBegin();
 		it != usersEnd(); ++it)
 	{
-		std::cerr << "Sending message " << BGREEN << message << RESET
-			<< " to " << BYELLOW << it->first << RESET << std::endl;
-		IRCServer::sendMessage(it->first, message);
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
+		_msgHandler.sendMessage(it->first, from, message);
 	}
 }
 

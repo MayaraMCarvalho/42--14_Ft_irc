@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:19:18 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 00:22:33 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 11:53:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void Commands::commandModeChannel(std::string &channelName)
 			char		signal = mode[0];
 			size_t		index = 3;
 
-			if (verifyMode(mode, channelName, "+-aioOvklmnpqst")
+			if (verifyMode(mode, channelName, "+-aioOvklmnpqrst")
 				&& verifyChanOp(channelName))
 			{
 				Channel &channel = _channels.get(channelName)->second;

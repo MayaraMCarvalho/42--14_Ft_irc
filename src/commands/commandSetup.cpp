@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 18:17:55 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 23:12:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,17 +45,31 @@ void Commands::commandNick( void )
 			return ;
 
 		std::map<int, Client>::iterator	exist = _clients.getClientByNick(nick);
-		t_numCode	errorCode = NO_CODE;
 
 		if (exist != _clients.end())
 			printInfo(errorNicknameInUse(nick));
 		else
-		{
-			errorCode = _clients.setNick(_fd, nick);
-			if (errorCode != NO_CODE)
-				printInfo(toString(errorCode));
-		}
+			saveNick(nick);
 	}
+}
+
+void Commands::saveNick(std::string &nick)
+{
+	t_numCode	errorCode = NO_CODE;
+	Client &client = _clients.getClient(_fd)->second;
+
+	errorCode = _clients.setNick(_fd, nick);
+
+	int	status = client.getStatus();
+	if (status == Client::REGISTERED)
+	{
+		printInfo(getWelcome(client));
+		printInfo(getYourHost(client));
+		printInfo(getMyInfo(client));
+	}
+
+	if (errorCode != NO_CODE)
+		printInfo(toString(errorCode));
 }
 
 void Commands::commandUser( void )
@@ -71,7 +85,7 @@ void Commands::commandUser( void )
 		int	status = _clients.getClient(_fd)->second.getStatus();
 		if (status == Client::REGISTERED)
 			printInfo(errorAlredyRegister());
-		else if (status == Client::GOT_NICK)
+		else if (status == Client::GOT_NICK || status == Client::AUTHENTICATED)
 			saveUser(user, userName);
 		else
 			printInfo(errorNotRegistered());
@@ -90,9 +104,13 @@ void Commands::saveUser(std::string &user, std::string &userName)
 		client.setUserServer(_args[3]);
 		client.setUserName(userName);
 
-		printInfo(getWelcome(client));
-		printInfo(getYourHost(client));
-		printInfo(getMyInfo(client));
+		int	status = client.getStatus();
+		if (status == Client::REGISTERED)
+		{
+			printInfo(getWelcome(client));
+			printInfo(getYourHost(client));
+			printInfo(getMyInfo(client));
+		}
 	}
 	else
 		printInfo(toString(errorCode));

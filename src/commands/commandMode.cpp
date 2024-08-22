@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:19:18 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/19 09:23:57 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 00:22:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void Commands::commandModeChannel(std::string &channelName)
 {
 	if (validChannelName(channelName) && verifyChannel(channelName))
 	{
+
 		if (_args.size() < 3)
 			printInfo(getChannelModeIs(_channels.get(channelName)->second));
 		else
@@ -42,12 +43,14 @@ void Commands::commandModeChannel(std::string &channelName)
 			if (verifyMode(mode, channelName, "+-aioOvklmnpqst")
 				&& verifyChanOp(channelName))
 			{
-				Channel channel = _channels.get(channelName)->second;
+				Channel &channel = _channels.get(channelName)->second;
 				for (std::string::const_iterator it = mode.begin() + 1;
 					it != mode.end(); ++it)
 					applyMode(channelName, std::string(1, signal) + *it, index);
 
-				std::string message = _args[0] + " " + channelName + " " + mode;
+				std::string message = _args[0] + " " + channelName + " " +
+						getChannelFlags(channel.getChannelModeFlags(), channel);
+
 				std::string from = _clients.getClient(_fd)->second.getFullId();
 
 				sendMessage(_channels.get(channelName), message, from);

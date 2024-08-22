@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 18:34:19 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 23:39:29 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ std::string Commands::getEndOfNames(std::string &channelName)
 std::string Commands::getWhoReply(std::string &nick, std::string &channelName)
 {
 	Client user = _clients.getClientByNick(nick)->second;
-	
+
 	return (toString(RPL_WHOREPLY) + " " + nick + " " + channelName + " ~"
 			+ user.getNick() + " " + user.getHost() + " H" + user.getUserName());
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 17:26:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 22:55:24 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ class Commands
 		// commandSetup.cpp
 		void		commandPass( void );
 		void		commandNick( void );
+		void		saveNick(std::string &nick);
 		void		commandUser( void );
 		void		saveUser(std::string &user, std::string &userName);
 

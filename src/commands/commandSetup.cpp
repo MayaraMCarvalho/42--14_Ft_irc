@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandSetup.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 16:51:34 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 23:12:46 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 03:04:22 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,33 +77,29 @@ void Commands::commandUser( void )
 	if (validSetup() && initValidation(5))
 	{
 		std::string	user = _args[1];
-		std::string	userName = getMessage(4);
+		std::string	realName = getMessage(4);
 
-		if (!validArg(user) || !validMessage(userName))
+		if (!validArg(user) || !validMessage(realName))
 			return ;
 
 		int	status = _clients.getClient(_fd)->second.getStatus();
 		if (status == Client::REGISTERED)
 			printInfo(errorAlredyRegister());
 		else if (status == Client::GOT_NICK || status == Client::AUTHENTICATED)
-			saveUser(user, userName);
+			saveUser(user, realName);
 		else
 			printInfo(errorNotRegistered());
 	}
 }
 
-void Commands::saveUser(std::string &user, std::string &userName)
+void Commands::saveUser(std::string &user, std::string &realName)
 {
 	t_numCode	errorCode = NO_CODE;
 	Client &client = _clients.getClient(_fd)->second;
 
-	errorCode = _clients.setUser(_fd, user);
+	errorCode = _clients.setUserInfo(_fd, user, realName);
 	if (errorCode == NO_CODE)
 	{
-		client.setUserHost(_args[2]);
-		client.setUserServer(_args[3]);
-		client.setUserName(userName);
-
 		int	status = client.getStatus();
 		if (status == Client::REGISTERED)
 		{

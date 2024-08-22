@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandWho.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/21 14:31:40 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 18:03:14 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 03:20:29 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void Commands::commandWhoChannel(std::string &channelName)
 {
 	if (validChannelName(channelName) && verifyChannel(channelName))
 	{
-		Channel channel = _channels.get(channelName)->second;
+		Channel &channel = _channels.get(channelName)->second;
 		for (std::map<int, int>::iterator it = channel.usersBegin();
 				it != channel.usersEnd(); ++it)
 		{

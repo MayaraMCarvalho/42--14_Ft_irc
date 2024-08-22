@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:09:33 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 18:53:08 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 11:29:10 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,21 @@ void Commands::applyKick(std::string &channel, std::string &user,
 	if (validArg(user) && validChannelName(channel) && validArg(channel)
 		&& verifyChannel(channel) && verifyChanOp(channel))
 	{
-		std::map<int, Client>::iterator it = _clients.getClientByUser(user);
+		std::map<int, Client>::iterator it = _clients.getClientByNick(user);
 
 		if (it == _clients.end() || !it->second.isInChannel(channel))
 			printInfo(errorUserNotInChannel(user, channel));
 		else
 		{
-			std::string message = " KICK " + channel
-						+ " " + user + " :" + comment;
-			std::string from = _clients.getClient(_fd)->second.getFullId();
+			std::string	from = _clients.getClient(_fd)->second.getFullId();
+			std::string	message = " KICK " + channel
+						+ " " + user;
+
+			if (!comment.empty())
+				message += " " + comment;
+
 			sendMessage(_channels.get(channel), message, from);
-			_channels.part(_clients.getFDByUser(user), channel);
+			_channels.part(_clients.getFDByNick(user), channel);
 		}
 	}
 }

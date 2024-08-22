@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:24:25 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/06 09:54:17 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 14:27:05 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,20 @@ void Commands::handleModeParameters(std::string &mode,
 		else if (!it->second.isInChannel(channelName))
 			printInfo(errorUserNotInChannel(param, channelName));
 		else
+		{
 			channel.setUserMode(_clients.getFDByNick(param), mode);
+			printMode(channelName, mode, param);
+		}
 	}
 	else if (mode == "+k")
 		handleKeyMode(channelName, param);
 	else if (mode == "+l")
+	{
+		std::string mode = "+l";
+
 		channel.setUserLimit(toInt(param));
+		printMode(channelName, mode, param);
+	}
 	++index;
 }
 
@@ -57,7 +65,12 @@ void Commands::handleKeyMode(std::string &channelName, std::string &param)
 	Channel	&channel = _channels.get(channelName)->second;
 
 	if (channel.getKey().empty())
+	{
+		std::string mode = "+k";
+
 		channel.setKey(param);
+		printMode(channelName, mode, param);
+	}
 	else
 		printInfo(errorKeySet(channelName));
 }

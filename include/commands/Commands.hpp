@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 03:54:34 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/22 13:59:42 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ class Commands
 		void		parsingArgs(const std::string &message, char c,
 								std::vector<std::string>	&vector);
 		void		commandTopic( void );
+		bool		hasFlagT(std::string &channelName);
 
 		// commandInvite.cpp
 		void		commandInvite( void );
@@ -99,6 +100,8 @@ class Commands
 		void		applyMode(std::string &channelName, std::string mode,
 							  size_t &index);
 		void		commandModeUser(std::string &nick);
+		void		printMode(std::string &channelName,
+						std::string &mode, std::string &param);
 
 		// commandPart.cpp
 		void		commandPart( void );
@@ -110,7 +113,6 @@ class Commands
 		void		sendMessageChannel(std::string &recipient, std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
 								std::string &message, std::string &from);
-		std::string	getFullMessage(const std::string &message, std::string &name);
 		bool		isItChannel(const std::string &channelName);
 
 		// commandQuit.cpp
@@ -128,6 +130,7 @@ class Commands
 		// commandWho.cpp
 		void		commandWho( void );
 		void		commandWhoChannel(std::string &ChannelName);
+		void		printListWho(std::string &channelName);
 
 		// errorsCode.cpp
 		std::string	errorUnknownError( void );

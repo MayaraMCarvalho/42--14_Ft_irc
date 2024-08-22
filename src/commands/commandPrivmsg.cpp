@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 00:27:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 10:00:29 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 		return false;
 
 	std::string from = _clients.getNick(_fd);
+	std::string full = " PRIVMSG " + from + " :" + message;
+
 	if (message.find("unknown command") != std::string::npos)
 		_server.getMsgHandler().sendMessage(clientFd, message);
 	else
-		_server.getMsgHandler().sendMessage(clientFd,
-											from, getFullMessage(message, from));
+		_server.getMsgHandler().sendMessage(clientFd, from, full);
 
 	return true;
 }
@@ -81,15 +82,12 @@ bool Commands::sendMessage(std::map<std::string, Channel>::iterator channel,
 
 	std::string channelName = channel->second.getName();
 	if (_args[0] == PRIVMSG)
-		channel->second.sendToAll(from, getFullMessage(message, channelName));
+	{
+		std::string full = " PRIVMSG " + channelName + " :" + message;
+		channel->second.sendToAll(from, full);
+	}
 	else
 		channel->second.sendToAll(from, message);
 
 	return true;
-}
-
-std::string Commands::getFullMessage(const std::string &message,
-									 std::string &name)
-{
-	return " PRIVMSG " + name + " :" + message;
 }

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 08:42:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 15:02:11 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 10:10:31 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,9 @@ bool Commands::getQuitMessage(std::string &messageQuit)
 		std::string message = getMessage(1);
 		if (!validMessage(message))
 			return false;
-		messageQuit = " QUIT: "+  message;
+		messageQuit = "QUIT "+  message;
 	}
+	else
+		messageQuit = "QUIT :leaving";
 	return true;
 }

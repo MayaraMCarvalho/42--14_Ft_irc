@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 11:40:49 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 22:02:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 00:27:37 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@ bool Commands::sendMessage(int clientFd, const std::string &message)
 	if (clientFd == -1)
 		return false;
 
-	std::string name = _clients.getNick(clientFd);
+	std::string from = _clients.getNick(_fd);
 	if (message.find("unknown command") != std::string::npos)
 		_server.getMsgHandler().sendMessage(clientFd, message);
 	else
 		_server.getMsgHandler().sendMessage(clientFd,
-											name, getFullMessage(message, name));
+											from, getFullMessage(message, from));
 
 	return true;
 }

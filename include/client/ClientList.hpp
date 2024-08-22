@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 01:30:27 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/05 11:02:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 00:33:47 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ class ClientList {
 
 		// Setters
 		t_numCode setNick(int fd, const std::string &newNick);
-		t_numCode setUser(int fd, const std::string &newUser);
+		t_numCode setUserInfo(int fd, const std::string &newUser,
+			const std::string &realName);
 
 		void add(Client &client);
 		void add(int fd);

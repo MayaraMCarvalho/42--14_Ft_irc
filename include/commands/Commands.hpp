@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 17:26:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 00:35:22 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ class Commands
 		void		commandPass( void );
 		void		commandNick( void );
 		void		commandUser( void );
-		void		saveUser(std::string &user, std::string &userName);
+		void		printWelcomeInfo();
 
 		// commandWho.cpp
 		void		commandWho( void );

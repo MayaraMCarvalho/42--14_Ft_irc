@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 17:14:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 01:14:21 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@ IRCServer* IRCServer::_instance = NULL;
 IRCServer::IRCServer(const std::string &port, const std::string &password,
 		Logger &logger)
 	: _port(port), _password(password), _serverFd(-1),
-	_logger(logger), _msgHandler(_logger), _clients(_msgHandler, _pollFds),
-	_channels(_clients, _msgHandler), _shouldExit(false)
+	_logger(logger), _msgHandler(_logger),
+	_clients(_msgHandler, _pollFds),
+	_channels(_clients, _msgHandler), _shouldExit(false),
+	_hostname("defaulthost"), _hostnameIsSet(false)
 {
 	_instance = this;
 }
@@ -56,6 +58,7 @@ void IRCServer::setupServer(void)
 	address.sin_port = htons(std::atoi(_port.c_str()));
 
 	_serverFd = socket(AF_INET, SOCK_STREAM, 0);
+
 
 	if (_serverFd < 0)
 		throw std::runtime_error("Failed to create socket");
@@ -128,12 +131,7 @@ void IRCServer::run(void)
 
 		pollCount = poll(_pollFds.data(), _pollFds.size(), 0);
 		if (pollCount < 0)
-		{
-			if (errno == EINTR)
-				continue;
-			else
-				throw std::runtime_error("Poll error");
-		}
+			throw std::runtime_error("Poll error");
 
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
@@ -187,6 +185,14 @@ void IRCServer::acceptNewClient(void)
 	socklen_t clientLen = sizeof(clientAddress);
 	clientFd = accept(_serverFd, (struct sockaddr *)&clientAddress, &clientLen);
 
+	if (!_hostnameIsSet)
+	{
+		_hostname = getHostName(_serverFd);
+		_msgHandler.setHost(_hostname);
+		_logger.debug("Server hostname is " + _hostname);
+		_hostnameIsSet = true;
+	}
+
 	if (clientFd < 0) {
 		_logger.error("Failed to accept new client");
 		return;
@@ -236,14 +242,28 @@ bool IRCServer::handleClientMessage(int clientFd)
 	return true;
 }
 
-std::string IRCServer::getHostName(const char *ip, const char *port) {
-	struct addrinfo *addrInfo;
-	std::string hostName;
+std::string IRCServer::getHostName(const int socketFd) {
 
-	if (getaddrinfo(ip, port, NULL, &addrInfo))
-		return ip;
 
-	hostName = addrInfo->ai_canonname;
+	struct sockaddr_in sockAddress;
+	socklen_t sockLen = 0;
+	struct addrinfo *addrInfo = NULL;
+
+	memset(&sockAddress, 0, sizeof(sockAddress));
+	getsockname(socketFd, (struct sockaddr *)&sockAddress, &sockLen);
+
+	std::string strAddress(inet_ntoa(sockAddress.sin_addr));
+	std::cerr << "Address: " << strAddress << std::endl;
+	std::cerr << "Port: " << sockAddress.sin_port << std::endl;
+
+	if (getaddrinfo(strAddress.c_str(),
+			itoa(sockAddress.sin_port).c_str(),
+			NULL, &addrInfo))
+		return strAddress;
+
+	std::cerr << "addrInfo address: " << addrInfo << std::endl;
+	std::string hostName(addrInfo->ai_canonname);
+	std::cerr << "Name: " << strAddress << std::endl;
 	freeaddrinfo(addrInfo);
 	return hostName;
 }

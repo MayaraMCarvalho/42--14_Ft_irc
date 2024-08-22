@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/19 08:36:44 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 01:04:24 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ class IRCServer
 		bool						_isFdDisconnected;
 		bool						_shouldExit;
 		static IRCServer*			_instance;
+		std::string					_hostname;
+		bool						_hostnameIsSet;
 
 	public:
 		static const int MAX_MSG_LENGTH = 512;
@@ -52,7 +54,7 @@ class IRCServer
 		const std::string	&getPassword( void );
 		MsgHandler			&getMsgHandler(void);
 		bool				getIsFdDisconnected(void);
-		static std::string	getHostName(const char *ip, const char *port);
+		static std::string	getHostName(const int socketFd);
 		Logger		&getLogger(void);
 
 	// Setters ================================================================

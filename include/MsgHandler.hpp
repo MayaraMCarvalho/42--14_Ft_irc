@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   MsgHandler.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 02:44:02 by gmachado          #+#    #+#             */
-/*   Updated: 2024/08/06 17:23:26 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/21 23:34:59 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class MsgHandler {
 		std::string &getHost(void);
 		std::string &getSendQueue(int fd);
 		Logger &getLogger(void);
+		void setHost(std::string host);
 		void removeSendChars(int fd, ssize_t numChars);
 		void sendMessage(int fd, const std::string &msg);
 		void sendMessage(int fd, const std::string &from,

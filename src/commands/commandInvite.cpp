@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 10:23:08 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 12:20:04 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 12:23:20 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void Commands::commandInvite( void )
 
 void Commands::sendInviting(std::string &nick, std::string &channelName)
 {
-	std::string	info;
+	std::string	info = " INVITE " + nick + " " + channelName;
+	Client &guest = _clients.getClientByNick(nick)->second;
+	std::string from = _clients.getClient(_fd)->second.getFullId();
 
-	info = " INVITE " + nick + " " + channelName;
-
-	_clients.getClientByNick(nick)->second.sendMessage(_clients.getClient(_fd)->second.getFullId(), info);
+	guest.sendMessage(from, info);
 }

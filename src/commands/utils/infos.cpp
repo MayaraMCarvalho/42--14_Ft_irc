@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   infos.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 04:05:11 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/22 09:25:46 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,8 @@ std::string Commands::getEndOfNames(std::string &channelName)
 std::string Commands::getWhoReply(std::string &nick, std::string &channelName)
 {
 	Client		&user = _clients.getClientByNick(nick)->second;
-	Channel		&channel = _channels.get(channelName)->second;
-	int			modeFlags = channel.getUserModeFlags(user.getFD());
+	std::map<std::string, Channel>::iterator it = _channels.get(channelName);
+
 
 	std::string	rplLine = toString(RPL_WHOREPLY) + " "
 			+ nick + " " + channelName + " ~" + user.getNick()
@@ -119,12 +119,17 @@ std::string Commands::getWhoReply(std::string &nick, std::string &channelName)
 	else
 		rplLine += " H";
 
-	if (modeFlags & Channel::CHANOP)
-		rplLine += "@";
-	else if (modeFlags & Channel::HALFOP)
-		rplLine += "%";
-	else if (modeFlags & Channel::VOICE)
-		rplLine += "+";
+	if (it != _channels.end())
+	{
+		int			modeFlags = it->second.getUserModeFlags(user.getFD());
+
+		if (modeFlags & Channel::CHANOP)
+			rplLine += "@";
+		else if (modeFlags & Channel::HALFOP)
+			rplLine += "%";
+		else if (modeFlags & Channel::VOICE)
+			rplLine += "+";
+	}
 
 	rplLine += " :0 " + user.getRealName();
 	return rplLine;

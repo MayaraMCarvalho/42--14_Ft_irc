@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commandJoin.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 17:02:58 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 17:26:41 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 03:37:20 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,5 @@ void Commands::printJoin(std::string &channelName)
 	sendMessage(_channels.get(channelName), message, from);
 
 	printInfo(getTopic(channelName));
-	printInfo(getNamReply(channelName));
-	printInfo(getEndOfNames(channelName));
+	printNames(channelName);
 }

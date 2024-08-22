@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 22:55:24 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 03:54:34 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ class Commands
 		void		commandNick( void );
 		void		saveNick(std::string &nick);
 		void		commandUser( void );
-		void		saveUser(std::string &user, std::string &userName);
+		void		saveUser(std::string &user, std::string &realName);
 
 		// commandWho.cpp
 		void		commandWho( void );
@@ -173,7 +173,8 @@ class Commands
 		std::string	getChannelModeIs(Channel &channel);
 		std::string	getTopic(std::string &channelName);
 		std::string	getInviting(std::string &nickname, std::string &channelName);
-		std::string	getNamReply(std::string &channelName);
+		void		printNames(std::string &channelName);
+		std::string	getNamReply(std::string &channelName, std::string &user);
 		std::string	getEndOfNames(std::string &channelName);
 		std::string	getWhoReply(std::string &nick, std::string &channelName);
 		std::string	getEndOfWho(std::string &channelName);

@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   infos.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 10:59:16 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 23:39:29 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 04:05:11 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Commands.hpp"
 #include "Channel.hpp"
+#include "IrcServer.hpp"
 
 std::string Commands::getWelcome(Client &client)
 {
@@ -70,24 +71,31 @@ std::string Commands::getInviting(std::string &nickname,
 			+ " " + nickname + " " + channelName);
 }
 
-std::string Commands::getNamReply(std::string &channelName)
+void Commands::printNames(std::string &channelName)
 {
-	Channel		channel = _channels.get(channelName)->second;
-	std::string	listUsers = "";
+	Channel		&channel = _channels.get(channelName)->second;
 
 	for (std::map<int, int>::iterator it = channel.usersBegin();
 		it != channel.usersEnd(); ++it)
 	{
-		if (it != channel.usersBegin() && it != channel.usersEnd())
-			listUsers.append(" ");
+		std::string	user;
 		Channel::t_umode mode = static_cast<Channel::t_umode>(it->second);
 		char prefix = channel.getPrefix(mode);
+
 		if (prefix != '\0')
-			listUsers.append(1, prefix);
-		listUsers.append(_clients.getNick(it->first));
+			user.append(1, prefix);
+
+		user.append(_clients.getNick(it->first));
+		printInfo(getNamReply(channelName, user));
 	}
+
+	printInfo(getEndOfNames(channelName));
+}
+
+std::string Commands::getNamReply(std::string &channelName, std::string &user)
+{
 	return (toString(RPL_NAMREPLY) + " " + _clients.getNick(_fd)
-			+ " = " + channelName + " :" + listUsers);
+			+ " = " + channelName + " :" + user);
 }
 
 std::string Commands::getEndOfNames(std::string &channelName)
@@ -98,10 +106,29 @@ std::string Commands::getEndOfNames(std::string &channelName)
 
 std::string Commands::getWhoReply(std::string &nick, std::string &channelName)
 {
-	Client user = _clients.getClientByNick(nick)->second;
+	Client		&user = _clients.getClientByNick(nick)->second;
+	Channel		&channel = _channels.get(channelName)->second;
+	int			modeFlags = channel.getUserModeFlags(user.getFD());
 
-	return (toString(RPL_WHOREPLY) + " " + nick + " " + channelName + " ~"
-			+ user.getNick() + " " + user.getHost() + " H" + user.getUserName());
+	std::string	rplLine = toString(RPL_WHOREPLY) + " "
+			+ nick + " " + channelName + " ~" + user.getNick()
+			+ " " + user.getHost();
+
+	if (user.getMode(Client::AWAY))
+		rplLine += " G";
+	else
+		rplLine += " H";
+
+	if (modeFlags & Channel::CHANOP)
+		rplLine += "@";
+	else if (modeFlags & Channel::HALFOP)
+		rplLine += "%";
+	else if (modeFlags & Channel::VOICE)
+		rplLine += "+";
+
+	rplLine += " :0 " + user.getRealName();
+	return rplLine;
+
 }
 
 std::string Commands::getEndOfWho(std::string &channelName)

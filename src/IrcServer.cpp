@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 23:23:33 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 03:02:27 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,14 +226,28 @@ bool IRCServer::handleClientMessage(int clientFd)
 	return true;
 }
 
-std::string IRCServer::getHostName(const char *ip, const char *port) {
-	struct addrinfo *addrInfo;
-	std::string hostName;
+std::string IRCServer::getHostName(const int socketFd) {
 
-	if (getaddrinfo(ip, port, NULL, &addrInfo))
-		return ip;
 
-	hostName = addrInfo->ai_canonname;
+	struct sockaddr_in sockAddress;
+	socklen_t sockLen = 0;
+	struct addrinfo *addrInfo = NULL;
+
+	memset(&sockAddress, 0, sizeof(sockAddress));
+	getsockname(socketFd, (struct sockaddr *)&sockAddress, &sockLen);
+
+	std::string strAddress(inet_ntoa(sockAddress.sin_addr));
+	std::cerr << "Address: " << strAddress << std::endl;
+	std::cerr << "Port: " << sockAddress.sin_port << std::endl;
+
+	if (getaddrinfo(strAddress.c_str(),
+			itoa(sockAddress.sin_port).c_str(),
+			NULL, &addrInfo))
+		return strAddress;
+
+	std::cerr << "addrInfo address: " << addrInfo << std::endl;
+	std::string hostName(addrInfo->ai_canonname);
+	std::cerr << "Name: " << strAddress << std::endl;
 	freeaddrinfo(addrInfo);
 	return hostName;
 }

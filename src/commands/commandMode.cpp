@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:19:18 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 11:53:05 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 14:26:54 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,9 @@ void Commands::commandModeChannel(std::string &channelName)
 			if (verifyMode(mode, channelName, "+-aioOvklmnpqrst")
 				&& verifyChanOp(channelName))
 			{
-				Channel &channel = _channels.get(channelName)->second;
 				for (std::string::const_iterator it = mode.begin() + 1;
 					it != mode.end(); ++it)
 					applyMode(channelName, std::string(1, signal) + *it, index);
-
-				std::string message = _args[0] + " " + channelName + " " +
-						getChannelFlags(channel.getChannelModeFlags(), channel);
-
-				std::string from = _clients.getClient(_fd)->second.getFullId();
-
-				sendMessage(_channels.get(channelName), message, from);
 			}
 		}
 	}
@@ -63,10 +55,12 @@ void Commands::applyMode(std::string &channelName, std::string mode,
 						 size_t &index)
 {
 	Channel	&channel = _channels.get(channelName)->second;
+	std::string param = "";
 
-	if (mode.find_first_not_of("+-oOvkl") != std::string::npos)
+	if (mode.find_first_not_of("+-Oovkl") != std::string::npos)
 	{
 		channel.setChannelMode(mode);
+		printMode(channelName, mode, param);
 		return;
 	}
 
@@ -79,6 +73,7 @@ void Commands::applyMode(std::string &channelName, std::string mode,
 		else
 			printInfo(errorNeedMoreParams());
 		return;
+		printMode(channelName, mode, param);
 	}
 	handleModeParameters(mode, channelName, index);
 }
@@ -97,7 +92,8 @@ void Commands::commandModeUser(std::string &nick)
 			if (verifyMode(mode, nick, "+-aiwroOs"))
 			{
 				Client &user = _clients.getClientByNick(nick)->second;
-				for (std::string::const_iterator it = mode.begin() + 1; it != mode.end(); ++it)
+				for (std::string::const_iterator it = mode.begin() + 1;
+						it != mode.end(); ++it)
 					user.setMode(std::string(1, signal) + *it);
 
 				Client client = _clients.getClient(_fd)->second;
@@ -105,8 +101,18 @@ void Commands::commandModeUser(std::string &nick)
 				std::string from = client.getFullId();
 				_server.getMsgHandler().sendMessage(_fd, from, message);
 				if (client.getNick() != nick)
-					_server.getMsgHandler().sendMessage(user.getFD(), from, message);
+					_server.getMsgHandler().sendMessage(user.getFD(),
+														from, message);
 			}
 		}
 	}
+}
+
+void Commands::printMode(std::string &channelName,
+						std::string &mode, std::string &param)
+{
+	std::string	from = _clients.getClient(_fd)->second.getFullId();
+	std::string info = "MODE " + channelName + " " + mode + " " + param;
+
+	sendMessage(_channels.get(channelName), info, from);
 }

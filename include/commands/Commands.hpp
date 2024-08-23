@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 13:59:42 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:09:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "MsgHandler.hpp"
-// #include "Colors.hpp"
 #include "Codes.hpp"
 
 class	IRCServer;

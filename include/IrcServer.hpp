@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 13:40:10 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 03:01:42 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:18:54 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ class IRCServer
 		static void			setupSignalHandlers(void);
 		void				disconnectClient(int fd, size_t fdIdx);
 		void				disconnectClient(int fd);
-		void				handleClientSideDisconnect(int fd);
 };
 
 #endif

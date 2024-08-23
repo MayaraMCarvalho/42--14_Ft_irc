@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 17:38:07 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:23:57 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,16 +215,13 @@ bool IRCServer::handleClientMessage(int clientFd)
 			{
 				it->second.sendToAll(_clients.getClient(clientFd)->second.getFullId(),
 									quit);
-
-				 std::map<std::string, Channel>::iterator next = it;
+				std::map<std::string, Channel>::iterator next = it;
 				++next;
-
 				_channels.part(clientFd, it->second.getName());
-
 				it = next;
 			}
 		}
-		disconnectClient(clientFd);
+		// disconnectClient(clientFd);
 
 		_logger.info("Client disconnected: " + BYELLOW +
 			itoa(clientFd) + RESET);
@@ -304,10 +301,6 @@ void IRCServer::disconnectClient(int fd, size_t fdIdx) {
 	else
 		_isFdDisconnected = true;
 
-}
-
-void IRCServer::handleClientSideDisconnect(int fd) {
-	disconnectClient(fd);
 }
 
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }

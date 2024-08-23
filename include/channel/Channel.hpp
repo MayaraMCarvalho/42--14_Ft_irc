@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:47:05 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/01 03:35:48 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:14:17 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ class Channel
 		void addUser(const int fd, const int userModeFlags);
 		void removeUser(const int fd);
 		void sendToAll(const std::string &from, const std::string &message);
+		void sendToAll(const std::string &from, const std::string &message,
+						int fd);
 		void sendToAll(const std::string &message);
 		void addInvite(const std::string &nick);
 		void removeInvite(const std::string &nick);

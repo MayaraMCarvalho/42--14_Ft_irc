@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/29 11:18:22 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 12:44:40 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 23:48:33 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ bool Commands::verifyJoin(std::string &channelName, std::string &key)
 bool Commands::verifyJoinChannel(std::string &channelName, std::string &key)
 {
 	std::string	nick = _clients.getNick(_fd);
-	Channel		channel = _channels.get(channelName)->second;
+	Channel		&channel = _channels.get(channelName)->second;
 	int			numClients = channel.getNumUsers();
 
 	if (channel.getChannelModeFlags() == Channel::INVITEONLY &&

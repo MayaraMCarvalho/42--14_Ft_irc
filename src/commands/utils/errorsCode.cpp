@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 14:30:03 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/05 12:09:49 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 23:48:02 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ std::string Commands::errorInviteOnlyChan(std::string &nick,
 										  std::string &channel)
 {
 	return (toString(ERR_INVITEONLYCHAN) + " " + nick + " "
-			+ channel + " :Cannot join channel " + "(+i)");
+			+ channel + " :Cannot join channel " + "(+i)!");
 }
 
 std::string Commands::errorBannedFromChan(std::string &nick,
@@ -186,8 +186,3 @@ std::string Commands::errorUsersDontMatch( void )
 			+ " :Cant change mode for other users");
 }
 
-// std::string Commands::error...( void )
-// {
-// 	return (toString(...) + " " + _clients.getNick(_fd)
-//			+ "...");
-// }

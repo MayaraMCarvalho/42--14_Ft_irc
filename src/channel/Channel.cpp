@@ -254,7 +254,6 @@ void Channel::sendToAll(const std::string &from, const std::string &message)
 	}
 }
 
-// sobrecarga de teste
 void Channel::sendToAll(const std::string &from, const std::string &message,
 						int fd)
 {

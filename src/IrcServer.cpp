@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/22 21:23:57 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 22:15:19 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,6 @@ bool IRCServer::handleClientMessage(int clientFd)
 				it = next;
 			}
 		}
-		// disconnectClient(clientFd);
 
 		_logger.info("Client disconnected: " + BYELLOW +
 			itoa(clientFd) + RESET);

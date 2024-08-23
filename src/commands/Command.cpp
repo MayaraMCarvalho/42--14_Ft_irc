@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 13:47:14 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 16:47:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 12:38:03 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 	_server.getLogger().debug(CYAN + "Received message from client " +
 		itoa(clientFd) + ": " + BYELLOW + message + RESET);
 
+	_args.clear();
 	parsingArgs(message, ' ', _args);
 
 	if (_args.size() > 0)
@@ -108,7 +109,6 @@ bool Commands::isCommand(int clientFd, const std::string &message)
 		if (it != cmdFuncs.end())
 		{
 			(this->*(it->second))();
-			_args.clear();
 			return true;
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 16:17:29 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 17:26:54 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 20:09:39 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 #include "ClientList.hpp"
 #include "ChannelList.hpp"
 #include "MsgHandler.hpp"
-// #include "Colors.hpp"
 #include "Codes.hpp"
 
 class	IRCServer;
@@ -79,6 +78,7 @@ class Commands
 		void		parsingArgs(const std::string &message, char c,
 								std::vector<std::string>	&vector);
 		void		commandTopic( void );
+		bool		hasFlagT(std::string &channelName);
 
 		// commandInvite.cpp
 		void		commandInvite( void );
@@ -99,6 +99,8 @@ class Commands
 		void		applyMode(std::string &channelName, std::string mode,
 							  size_t &index);
 		void		commandModeUser(std::string &nick);
+		void		printMode(std::string &channelName,
+						std::string &mode, std::string &param);
 
 		// commandPart.cpp
 		void		commandPart( void );
@@ -110,7 +112,6 @@ class Commands
 		void		sendMessageChannel(std::string &recipient, std::string &message);
 		bool		sendMessage(std::map<std::string, Channel>::iterator channel,
 								std::string &message, std::string &from);
-		std::string	getFullMessage(const std::string &message, std::string &name);
 		bool		isItChannel(const std::string &channelName);
 
 		// commandQuit.cpp
@@ -121,12 +122,14 @@ class Commands
 		// commandSetup.cpp
 		void		commandPass( void );
 		void		commandNick( void );
+		void		saveNick(std::string &nick);
 		void		commandUser( void );
-		void		saveUser(std::string &user, std::string &userName);
+		void		saveUser(std::string &user, std::string &realName);
 
 		// commandWho.cpp
 		void		commandWho( void );
 		void		commandWhoChannel(std::string &ChannelName);
+		void		printListWho(std::string &channelName);
 
 		// errorsCode.cpp
 		std::string	errorUnknownError( void );
@@ -172,7 +175,8 @@ class Commands
 		std::string	getChannelModeIs(Channel &channel);
 		std::string	getTopic(std::string &channelName);
 		std::string	getInviting(std::string &nickname, std::string &channelName);
-		std::string	getNamReply(std::string &channelName);
+		void		printNames(std::string &channelName);
+		std::string	getNamReply(std::string &channelName, std::string &user);
 		std::string	getEndOfNames(std::string &channelName);
 		std::string	getWhoReply(std::string &nick, std::string &channelName);
 		std::string	getEndOfWho(std::string &channelName);

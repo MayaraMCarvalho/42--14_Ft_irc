@@ -254,6 +254,21 @@ void Channel::sendToAll(const std::string &from, const std::string &message)
 	}
 }
 
+// sobrecarga de teste
+void Channel::sendToAll(const std::string &from, const std::string &message,
+						int fd)
+{
+	for (std::map<int, int>::iterator it = usersBegin();
+		it != usersEnd(); ++it)
+	{
+		_msgHandler.getLogger().debug("Sending message " + BGREEN +
+			message + RESET + " to " + BYELLOW + itoa(it->first) + RESET);
+		if (it->first != fd)
+			_msgHandler.sendMessage(it->first, from, message);
+	}
+}
+//
+
 bool Channel::userHasInvite(const std::string &nick) {
 	return (_invites.find(nick) != _invites.end());
 }

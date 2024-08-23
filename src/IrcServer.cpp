@@ -6,14 +6,13 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 16:58:55 by macarval          #+#    #+#             */
-/*   Updated: 2024/08/21 17:14:02 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:23:57 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
 #include "Commands.hpp"
 #include "Colors.hpp"
-#include <cerrno>
 #include <cstdio>
 #include <sys/types.h>
 #include <netdb.h>
@@ -83,10 +82,6 @@ void IRCServer::signalHandler(int signal)
 		ChannelList	channels = _instance->_channels;
 		ClientList	clients = _instance->_clients;
 		_instance->_shouldExit = true;
-
-		for (std::map<int, Client>::iterator it = clients.begin();
-			it != clients.end(); ++it)
-			it->second.sendMessage("The server was disconnected!");
 	}
 }
 
@@ -128,12 +123,7 @@ void IRCServer::run(void)
 
 		pollCount = poll(_pollFds.data(), _pollFds.size(), 0);
 		if (pollCount < 0)
-		{
-			if (errno == EINTR)
-				continue;
-			else
 				throw std::runtime_error("Poll error");
-		}
 
 		if (_pollFds[0].revents & POLLIN)
 			acceptNewClient();
@@ -217,6 +207,22 @@ bool IRCServer::handleClientMessage(int clientFd)
 		return false;
 	}
 	else if (nbytes == 0) {
+		std::string quit = "QUIT :disconnected";
+		for (std::map<std::string, Channel>::iterator it = _channels.begin();
+			it != _channels.end(); ++it)
+		{
+			if (it->second.userIsInChannel(clientFd))
+			{
+				it->second.sendToAll(_clients.getClient(clientFd)->second.getFullId(),
+									quit);
+				std::map<std::string, Channel>::iterator next = it;
+				++next;
+				_channels.part(clientFd, it->second.getName());
+				it = next;
+			}
+		}
+		// disconnectClient(clientFd);
+
 		_logger.info("Client disconnected: " + BYELLOW +
 			itoa(clientFd) + RESET);
 		return false;
@@ -236,14 +242,28 @@ bool IRCServer::handleClientMessage(int clientFd)
 	return true;
 }
 
-std::string IRCServer::getHostName(const char *ip, const char *port) {
-	struct addrinfo *addrInfo;
-	std::string hostName;
+std::string IRCServer::getHostName(const int socketFd) {
 
-	if (getaddrinfo(ip, port, NULL, &addrInfo))
-		return ip;
 
-	hostName = addrInfo->ai_canonname;
+	struct sockaddr_in sockAddress;
+	socklen_t sockLen = 0;
+	struct addrinfo *addrInfo = NULL;
+
+	memset(&sockAddress, 0, sizeof(sockAddress));
+	getsockname(socketFd, (struct sockaddr *)&sockAddress, &sockLen);
+
+	std::string strAddress(inet_ntoa(sockAddress.sin_addr));
+	std::cerr << "Address: " << strAddress << std::endl;
+	std::cerr << "Port: " << sockAddress.sin_port << std::endl;
+
+	if (getaddrinfo(strAddress.c_str(),
+			itoa(sockAddress.sin_port).c_str(),
+			NULL, &addrInfo))
+		return strAddress;
+
+	std::cerr << "addrInfo address: " << addrInfo << std::endl;
+	std::string hostName(addrInfo->ai_canonname);
+	std::cerr << "Name: " << strAddress << std::endl;
 	freeaddrinfo(addrInfo);
 	return hostName;
 }
@@ -258,8 +278,10 @@ void IRCServer::disconnectClient(int fd) {
 		}
 	}
 	if (fdIdx >= _pollFds.size())
+	{
 		_logger.error(RED + "Could not find fd in _pollfds: " + BYELLOW +
 			itoa(fd) + RESET);
+	}
 	else
 		disconnectClient(fd, fdIdx);
 }
@@ -268,13 +290,17 @@ void IRCServer::disconnectClient(int fd, size_t fdIdx) {
 	_clients.removeClientFD(fd);
 	_channels.partDisconnectedClient(fd);
 	_msgHandler.resetQueues(fd);
-	_pollFds.erase(_pollFds.begin() + fdIdx);
-	close(fd);
-	_isFdDisconnected = true;
-}
 
-void IRCServer::handleClientSideDisconnect(int fd) {
-	disconnectClient(fd);
+	if (fdIdx < _pollFds.size())
+		_pollFds.erase(_pollFds.begin() + fdIdx);
+	else
+		_logger.error(RED + "Invalid fdIdx: " + BYELLOW + itoa(fdIdx) + RESET);
+
+	if (close(fd) == -1)
+		_logger.error(RED + "Failed to close fd: " + BYELLOW + itoa(fd) + RESET);
+	else
+		_isFdDisconnected = true;
+
 }
 
 MsgHandler &IRCServer::getMsgHandler(void) { return _msgHandler; }

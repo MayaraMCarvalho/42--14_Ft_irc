@@ -6,7 +6,7 @@
 /*   By: macarval <macarval@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:51 by gmachado          #+#    #+#             */
-/*   Updated: 2024/08/19 15:09:37 by macarval         ###   ########.fr       */
+/*   Updated: 2024/08/22 21:02:57 by macarval         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,6 @@ void ChannelList::partDisconnectedClient(int userFD)
 		return;
 
 	std::set<std::string> &chanRef = userIt->second.getChannelList();
-	;
 
 	for (chanIt = chanRef.begin(); chanIt != chanRef.end();)
 	{

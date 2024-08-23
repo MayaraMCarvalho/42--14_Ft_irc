@@ -6,7 +6,7 @@
 /*   By: gmachado <gmachado@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 03:46:41 by gmachado          #+#    #+#             */
-/*   Updated: 2024/07/11 03:18:15 by gmachado         ###   ########.fr       */
+/*   Updated: 2024/08/22 03:06:29 by gmachado         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdexcept>
 #include <unistd.h>
 #include "ClientList.hpp"
+#include "IrcServer.hpp"
 
 ClientList::ClientList(MsgHandler &msgHandler,
 	std::vector<struct pollfd> &pollFds) : _msgHandler(msgHandler),
@@ -130,7 +131,6 @@ t_numCode ClientList::setNick(int fd, const std::string &newNick) {
 
 	Client::t_status status = it->second.getStatus();
 
-
 	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
 		throw std::invalid_argument("Invalid user status");
 
@@ -156,7 +156,8 @@ t_numCode ClientList::setNick(int fd, const std::string &newNick) {
 	return NO_CODE;
 }
 
-t_numCode ClientList::setUser(int fd, const std::string &newUser) {
+t_numCode ClientList::setUserInfo(int fd, const std::string &newUser,
+		const std::string &realName) {
 
 	if (newUser.empty())
 		return ERR_NEEDMOREPARAMS;
@@ -169,7 +170,9 @@ t_numCode ClientList::setUser(int fd, const std::string &newUser) {
 	if (it == end())
 		throw std::invalid_argument("Unknown user");
 
-	Client::t_status status = it->second.getStatus();
+	Client &userRef = it->second;
+
+	Client::t_status status = userRef.getStatus();
 
 	if (status == Client::DISCONNECTED || status == Client::UNKNOWN)
 		throw std::invalid_argument("Invalid user status");
@@ -181,15 +184,17 @@ t_numCode ClientList::setUser(int fd, const std::string &newUser) {
 		return ERR_ALREADYREGISTERED;
 
 	else if (status == Client::AUTHENTICATED)
-		it->second.setStatus(Client::GOT_USER);
+		userRef.setStatus(Client::GOT_USER);
 
 	else if (status == Client::GOT_NICK)
-		it->second.setStatus(Client::REGISTERED);
+		userRef.setStatus(Client::REGISTERED);
 
-	if (!it->second.getUser().empty())
-		_userToClient.erase(it->second.getUser());
+	if (!userRef.getUser().empty())
+		_userToClient.erase(userRef.getUser());
 
-	it->second.setUser(newUser);
+	userRef.setUser(newUser);
+	userRef.setRealName(realName);
+	userRef.setHost("defaulthost");
 
 	_userToClient.insert(std::pair<std::string,
 		std::map<int, Client>::iterator>(newUser, it));
